@@ -80,7 +80,7 @@ const Hamburger: FC = () => {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3 }}
-              className="fixed top-0 left-0 h-full w-[70%] sm:w-[70%] bg-white shadow-lg p-4 z-50"
+              className="fixed top-0 left-0 h-full w-[70%] md:w-[40%] sm:w-[70%] bg-white shadow-lg p-4 z-50"
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside drawer
             >
               {/* Drawer Header */}
