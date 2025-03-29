@@ -1,5 +1,6 @@
 import { FC } from "react";
 import Hamburger from "../ui/Hamberger";
+import Search from "../ui/Search";
 
 const Header: FC = () => {
   return (
@@ -14,7 +15,7 @@ const Header: FC = () => {
           <div className="w-[50%]">
             <div className="flex justify-end">
               <div>
-                <h1>hello</h1>
+                <Search />
               </div>
             </div>
           </div>
