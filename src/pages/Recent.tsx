@@ -1,6 +1,6 @@
-import React from 'react'
+import {FC} from 'react'
 
-const Recent = () => {
+const Recent:FC = () => {
   return (
     <div>Recent</div>
   )
