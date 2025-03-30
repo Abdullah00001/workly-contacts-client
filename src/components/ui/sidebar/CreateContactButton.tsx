@@ -12,7 +12,7 @@ const CreateContactButton: FC = () => {
       {/* Create Contact Button */}
       <button
         onClick={handleNavigate}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
+        className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
       >
         <AiOutlinePlus className="text-lg" />
         <span>Create Contact</span>
