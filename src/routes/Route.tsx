@@ -4,6 +4,7 @@ import Contacts from "../pages/Contacts";
 import Recent from "../pages/Recent";
 import Trash from "../pages/Trash";
 import Favorite from "../pages/Favorite";
+import CreateContact from "../pages/CreateContact";
 
 const Route = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const Route = createBrowserRouter([
       {
         path: "/trash",
         element: <Trash />,
+      },
+      {
+        path: "/create-contact",
+        element: <CreateContact />,
       },
     ],
   },
