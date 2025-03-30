@@ -13,7 +13,7 @@ const Search: FC = () => {
   useEffect(() => {
     const checkIfTablet = () => {
       // Common tablet breakpoint (768px and above, but less than desktop)
-      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+      setIsTablet(window.innerWidth >= 768);
     };
 
     // Check on initial load
@@ -59,9 +59,9 @@ const Search: FC = () => {
     return (
       <div
         ref={searchRef}
-        className="flex items-center bg-white shadow-md rounded-lg border border-gray-300 w-full max-w-md"
+        className="flex items-center bg-white shadow-md rounded-lg border border-gray-300 w-full "
       >
-        <div className="flex-grow flex items-center">
+        <div className="flex-grow flex items-center w-full">
           <SearchIcon className="ml-3 w-5 h-5 text-gray-500" />
           <input
             ref={inputRef}

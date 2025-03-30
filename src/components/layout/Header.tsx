@@ -7,7 +7,7 @@ import Avatar from "../ui/header/Avatar";
 const Header: FC = () => {
   return (
     <section>
-      <div className="w-full px-2 py-2">
+      <div className="w-full p-2 md:px-4 md:py-2">
         <div className="flex items-center justify-between">
           <div className="">
             <div className="flex justify-start items-center space-x-2">
@@ -19,7 +19,7 @@ const Header: FC = () => {
               </div>
             </div>
           </div>
-          <div className="md:block hidden">
+          <div className="md:block hidden md:w-[50%]">
             <Search />
           </div>
           <div className="">
