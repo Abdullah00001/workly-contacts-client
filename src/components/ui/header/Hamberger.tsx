@@ -7,7 +7,7 @@ import {
   AiOutlineStar,
   AiOutlineDelete,
 } from "react-icons/ai";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const navItems = [
   {
@@ -85,7 +85,9 @@ const Hamburger: FC = () => {
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between mb-4">
-                <h1 className="text-lg font-bold">Amar Contacts</h1>
+                <Link to={"/"}>
+                  <h1 className="text-lg font-bold">Amar Contacts</h1>
+                </Link>
                 <button onClick={() => setIsOpen(false)}>
                   <ArrowLeft className="w-6 h-6" />
                 </button>
