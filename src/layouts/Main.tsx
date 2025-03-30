@@ -2,6 +2,7 @@ import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
+import CreateContactSmall from "../features/create contact/ui/CreateContactSmall";
 
 const Main: FC = () => {
   return (
@@ -17,8 +18,11 @@ const Main: FC = () => {
           </div>
         </div>
       </div>
-      <div className="block md:hidden">
+      <div className="block relative lg:hidden">
         <Outlet />
+        <div className="fixed top-[80%] left-[80%] md:left-[90%] md:top-[85%]">
+          <CreateContactSmall />
+        </div>
       </div>
     </>
   );
