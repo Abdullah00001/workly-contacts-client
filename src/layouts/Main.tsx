@@ -18,7 +18,7 @@ const Main: FC = () => {
           </div>
         </div>
       </div>
-      <div className="block relative lg:hidden">
+      <div className="block px-4 py-2 relative lg:hidden">
         <Outlet />
         <div className="fixed top-[80%] left-[80%] md:left-[90%] md:top-[85%]">
           <CreateContactSmall />

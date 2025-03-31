@@ -26,6 +26,7 @@ const Route = createBrowserRouter([
       {
         path: "/trash",
         element: <Trash />,
+        
       },
       {
         path: "/create-contact",
