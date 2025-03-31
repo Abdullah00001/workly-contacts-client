@@ -2,7 +2,7 @@ import { FC } from "react";
 import { IContactInfo } from "../../interfaces/contacts.interface";
 
 interface ContactTableProps {
-  contactData: IContactInfo[] | null;
+  contactData: IContactInfo[] | [];
 }
 
 const ContactTable: FC<ContactTableProps> = ({ contactData }) => {

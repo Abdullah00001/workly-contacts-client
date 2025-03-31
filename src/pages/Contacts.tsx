@@ -4,14 +4,14 @@ import { IContactInfo } from "../interfaces/contacts.interface";
 import axios from "axios";
 
 const Contacts: FC = () => {
-  const [contactData, setContactData] = useState<IContactInfo[] | null>(null);
+  const [contactData, setContactData] = useState<IContactInfo[] | []>([]);
   useEffect(() => {
     (async () => {
       try {
-        const data = await axios.get("../../db.json");
-        setContactData(data.data);
+        const data = await axios.get("https://mocki.io/v1/a7e1f0d3-bfe7-4684-aede-1f102a4cfbe1");
+        setContactData(data?.data);
       } catch (error) {
-        setContactData(null);
+        setContactData([]);
         console.log(error);
       }
     })();
