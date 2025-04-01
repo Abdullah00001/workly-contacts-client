@@ -7,11 +7,11 @@ interface ContactTableProps {
 }
 
 const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
-  const [selectedContacts, setSelectedContacts] = useState<string[] | []>([]);
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [isDropdown, setIsDropdown] = useState(false);
-  // const handleSelectAll=()=>{
-  //   setSelectedContacts()
-  // }
+  const handleSelectAll = () => {
+    setSelectedContacts(contactData.map(({ id }) => id));
+  };
   const handleSelectNone = () => {
     setSelectedContacts([]);
   };
@@ -40,7 +40,10 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                       {/* Dropdown Menu */}
                       {isDropdown && (
                         <div className="absolute mt-2 bg-white border rounded-lg shadow-md w-20">
-                          <button className="w-full text-left px-2 py-1 hover:bg-gray-100">
+                          <button
+                            onClick={handleSelectAll}
+                            className="w-full text-left px-2 py-1 hover:bg-gray-100"
+                          >
                             All
                           </button>
                           <button

@@ -6,7 +6,7 @@ interface ITableBodyRowProps {
   phone: string;
   name: string;
   id: string;
-  selectedContacts: string[] | [];
+  selectedContacts: string[];
   setSelectedContacts: Dispatch<React.SetStateAction<string[]>>;
 }
 
@@ -18,11 +18,13 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
   selectedContacts,
   setSelectedContacts,
 }) => {
-  const [isSelected, setIsSelected] = useState(false);
+  const isSelected = selectedContacts.includes(id);
   const [isHover, setIsHover] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const handleSelect = () => {
-    setIsSelected(!isSelected);
+    setSelectedContacts((prev) =>
+      isSelected ? prev.filter((contactId) => contactId !== id) : [...prev, id]
+    );
   };
   const handleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -31,12 +33,11 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
     // Handle edit action here
     console.log("Edit clicked");
   };
-  useEffect(() => {
-    setSelectedContacts((prev) =>
-      isSelected ? [...prev, id] : prev.filter((contactId) => contactId !== id)
-    );
-    selectedContacts?.length === 0 && setIsSelected(false);
-  }, [selectedContacts, isSelected, id, setSelectedContacts]);
+  // useEffect(() => {
+  //   setSelectedContacts((prev) =>
+  //     isSelected ? [...prev, id] : prev.filter((contactId) => contactId !== id)
+  //   );
+  // }, [isSelected, id, setSelectedContacts]);
   return (
     <tr
       onMouseEnter={() => setIsHover(true)}
