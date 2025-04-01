@@ -1,5 +1,6 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { IContactInfo } from "../../interfaces/contacts.interface";
+import TableBodyRow from "../ui/table/TableBodyRow";
 
 interface ContactTableProps {
   contactData: IContactInfo[] | [];
@@ -23,24 +24,19 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
           </tr>
         </thead>
         <tbody>
-          {contactData?.map((data: IContactInfo) => (
-            <tr>
-              <td className="pl-3">
-                <div className="flex items-center space-x-2">
-                  <div>
-                    <img
-                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${data.name}`}
-                      alt="Avatar"
-                      className="w-10 h-10 rounded-full"
-                    />
-                  </div>
-                  <div>{data.name}</div>
-                </div>
-              </td>
-              <td className="hidden md:table-cell">{data.email}</td>
-              <td className="hidden lg:table-cell">{data.phone}</td>
-            </tr>
-          ))}
+          {contactData?.map(
+            ({ email, id, name, phone, avatarUrl, jobTitle }: IContactInfo) => (
+              <TableBodyRow
+                key={id}
+                email={email}
+                name={name}
+                phone={phone}
+                avatarUrl={avatarUrl}
+                jobTitle={jobTitle}
+                id={id}
+              />
+            )
+          )}
         </tbody>
       </table>
     </div>
