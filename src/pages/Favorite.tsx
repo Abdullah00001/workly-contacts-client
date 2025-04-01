@@ -8,7 +8,7 @@ const Favorite: FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const data = await axios.get("https://mocki.io/v1/a7e1f0d3-bfe7-4684-aede-1f102a4cfbe1");
+        const data = await axios.get("https://mocki.io/v1/1568fce4-83ba-42f7-980d-ac453ea0fee3");
         setContactData(data?.data);
       } catch (error) {
         setContactData([]);

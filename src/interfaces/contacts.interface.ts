@@ -1,9 +1,8 @@
 export interface IContactInfo {
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    jobTitle: string;
-    avatarUrl: string;
-  }
-  
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  jobTitle: string;
+  avatarUrl: string;
+}

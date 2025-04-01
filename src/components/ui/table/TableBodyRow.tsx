@@ -1,10 +1,29 @@
-import { FC, useState } from "react";
-import { IContactInfo } from "../../../interfaces/contacts.interface";
+import { Dispatch, FC, useEffect, useState } from "react";
 import { FaEdit, FaStar, FaRegStar } from "react-icons/fa";
 
-const TableBodyRow: FC<IContactInfo> = ({ email, phone, name }) => {
+interface ITableBodyRowProps {
+  email: string;
+  phone: string;
+  name: string;
+  id: string;
+  selectedContacts: string[] | [];
+  setSelectedContacts: Dispatch<React.SetStateAction<string[]>>;
+}
+
+const TableBodyRow: FC<ITableBodyRowProps> = ({
+  email,
+  phone,
+  name,
+  id,
+  selectedContacts,
+  setSelectedContacts,
+}) => {
+  const [isSelected, setIsSelected] = useState(false);
   const [isHover, setIsHover] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const handleSelect = () => {
+    setIsSelected(!isSelected);
+  };
   const handleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
@@ -12,22 +31,63 @@ const TableBodyRow: FC<IContactInfo> = ({ email, phone, name }) => {
     // Handle edit action here
     console.log("Edit clicked");
   };
-
+  useEffect(() => {
+    setSelectedContacts((prev) =>
+      isSelected ? [...prev, id] : prev.filter((contactId) => contactId !== id)
+    );
+    selectedContacts?.length === 0 && setIsSelected(false);
+  }, [selectedContacts, isSelected, id, setSelectedContacts]);
   return (
     <tr
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
-      className=" hover:bg-gray-300 cursor-pointer transition-all duration-300 ease-in-out"
+      className={`${isSelected && "bg-blue-300"} ${
+        isSelected ? "hover:bg-blue-300" : "hover:bg-gray-300"
+      }  cursor-pointer transition-all duration-300 ease-in-out`}
     >
-      <td className="pl-3  py-2">
+      <td className="pl-3  py-2 hidden lg:block">
         <div className="flex items-center space-x-2">
           <div
             className="w-[40px] h-[40px] rounded-full cursor-pointer flex justify-center items-center  duration-300 ease-in-out"
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
           >
-            {isHover ? (
-              <input type="checkbox" className="cursor-pointer w-5 h-5" />
+            {isSelected ? (
+              <input
+                onClick={handleSelect}
+                type="checkbox"
+                className="cursor-pointer w-5 h-5"
+              />
+            ) : isHover ? (
+              <input
+                onClick={handleSelect}
+                type="checkbox"
+                className="cursor-pointer w-5 h-5"
+              />
+            ) : (
+              <img
+                src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
+                alt="Avatar"
+                className="w-10 h-10 cursor-pointer rounded-full"
+              />
+            )}
+          </div>
+          <div>{name}</div>
+        </div>
+      </td>
+      <td className="pl-3  py-2 lg:hidden">
+        <div className="flex items-center space-x-2">
+          <div
+            onClick={handleSelect}
+            className={`w-[40px] h-[40px] rounded-full cursor-pointer flex justify-center items-center  duration-300 ease-in-out`}
+          >
+            {isSelected ? (
+              <input
+                checked={isSelected}
+                name="selectCheckbox"
+                type="checkbox"
+                className="cursor-pointer w-5 h-5"
+              />
             ) : (
               <img
                 src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
@@ -51,12 +111,21 @@ const TableBodyRow: FC<IContactInfo> = ({ email, phone, name }) => {
               >
                 <FaEdit size={20} />
               </span>
-              <span
-                className="ml-2 text-gray-600 cursor-pointer"
-                onClick={handleFavorite}
-              >
-                {isFavorite ? <FaStar size={20} /> : <FaRegStar size={20} />}
-              </span>
+              {isFavorite ? (
+                <span
+                  className="ml-2 text-blue-600 cursor-pointer"
+                  onClick={handleFavorite}
+                >
+                  <FaStar size={20} />
+                </span>
+              ) : (
+                <span
+                  onClick={handleFavorite}
+                  className="ml-2 text-gray-600 cursor-pointer"
+                >
+                  <FaRegStar size={20} />
+                </span>
+              )}
             </div>
           )}
         </div>
