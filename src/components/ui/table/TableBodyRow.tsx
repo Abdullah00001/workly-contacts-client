@@ -33,11 +33,6 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
     // Handle edit action here
     console.log("Edit clicked");
   };
-  // useEffect(() => {
-  //   setSelectedContacts((prev) =>
-  //     isSelected ? [...prev, id] : prev.filter((contactId) => contactId !== id)
-  //   );
-  // }, [isSelected, id, setSelectedContacts]);
   return (
     <tr
       onMouseEnter={() => setIsHover(true)}
@@ -55,6 +50,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
           >
             {isSelected ? (
               <input
+                checked={isSelected}
                 onClick={handleSelect}
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
