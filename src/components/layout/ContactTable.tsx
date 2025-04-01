@@ -9,7 +9,7 @@ interface ContactTableProps {
 const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   return (
     <div className="w-full overflow-y-scroll">
-      <table className="w-full">
+      <table className="w-full table-fixed">
         <thead>
           <tr className="border-gray-600 border-b">
             <th className="text-[16px] font-semibold text-left pl-3 py-4">
