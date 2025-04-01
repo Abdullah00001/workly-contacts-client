@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { IContactInfo } from "../../interfaces/contacts.interface";
 import TableBodyRow from "../ui/table/TableBodyRow";
 
@@ -24,6 +24,11 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td className="py-2"></td>
+            <td className="hidden py-2  md:table-cell"></td>
+            <td className="py-2 hidden lg:table-cell"></td>
+          </tr>
           {contactData?.map(
             ({ email, id, name, phone, avatarUrl, jobTitle }: IContactInfo) => (
               <TableBodyRow
