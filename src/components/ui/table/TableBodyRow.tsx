@@ -1,4 +1,4 @@
-import { Dispatch, FC, useEffect, useState } from "react";
+import { Dispatch, FC, useState } from "react";
 import { FaEdit, FaStar, FaRegStar } from "react-icons/fa";
 
 interface ITableBodyRowProps {
