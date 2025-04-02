@@ -41,6 +41,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
         isSelected ? "hover:bg-blue-300" : "hover:bg-gray-300"
       }  cursor-pointer transition-all duration-300 ease-in-out`}
     >
+      {/* For Laptop And Desktop Devices */}
       <td className="pl-3  py-2 hidden lg:block">
         <div className="flex items-center space-x-2">
           <div
@@ -51,13 +52,14 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
             {isSelected ? (
               <input
                 checked={isSelected}
-                onClick={handleSelect}
+                onChange={handleSelect}
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
               />
             ) : isHover ? (
               <input
-                onClick={handleSelect}
+                checked={isSelected}
+                onChange={handleSelect}
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
               />
@@ -81,6 +83,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
             {isSelected ? (
               <input
                 checked={isSelected}
+                onChange={handleSelect}
                 name="selectCheckbox"
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
