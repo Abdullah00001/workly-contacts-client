@@ -1,4 +1,4 @@
-import { Dispatch, FC, useState } from "react";
+import { Dispatch, FC, MouseEvent, useState } from "react";
 import { FaEdit, FaStar, FaRegStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -22,15 +22,18 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
   const isSelected = selectedContacts.includes(id);
   const [isHover, setIsHover] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const handleSelect = () => {
+  const handleSelect = (e: MouseEvent) => {
+    e.stopPropagation();
     setSelectedContacts((prev) =>
       isSelected ? prev.filter((contactId) => contactId !== id) : [...prev, id]
     );
   };
-  const handleFavorite = () => {
+  const handleFavorite = (e: MouseEvent) => {
+    e.stopPropagation();
     setIsFavorite(!isFavorite);
   };
-  const handleEditClick = () => {
+  const handleEditClick = (e: MouseEvent) => {
+    e.stopPropagation();
     // Handle edit action here
     console.log("Edit clicked");
   };
@@ -58,14 +61,14 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
             {isSelected ? (
               <input
                 checked={isSelected}
-                onChange={handleSelect}
+                onClick={handleSelect}
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
               />
             ) : isHover ? (
               <input
                 checked={isSelected}
-                onChange={handleSelect}
+                onClick={handleSelect}
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
               />
@@ -89,7 +92,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
             {isSelected ? (
               <input
                 checked={isSelected}
-                onChange={handleSelect}
+                onClick={handleSelect}
                 name="selectCheckbox"
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
