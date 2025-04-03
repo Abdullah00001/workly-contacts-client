@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const CreateContactSmall: FC = () => {
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/new");
+    navigate("/new", { state: { from: location.pathname } });
   };
   return (
     <button
