@@ -1,10 +1,14 @@
 import { FC } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import CreateContactSmall from "../features/create contact/ui/CreateContactSmall";
 
 const Main: FC = () => {
+  const location = useLocation();
+
+  // Hide CreateContactSmall on Contact Details page
+  const isContactDetailsPage = location.pathname.startsWith("/person/");
   return (
     <>
       <Header />
@@ -20,9 +24,11 @@ const Main: FC = () => {
       </div>
       <div className="block px-4 py-2 relative lg:hidden">
         <Outlet />
-        <div className="fixed top-[80%] left-[80%] md:left-[90%] md:top-[85%]">
-          <CreateContactSmall />
-        </div>
+        {!isContactDetailsPage && (
+          <div className="fixed top-[80%] left-[80%] md:left-[90%] md:top-[85%]">
+            <CreateContactSmall />
+          </div>
+        )}
       </div>
     </>
   );

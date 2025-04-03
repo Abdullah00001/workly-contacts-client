@@ -1,5 +1,6 @@
 import { Dispatch, FC, useState } from "react";
 import { FaEdit, FaStar, FaRegStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 interface ITableBodyRowProps {
   email: string;
@@ -33,10 +34,15 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
     // Handle edit action here
     console.log("Edit clicked");
   };
+  const navigate = useNavigate();
+  const handleDetails = () => {
+    navigate(`/person/${id}`, { state: { from: location.pathname } });
+  };
   return (
     <tr
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
+      onClick={handleDetails}
       className={`${isSelected && "bg-blue-300"} ${
         isSelected ? "hover:bg-blue-300" : "hover:bg-gray-300"
       }  cursor-pointer transition-all duration-300 ease-in-out`}
@@ -99,7 +105,9 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
           <div>{name}</div>
         </div>
       </td>
-      <td className="hidden py-2  md:table-cell ">{email}</td>
+      <td className="hidden py-2  md:table-cell hover:underline hover:text-blue-500">
+        {email}
+      </td>
       <td className="hidden pr-4 py-2  lg:table-cell transition-all duration-300 ease-in-out">
         <div className="flex justify-between items-center">
           <span>{phone}</span>
