@@ -15,7 +15,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const ContactDetails: FC = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const handleReturn = () => {
