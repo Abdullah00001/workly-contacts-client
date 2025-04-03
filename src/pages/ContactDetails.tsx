@@ -28,7 +28,7 @@ const ContactDetails: FC = () => {
   };
   return (
     <>
-      <div className="w-full lg:w-full xl:w-[950px] lg:p-8">
+      <div className="w-full lg:w-full xl:w-[950px] xl:p-8">
         <div className="flex justify-between items-center">
           {/* Left Arrow Icon */}
           <div onClick={handleReturn} className="p-2 cursor-pointer">
