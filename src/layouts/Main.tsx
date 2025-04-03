@@ -9,6 +9,7 @@ const Main: FC = () => {
 
   // Hide CreateContactSmall on Contact Details page
   const isContactDetailsPage = location.pathname.startsWith("/person/");
+  const isCreateContactPage = location.pathname.startsWith("/new");
   return (
     <>
       <Header />
@@ -24,7 +25,7 @@ const Main: FC = () => {
       </div>
       <div className="block px-4 py-2 relative lg:hidden">
         <Outlet />
-        {!isContactDetailsPage && (
+        {!isContactDetailsPage && !isCreateContactPage && (
           <div className="fixed top-[80%] left-[80%] md:left-[90%] md:top-[85%]">
             <CreateContactSmall />
           </div>

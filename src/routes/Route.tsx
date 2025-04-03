@@ -29,10 +29,6 @@ const Route = createBrowserRouter([
         element: <Trash />,
       },
       {
-        path: "/create-contact",
-        element: <CreateContact />,
-      },
-      {
         path: "/person/:id",
         element: <ContactDetails />,
       },
