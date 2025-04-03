@@ -12,7 +12,7 @@ import {
   MdOutlineLocalPhone,
   MdOutlineLocationOn,
 } from "react-icons/md";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ContactDetails: FC = () => {
   // const { id } = useParams();
