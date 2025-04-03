@@ -111,7 +111,7 @@ const ContactDetails: FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col space-y-3 mt-5 text-[#1f1f1f] text-[16px]">
+        <div className="flex flex-col space-y-3 mt-5 mb-5 p-4 text-[#1f1f1f] text-[16px]">
           <div>
             <h1 className="font-medium">History</h1>
           </div>
