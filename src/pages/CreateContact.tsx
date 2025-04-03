@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { FaArrowLeft, FaPhone } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import {
   MdLocationOn,
