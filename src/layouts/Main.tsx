@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
-import CreateContactSmall from "../features/create contact/ui/CreateContactSmall";
+import CreateContactSmall from "../components/ui/CreateContactSmall";
 
 const Main: FC = () => {
   const location = useLocation();

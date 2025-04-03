@@ -34,8 +34,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
   };
   const handleEditClick = (e: MouseEvent) => {
     e.stopPropagation();
-    // Handle edit action here
-    console.log("Edit clicked");
+    navigate(`/person/edit/${id}`, { state: { from: location.pathname } });
   };
   const navigate = useNavigate();
   const handleDetails = () => {
