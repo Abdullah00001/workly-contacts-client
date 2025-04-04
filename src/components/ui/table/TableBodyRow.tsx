@@ -1,4 +1,4 @@
-import { Dispatch, FC, MouseEvent, useState } from "react";
+import { ChangeEvent, Dispatch, FC, MouseEvent, useState } from "react";
 import { FaEdit, FaStar, FaRegStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -22,7 +22,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
   const isSelected = selectedContacts.includes(id);
   const [isHover, setIsHover] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const handleSelect = (e: MouseEvent) => {
+  const handleSelect = (e: ChangeEvent<HTMLInputElement> | MouseEvent) => {
     e.stopPropagation();
     setSelectedContacts((prev) =>
       isSelected ? prev.filter((contactId) => contactId !== id) : [...prev, id]
@@ -37,7 +37,16 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
     navigate(`/person/edit/${id}`, { state: { from: location.pathname } });
   };
   const navigate = useNavigate();
-  const handleDetails = () => {
+  const handleDetails = (e: MouseEvent<HTMLTableRowElement>) => {
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === "INPUT" ||
+      target.tagName === "BUTTON" ||
+      target.closest("svg") ||
+      target.closest("label")
+    ) {
+      return;
+    }
     navigate(`/person/${id}`, { state: { from: location.pathname } });
   };
   return (
@@ -60,23 +69,30 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
             {isSelected ? (
               <input
                 checked={isSelected}
-                onClick={handleSelect}
+                onChange={handleSelect}
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
               />
             ) : isHover ? (
               <input
                 checked={isSelected}
-                onClick={handleSelect}
+                onChange={handleSelect}
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"
               />
             ) : (
-              <img
-                src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
-                alt="Avatar"
-                className="w-10 h-10 cursor-pointer rounded-full"
-              />
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelect(e);
+                }}
+              >
+                <img
+                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
+                  alt="Avatar"
+                  className="w-10 h-10 cursor-pointer rounded-full"
+                />
+              </div>
             )}
           </div>
           <div>{name}</div>
@@ -91,7 +107,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
             {isSelected ? (
               <input
                 checked={isSelected}
-                onClick={handleSelect}
+                onChange={handleSelect}
                 name="selectCheckbox"
                 type="checkbox"
                 className="cursor-pointer w-5 h-5"

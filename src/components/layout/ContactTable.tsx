@@ -3,6 +3,7 @@ import { FaChevronDown, FaMinusSquare, FaTrash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { IContactInfo } from "../../interfaces/contacts.interface";
 import TableBodyRow from "../ui/table/TableBodyRow";
+import MultiDeleteModal from "../ui/MultiDeleteModal";
 
 interface ContactTableProps {
   contactData: IContactInfo[];
@@ -11,6 +12,7 @@ interface ContactTableProps {
 const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [isDropdown, setIsDropdown] = useState<boolean>(false);
+  const [isDelete, setIsDelete] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleSelectAll = () => {
@@ -24,7 +26,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   };
 
   const handleDelete = () => {
-    console.log(selectedContacts);
+    setIsDelete(!isDelete);
   };
 
   // Close dropdown when clicking outside
@@ -42,7 +44,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   }, []);
 
   return (
-    <div className="w-full overflow-y-scroll">
+    <div className="w-full overflow-y-scroll relative">
       <table className="w-full table-fixed">
         <thead>
           {selectedContacts.length > 0 ? (
@@ -55,10 +57,10 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                     {/* Dropdown Trigger */}
                     <button
                       onClick={() => setIsDropdown((prev) => !prev)}
-                      className="text-blue-600 flex items-center space-x-1 transition-all duration-300 hover:text-blue-700"
+                      className="text-blue-600 flex items-center space-x-1 transition-all duration-300 hover:text-blue-700 cursor-pointer"
                     >
                       <span>{selectedContacts.length} selected</span>
-                      <FaChevronDown className="w-4 h-4 transition-transform duration-300" />
+                      <FaChevronDown className="w-4 h-4 transition-transform duration-300 " />
                     </button>
 
                     {/* Dropdown Menu */}
@@ -74,13 +76,13 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                         >
                           <button
                             onClick={handleSelectAll}
-                            className="w-full text-left px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 transition-all"
+                            className="w-full text-left px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
                           >
                             Select All
                           </button>
                           <button
                             onClick={handleSelectNone}
-                            className="w-full text-left px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 transition-all"
+                            className="w-full text-left px-4 py-2 text-sm font-medium rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
                           >
                             Select None
                           </button>
@@ -89,7 +91,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                     </AnimatePresence>
                   </div>
 
-                  <div onClick={handleDelete} className="block pr-3 md:hidden">
+                  <div onClick={handleDelete} className="block pr-3 md:hidden cursor-pointer">
                     <FaTrash size={15} />
                   </div>
                 </div>
@@ -98,7 +100,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                 <div className="flex justify-end items-center">
                   <div
                     onClick={handleDelete}
-                    className="hidden md:block pr-3 lg:hidden"
+                    className="hidden md:block pr-3 lg:hidden cursor-pointer"
                   >
                     <FaTrash size={15} />
                   </div>
@@ -108,7 +110,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                 <div className="flex justify-end items-center">
                   <div
                     onClick={handleDelete}
-                    className="lg:block pr-3 md:hidden"
+                    className="lg:block pr-3 md:hidden cursor-pointer"
                   >
                     <FaTrash size={15} />
                   </div>
@@ -148,6 +150,12 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
           ))}
         </tbody>
       </table>
+      {isDelete && (
+        <MultiDeleteModal
+          handleIsDelete={handleDelete}
+          selectedItems={selectedContacts}
+        />
+      )}
     </div>
   );
 };
