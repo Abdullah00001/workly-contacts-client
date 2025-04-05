@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   name: string;
@@ -15,6 +16,11 @@ const Avatar: FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const handleNavigateProfilePage = () => {
+    setIsDropdownOpen(false)
+    navigate("/me", { state: { from: location.pathname } });
+  };
 
   // Toggle dropdown visibility
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
@@ -44,12 +50,15 @@ const Avatar: FC = () => {
         />
       </div>
       {isDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md p-3">
+        <div className="absolute z-10 right-0 mt-2 w-48 bg-white shadow-lg rounded-md p-3">
           <div className="pb-2 border-b border-gray-200">
             <h1 className="font-bold text-gray-800">{user.name}</h1>
           </div>
           <ul className="text-sm font-bold mt-2">
-            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">
+            <li
+              onClick={handleNavigateProfilePage}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
+            >
               Profile
             </li>
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">

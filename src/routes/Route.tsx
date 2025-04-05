@@ -7,6 +7,7 @@ import Favorite from "../pages/Favorite";
 import CreateContact from "../pages/CreateContact";
 import ContactDetails from "../pages/ContactDetails";
 import EditContact from "../pages/EditContact";
+import Profile from "../pages/Profile";
 
 const Route = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const Route = createBrowserRouter([
       {
         path: "/",
         element: <Contacts />,
+      },
+      {
+        path: "/me",
+        element: <Profile />,
       },
       {
         path: "/recent",
