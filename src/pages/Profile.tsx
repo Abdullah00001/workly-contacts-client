@@ -21,7 +21,7 @@ const Profile: FC = () => {
         </div>
       </div>
       <div className="md:flex md:justify-center md:items-center md:h-[80vh]">
-        <div className="md:p-4 md:w-[500px] md:shadow-2xl md:rounded-2xl">
+        <div className="md:p-4 lg:p-6 md:w-[500px] md:shadow-2xl md:rounded-2xl">
           <div className=" flex justify-between items-center mt-10 md:mt-0">
             <div className="w-[122px] h-[122px]">
               <img
@@ -68,8 +68,8 @@ const Profile: FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-start items-center space-x-2 mt-7">
-            <button className="px-1 py-2 rounded-lg bg-blue-600 text-white">
+          <div className="flex flex-col h-full space-y-2 mt-7 justify-center md:flex-row md:justify-start md:items-center md:space-y-0  md:space-x-2 ">
+            <button className="px-4 py-2 rounded-lg bg-blue-600 text-white">
               Change Password
             </button>
             <button className="px-4 py-2 rounded-lg bg-red-500 text-white">
