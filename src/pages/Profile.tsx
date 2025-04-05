@@ -10,7 +10,7 @@ const Profile: FC = () => {
     navigate(returnPath);
   };
   return (
-    <section className="w-full  py-4">
+    <section className="w-full  pb-4">
       <div className="flex justify-between items-center">
         {/* Left Arrow Icon */}
         <div onClick={handleReturn} className="p-2 cursor-pointer">
@@ -22,7 +22,7 @@ const Profile: FC = () => {
       </div>
       <div className="md:flex md:justify-center md:items-center md:h-[80vh]">
         <div className="md:p-4 lg:p-6 md:w-[500px] md:shadow-2xl md:rounded-2xl">
-          <div className=" flex justify-between items-center mt-10 md:mt-0">
+          <div className=" flex justify-between items-center mt-5 md:mt-0">
             <div className="w-[122px] h-[122px]">
               <img
                 src={`https://api.dicebear.com/7.x/initials/svg?seed=Abdullah`}
@@ -68,7 +68,7 @@ const Profile: FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col h-full space-y-2 mt-7 justify-center md:flex-row md:justify-start md:items-center md:space-y-0  md:space-x-2 ">
+          <div className="flex flex-col h-full space-y-2 mt-12 md:mt-7 justify-center md:flex-row md:justify-start md:items-center md:space-y-0  md:space-x-2 ">
             <button className="px-4 py-2 rounded-lg bg-blue-600 text-white">
               Change Password
             </button>
