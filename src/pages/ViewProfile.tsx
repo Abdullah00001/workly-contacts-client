@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { FaArrowLeft, FaEdit } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../components/ui/ChanagePasswordModal";
+import DeleteAccountModal from "../components/ui/DeleteAccountModal";
 
 const ViewProfile: FC = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const ViewProfile: FC = () => {
     navigate("/me?edit=1", { state: { from: location.pathname } });
   };
   const [isClickChangePassword, setIsClickChangePassword] = useState(false);
+  const [isClickDeleteAccount, setIsClickDeleteAccount] = useState(false);
   return (
     <section className="w-full  pb-4">
       <div className="flex justify-between items-center">
@@ -81,11 +83,14 @@ const ViewProfile: FC = () => {
           <div className="flex flex-col h-full space-y-2 mt-12 md:mt-7 justify-center md:flex-row md:justify-start md:items-center md:space-y-0  md:space-x-2 ">
             <button
               onClick={() => setIsClickChangePassword(!isClickChangePassword)}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+              className="px-4 py-2 rounded-lg bg-blue-600 cursor text-white"
             >
               Change Password
             </button>
-            <button className="px-4 py-2 rounded-lg bg-red-500 text-white">
+            <button
+              onClick={() => setIsClickDeleteAccount(!isClickChangePassword)}
+              className="px-4 py-2 rounded-lg cursor-pointer bg-red-500 text-white"
+            >
               Delete Account
             </button>
           </div>
@@ -94,6 +99,11 @@ const ViewProfile: FC = () => {
       {isClickChangePassword && (
         <ChangePasswordModal
           handleIsChangePassword={() => setIsClickChangePassword(false)}
+        />
+      )}
+      {isClickDeleteAccount && (
+        <DeleteAccountModal
+          handleIsDeleteAccount={() => setIsClickDeleteAccount(false)}
         />
       )}
     </section>
