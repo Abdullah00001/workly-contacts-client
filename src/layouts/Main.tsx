@@ -15,7 +15,7 @@ const Main: FC = () => {
     <>
       <Header />
       <div className="hidden lg:block mt-5">
-        <div className="flex h-[89vh]">
+        <div className="flex min-h-[89vh]">
           <div className="w-[20%] xl:w-[15%]">
             <Sidebar />
           </div>
