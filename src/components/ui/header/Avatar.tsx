@@ -18,7 +18,7 @@ const Avatar: FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const handleNavigateProfilePage = () => {
-    setIsDropdownOpen(false)
+    setIsDropdownOpen(false);
     navigate("/me", { state: { from: location.pathname } });
   };
 
@@ -60,9 +60,6 @@ const Avatar: FC = () => {
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
             >
               Profile
-            </li>
-            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">
-              Theme
             </li>
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">
               Sign Out
