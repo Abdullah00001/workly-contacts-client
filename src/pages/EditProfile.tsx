@@ -79,6 +79,22 @@ const EditProfile: FC = () => {
     // send updated dob to server here
   };
 
+  const [work, setWork] = useState<{ company: string; position: string }>({
+    company: "OpenAI",
+    position: "Software Engineer",
+  });
+  const [isWorkClick, setIsWorkClick] = useState(false);
+
+  const handleChangeWork = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setWork((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleWorkSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    // Send `work` object to server here
+  };
+
   return (
     <section className="w-full  pb-4">
       <div className="flex justify-between items-center">
@@ -167,6 +183,52 @@ const EditProfile: FC = () => {
               </button>
             </div>
           </form>
+          <form onSubmit={handleWorkSubmit} className="flex flex-col space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <input
+                type="text"
+                name="company"
+                maxLength={100}
+                onChange={handleChangeWork}
+                onClick={() => setIsWorkClick(true)}
+                value={work.company}
+                placeholder="Company Name"
+                className="w-full px-3 py-2 rounded-lg outline-none border border-black"
+                id="company"
+              />
+              <input
+                type="text"
+                name="position"
+                maxLength={100}
+                onChange={handleChangeWork}
+                onClick={() => setIsWorkClick(true)}
+                value={work.position}
+                placeholder="Position"
+                className="w-full px-3 py-2 rounded-lg outline-none border border-black"
+                id="position"
+              />
+            </div>
+            <div
+              className={`${
+                isWorkClick ? "flex" : "hidden"
+              } justify-end items-center space-x-2`}
+            >
+              <button
+                type="button"
+                onClick={() => setIsWorkClick(false)}
+                className="px-3 py-2 bg-blue-400 text-white rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-3 py-2 bg-blue-400 text-white rounded-lg"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+
           <form
             onSubmit={handleEmailSubmit}
             className="flex flex-col space-y-2"
