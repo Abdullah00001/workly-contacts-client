@@ -119,8 +119,11 @@ const EditProfile: FC = () => {
         </div>
       </div>
       <div className="mt-10">
-        <div className="flex flex-col space-y-2">
-          <form onSubmit={handleNameSubmit} className="flex flex-col space-y-2">
+        <div className={`flex flex-col space-y-2`}>
+          <form
+            onSubmit={handleNameSubmit}
+            className={`flex flex-col ${isNameClick && "space-y-2"}`}
+          >
             <div>
               <input
                 onChange={handleChangeName}
@@ -151,14 +154,17 @@ const EditProfile: FC = () => {
               </button>
             </div>
           </form>
-          <form onSubmit={handleBioSubmit} className="flex flex-col space-y-2">
+          <form
+            onSubmit={handleBioSubmit}
+            className={`flex flex-col ${isBioClick && "space-y-2"}`}
+          >
             <div>
               <textarea
                 maxLength={110}
                 onChange={handleChangeBio}
                 onClick={() => setIsBioClick(true)}
                 value={bio}
-                rows={4}
+                rows={3}
                 className="w-full px-3 py-2 rounded-lg outline-none border border-black"
                 name="name"
                 id="name"
@@ -183,7 +189,10 @@ const EditProfile: FC = () => {
               </button>
             </div>
           </form>
-          <form onSubmit={handleWorkSubmit} className="flex flex-col space-y-2">
+          <form
+            onSubmit={handleWorkSubmit}
+            className={`flex flex-col ${isWorkClick && "space-y-2"}`}
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <input
                 type="text"
@@ -228,10 +237,9 @@ const EditProfile: FC = () => {
               </button>
             </div>
           </form>
-
           <form
             onSubmit={handleEmailSubmit}
-            className="flex flex-col space-y-2"
+            className={`flex flex-col ${isEmailClick && "space-y-2"}`}
           >
             <div>
               <input
@@ -267,7 +275,7 @@ const EditProfile: FC = () => {
           </form>
           <form
             onSubmit={handlePhoneSubmit}
-            className="flex flex-col space-y-2"
+            className={`flex flex-col ${isPhoneClick && "space-y-2"}`}
           >
             <div>
               <input
@@ -301,7 +309,10 @@ const EditProfile: FC = () => {
               </button>
             </div>
           </form>
-          <form onSubmit={handleDobSubmit} className="flex flex-col space-y-2">
+          <form
+            onSubmit={handleDobSubmit}
+            className={`flex flex-col ${isDobClick && "space-y-2"}`}
+          >
             <div>
               <input
                 type="date"
@@ -335,7 +346,7 @@ const EditProfile: FC = () => {
           </form>
           <form
             onSubmit={handleAddressSubmit}
-            className="flex flex-col space-y-2"
+            className={`flex flex-col ${isAddressClick && "space-y-2"}`}
           >
             <div>
               <input
