@@ -8,11 +8,16 @@ import CreateContact from "../pages/CreateContact";
 import ContactDetails from "../pages/ContactDetails";
 import EditContact from "../pages/EditContact";
 import Profile from "../pages/Profile";
+import AvatarDropDownProvider from "../providers/AvatarDropDownProvider";
 
 const Route = createBrowserRouter([
   {
     path: "/",
-    element: <Main />,
+    element: (
+      <AvatarDropDownProvider>
+        <Main />
+      </AvatarDropDownProvider>
+    ),
     children: [
       {
         path: "/",

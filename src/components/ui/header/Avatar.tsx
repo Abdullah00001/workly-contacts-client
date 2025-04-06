@@ -1,5 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAvatarDropDownContext } from "../../../contexts/AvatarDropDownContext";
 
 interface User {
   name: string;
@@ -24,7 +25,8 @@ const Avatar: FC = () => {
 
   // Toggle dropdown visibility
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
-
+  const { setIsFeedBackClicked, setIsLogoutClicked } =
+    useAvatarDropDownContext();
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,10 +63,16 @@ const Avatar: FC = () => {
             >
               Profile
             </li>
-            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">
+            <li
+              onClick={() => setIsLogoutClicked(true)}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
+            >
               Sign Out
             </li>
-            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">
+            <li
+              onClick={() => setIsFeedBackClicked(true)}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
+            >
               Feedback
             </li>
           </ul>

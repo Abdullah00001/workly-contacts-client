@@ -3,6 +3,9 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import CreateContactSmall from "../components/ui/CreateContactSmall";
+import { useAvatarDropDownContext } from "../contexts/AvatarDropDownContext";
+import LogoutModal from "../components/ui/LogoutModal";
+import FeedbackModal from "../components/ui/FeedbackModal";
 
 const Main: FC = () => {
   const location = useLocation();
@@ -11,6 +14,12 @@ const Main: FC = () => {
   const isContactDetailsPage = location.pathname.startsWith("/person/");
   const isCreateContactPage = location.pathname.startsWith("/new");
   const isProfilePage = location.pathname.startsWith("/me");
+  const {
+    isFeedBackClicked,
+    isLogOutClicked,
+    setIsFeedBackClicked,
+    setIsLogoutClicked,
+  } = useAvatarDropDownContext();
   return (
     <>
       <Header />
@@ -32,6 +41,18 @@ const Main: FC = () => {
           </div>
         )}
       </div>
+      {isLogOutClicked && (
+        <LogoutModal
+          handleIsLogout={() => {
+            setIsLogoutClicked(!isLogOutClicked);
+          }}
+        />
+      )}
+      {isFeedBackClicked && (
+        <FeedbackModal
+          handleIsFeedback={() => setIsFeedBackClicked(!isFeedBackClicked)}
+        />
+      )}
     </>
   );
 };
