@@ -1,8 +1,8 @@
 import { FC, useState } from "react";
 import { FaArrowLeft, FaEdit } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import ChangePasswordModal from "../components/ui/ChanagePasswordModal";
-import DeleteAccountModal from "../components/ui/DeleteAccountModal";
+import ChangePasswordModal from "../components/ui/ChangePasswordModal";
+import DeleteAccountModal from "../components/ui/DeleteAccountModal"; 
 
 const ViewProfile: FC = () => {
   const navigate = useNavigate();
