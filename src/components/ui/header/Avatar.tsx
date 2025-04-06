@@ -64,13 +64,19 @@ const Avatar: FC = () => {
               Profile
             </li>
             <li
-              onClick={() => setIsLogoutClicked(true)}
+              onClick={() => {
+                setIsLogoutClicked(true);
+                setIsDropdownOpen(false);
+              }}
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
             >
               Sign Out
             </li>
             <li
-              onClick={() => setIsFeedBackClicked(true)}
+              onClick={() => {
+                setIsFeedBackClicked(true);
+                setIsDropdownOpen(false);
+              }}
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
             >
               Feedback
