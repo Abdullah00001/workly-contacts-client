@@ -9,8 +9,13 @@ import ContactDetails from "../pages/ContactDetails";
 import EditContact from "../pages/EditContact";
 import Profile from "../pages/Profile";
 import AvatarDropDownProvider from "../providers/AvatarDropDownProvider";
+import Login from "../pages/Login";
 
 const Route = createBrowserRouter([
+  {
+    path: "/login",
+    element: <Login />,
+  },
   {
     path: "/",
     element: (
