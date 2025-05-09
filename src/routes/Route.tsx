@@ -10,11 +10,16 @@ import EditContact from "../pages/EditContact";
 import Profile from "../pages/Profile";
 import AvatarDropDownProvider from "../providers/AvatarDropDownProvider";
 import Login from "../pages/Login";
+import Signup from "../pages/Signup";
 
 const Route = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
   {
     path: "/",

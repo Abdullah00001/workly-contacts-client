@@ -1,21 +1,31 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login: FC = () => {
+const Signup: FC = () => {
   const navigate = useNavigate();
   return (
     <section className="bg-neutral-950 text-white">
       <div className="flex justify-center items-center h-screen flex-col">
         <div className="p-4 md:border md:bg-gray-500 rounded-xl w-full ">
           <div>
-            <h1 className="text-3xl font-bold">Welcome back :-)</h1>
+            <h1 className="text-3xl font-bold">Create your account</h1>
             <p className="font-semibold mt-4">
-              Log in to access your contacts and manage them anytime, anywhere.
+              A smarter way to save, sync, and manage your personal connections.
             </p>
           </div>
           <div className="mt-6">
             <form>
               <div className="flex flex-col space-y-3">
+                <div className="flex flex-col gap-3">
+                  <label htmlFor="name" className="font-bold">
+                    Name
+                  </label>
+                  <input
+                    className="outline-none border rounded-[6px] px-3 py-3"
+                    type="text"
+                    placeholder="Type your full name"
+                  />
+                </div>
                 <div className="flex flex-col gap-3">
                   <label htmlFor="name" className="font-bold">
                     Email
@@ -36,30 +46,34 @@ const Login: FC = () => {
                     placeholder="Type your Password"
                   />
                 </div>
+                <div className="flex flex-col gap-3">
+                  <label htmlFor="name" className="font-bold">
+                    Confirm Password
+                  </label>
+                  <input
+                    className="outline-none border rounded-[6px] px-3 py-3"
+                    type="password"
+                    placeholder="Type your Password"
+                  />
+                </div>
               </div>
-
-              <div className=" mt-6 w-full">
-                <button className="px-8 rounded-[6px] py-2 w-full bg-blue-500">
-                  Sign In
+              <div className=" mt-6">
+                <button className="w-full px-8 rounded-[6px] py-2 bg-blue-500">
+                  Sign Up
                 </button>
               </div>
             </form>
           </div>
-          <div className="flex flex-col mt-4">
-            <div>
-              <h6 className="text-red-500">Forgot Password</h6>
-            </div>
-            <div>
-              <p className="text-gray-300">
-                Dont have an account?{" "}
-                <span
-                  className="font-bold text-blue-600"
-                  onClick={() => navigate("/signup")}
-                >
-                  Sign Up
-                </span>
-              </p>
-            </div>
+          <div className="mt-2">
+            <p>
+              Already have an account?{" "}
+              <span
+                className="font-bold text-blue-600"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </span>
+            </p>
           </div>
         </div>
       </div>
@@ -67,4 +81,4 @@ const Login: FC = () => {
   );
 };
 
-export default Login;
+export default Signup;
