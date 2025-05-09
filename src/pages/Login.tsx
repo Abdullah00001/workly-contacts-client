@@ -6,9 +6,9 @@ const Login: FC = () => {
   return (
     <section className="bg-neutral-950 text-white">
       <div className="flex justify-center items-center h-screen flex-col">
-        <div className="p-4 md:border md:bg-gray-500 rounded-xl w-full ">
+        <div className="p-4 md:border md:w-[500px] rounded-xl w-full ">
           <div>
-            <h1 className="text-3xl font-bold">Welcome back :-)</h1>
+            <h1 className="text-3xl font-extrabold">Welcome back :-)</h1>
             <p className="font-semibold mt-4">
               Log in to access your contacts and manage them anytime, anywhere.
             </p>
@@ -39,7 +39,7 @@ const Login: FC = () => {
               </div>
 
               <div className=" mt-6 w-full">
-                <button className="px-8 rounded-[6px] py-2 w-full bg-blue-500">
+                <button className="px-8 cursor-pointer rounded-[6px] py-2 w-full bg-blue-500">
                   Sign In
                 </button>
               </div>
@@ -47,13 +47,15 @@ const Login: FC = () => {
           </div>
           <div className="flex flex-col mt-4">
             <div>
-              <h6 className="text-red-500">Forgot Password</h6>
+              <h6 className="text-red-500 cursor-pointer font-bold">
+                Forgot Password
+              </h6>
             </div>
             <div>
               <p className="text-gray-300">
                 Dont have an account?{" "}
                 <span
-                  className="font-bold text-blue-600"
+                  className="font-bold cursor-pointer text-blue-600"
                   onClick={() => navigate("/signup")}
                 >
                   Sign Up

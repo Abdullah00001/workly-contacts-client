@@ -1,0 +1,20 @@
+@media (min-width: 321px) and (max-width: 375px) {
+  .otp-input {
+    width: 53px;
+    height: 53px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 425px) {
+  .otp-input {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+@media (min-width: 426px) and (max-width: 639px) {
+  .otp-input {
+    width: 65px;
+    height: 65px;
+  }
+}

@@ -6,9 +6,9 @@ const Signup: FC = () => {
   return (
     <section className="bg-neutral-950 text-white">
       <div className="flex justify-center items-center h-screen flex-col">
-        <div className="p-4 md:border md:bg-gray-500 rounded-xl w-full ">
+        <div className="p-4 md:border md:w-[500px] rounded-xl w-full ">
           <div>
-            <h1 className="text-3xl font-bold">Create your account</h1>
+            <h1 className="text-3xl font-extrabold">Create your account</h1>
             <p className="font-semibold mt-4">
               A smarter way to save, sync, and manage your personal connections.
             </p>
@@ -58,7 +58,10 @@ const Signup: FC = () => {
                 </div>
               </div>
               <div className=" mt-6">
-                <button className="w-full px-8 rounded-[6px] py-2 bg-blue-500">
+                <button
+                  type="submit"
+                  className="w-full font-bold cursor-pointer px-8 rounded-[6px] py-2 bg-blue-500"
+                >
                   Sign Up
                 </button>
               </div>
@@ -68,7 +71,7 @@ const Signup: FC = () => {
             <p>
               Already have an account?{" "}
               <span
-                className="font-bold text-blue-600"
+                className="font-bold cursor-pointer text-blue-600"
                 onClick={() => navigate("/login")}
               >
                 Login
