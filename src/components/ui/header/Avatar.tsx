@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAvatarDropDownContext } from "../../../contexts/AvatarDropDownContext";
+import useAvatarDropDown from '../../../hooks/useAvatarDropDownContext';
 
 interface User {
   name: string;
@@ -26,7 +26,7 @@ const Avatar: FC = () => {
   // Toggle dropdown visibility
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
   const { setIsFeedBackClicked, setIsLogoutClicked } =
-    useAvatarDropDownContext();
+    useAvatarDropDown();
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
