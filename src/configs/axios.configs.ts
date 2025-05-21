@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+// import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
 import env from "./env.configs";
 
 // const { logout } = useAuth();
