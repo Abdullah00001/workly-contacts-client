@@ -47,6 +47,9 @@ const OtpVerification: FC = () => {
       if (value && index < OTP_LENGTH - 1) {
         inputsRef.current[index + 1]?.focus();
       }
+      if (value === "" && index > 0) {
+        inputsRef.current[index - 1]?.focus();
+      }
     }
   };
 
@@ -85,23 +88,7 @@ const OtpVerification: FC = () => {
                       maxLength={1}
                       value={digit}
                       onChange={(e) => handleChange(e.target.value, index)}
-                      onInput={(e) =>
-                        handleChange(
-                          (e.target as HTMLInputElement).value,
-                          index
-                        )
-                      }
                       onKeyDown={(e) => handleKeyDown(e, index)}
-                      onBeforeInput={(e: React.FormEvent<HTMLInputElement>) => {
-                        const inputEvent = e.nativeEvent as InputEvent;
-
-                        if (inputEvent.inputType === "deleteContentBackward") {
-                          handleChange("", index);
-                          if (!otp[index] && index > 0) {
-                            inputsRef.current[index - 1]?.focus();
-                          }
-                        }
-                      }}
                       ref={(el) => {
                         inputsRef.current[index] = el;
                       }}
