@@ -68,9 +68,7 @@ const Signup: FC = () => {
   useEffect(() => {
     if (payload.password) {
       const password = payload.password;
-      password === confirmPassword
-        ? setIsPasswordMatched(true)
-        : setIsPasswordMatched(false);
+      setIsPasswordMatched(password === confirmPassword);
     } else {
       return;
     }
