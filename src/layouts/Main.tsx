@@ -3,9 +3,9 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import CreateContactSmall from "../components/ui/CreateContactSmall";
-import { useAvatarDropDownContext } from "../contexts/AvatarDropDownContext";
 import LogoutModal from "../components/ui/LogoutModal";
 import FeedbackModal from "../components/ui/FeedbackModal";
+import useAvatarDropDown from "../hooks/useAvatarDropDownContext";
 
 const Main: FC = () => {
   const location = useLocation();
@@ -19,7 +19,7 @@ const Main: FC = () => {
     isLogOutClicked,
     setIsFeedBackClicked,
     setIsLogoutClicked,
-  } = useAvatarDropDownContext();
+  } = useAvatarDropDown();
   return (
     <>
       <Header />
