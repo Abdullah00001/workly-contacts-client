@@ -92,6 +92,16 @@ const OtpVerification: FC = () => {
                         )
                       }
                       onKeyDown={(e) => handleKeyDown(e, index)}
+                      onBeforeInput={(e: React.FormEvent<HTMLInputElement>) => {
+                        const inputEvent = e.nativeEvent as InputEvent;
+
+                        if (inputEvent.inputType === "deleteContentBackward") {
+                          handleChange("", index);
+                          if (!otp[index] && index > 0) {
+                            inputsRef.current[index - 1]?.focus();
+                          }
+                        }
+                      }}
                       ref={(el) => {
                         inputsRef.current[index] = el;
                       }}
