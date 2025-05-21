@@ -40,6 +40,7 @@ const OtpVerification: FC = () => {
   };
 
   const handleChange = (value: string, index: number) => {
+    const newOtp = [...otp];
     if (/^\d$/.test(value) || value === "") {
       const newOtp = [...otp];
       newOtp[index] = value;
@@ -48,8 +49,11 @@ const OtpVerification: FC = () => {
         inputsRef.current[index + 1]?.focus();
       }
     }
-    if ((value === "" && index > 0)) {
-      inputsRef.current[index - 1]?.focus();
+    if (value === "") {
+      // If cleared manually (like mobile "×"), clear current and move left
+      newOtp[index] = "";
+      setOtp(newOtp);
+      if (index > 0) inputsRef.current[index - 1]?.focus();
     }
   };
 
