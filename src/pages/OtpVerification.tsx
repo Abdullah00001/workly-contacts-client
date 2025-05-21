@@ -85,10 +85,18 @@ const OtpVerification: FC = () => {
                       maxLength={1}
                       value={digit}
                       onChange={(e) => handleChange(e.target.value, index)}
+                      onInput={(e) =>
+                        handleChange(
+                          (e.target as HTMLInputElement).value,
+                          index
+                        )
+                      }
                       onKeyDown={(e) => handleKeyDown(e, index)}
                       ref={(el) => {
                         inputsRef.current[index] = el;
                       }}
+                      autoFocus={index === 0}
+                      autoComplete="one-time-code"
                       className="otp-input w-11 h-11 sm:w-12 sm:h-12 md:w-16 md:h-16 text-center text-xl border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
