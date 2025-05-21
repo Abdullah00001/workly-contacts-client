@@ -47,7 +47,7 @@ const OtpVerification: FC = () => {
       if (value && index < OTP_LENGTH - 1) {
         inputsRef.current[index + 1]?.focus();
       }
-      if (value === "" && index > 0) {
+      if (value || (value === "" && index > 0)) {
         inputsRef.current[index - 1]?.focus();
       }
     }
