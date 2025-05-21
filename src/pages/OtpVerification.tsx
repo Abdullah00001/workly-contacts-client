@@ -65,7 +65,7 @@ const OtpVerification: FC = () => {
   return (
     <section className="bg-neutral-950 text-white">
       <div className="flex justify-center items-center h-screen flex-col">
-        <div className="p-2 sm:p-8 sm:border sm:w-[400px] md:w-[500px] rounded-xl w-full ">
+        <div className="p-3 sm:p-8 sm:border sm:w-[400px] md:w-[500px] rounded-xl w-full ">
           <div>
             <h1 className="text-3xl font-extrabold">Verify your identity</h1>
             <p className="font-semibold mt-4">
