@@ -1,24 +1,28 @@
-import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ISignupPayload } from "../interfaces/signup.interfaces";
-import signupSchema from "../schemas/signup.schemas";
-import AuthServices from "../services/auth.services";
-import { toast, ToastContainer } from "react-toastify";
-import { BarLoader } from "react-spinners";
-import { AxiosError } from "axios";
-import { IResponseError } from "../interfaces/error.interfaces";
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ISignupPayload } from '../interfaces/signup.interfaces';
+import signupSchema from '../schemas/signup.schemas';
+import AuthServices from '../services/auth.services';
+import { toast, ToastContainer } from 'react-toastify';
+import { BarLoader } from 'react-spinners';
+import { AxiosError } from 'axios';
+import { IResponseError } from '../interfaces/error.interfaces';
+import Cookies from 'js-cookie';
+import AES from 'crypto-js/aes';
+import env from '../configs/env.configs';
 
 const { processSignup } = AuthServices;
+const { VU_E_SECRET } = env;
 
 const Signup: FC = () => {
   const navigate = useNavigate();
   const [payload, setPayload] = useState<ISignupPayload>({
-    email: "",
-    name: "",
-    password: "",
+    email: '',
+    name: '',
+    password: '',
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [isPasswordMatched, setIsPasswordMatched] = useState<boolean>(false);
   const handleChangeField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,10 +52,16 @@ const Signup: FC = () => {
     }
     try {
       const data = await processSignup(payload);
-      localStorage.setItem("email", data?.email);
-      toast.success("Signup Successful");
+      const hashed = AES.encrypt(data?.email, VU_E_SECRET).toString();
+      Cookies.set('v_ue', hashed, {
+        path: '/',
+        expires: 1,
+        secure: window.location.protocol === 'https',
+        sameSite: 'Strict',
+      });
+      toast.success('Signup Successful');
       setTimeout(() => {
-        navigate("/verify");
+        navigate('/verify');
       }, 2000);
     } catch (error) {
       if (error instanceof Error) {
@@ -59,7 +69,7 @@ const Signup: FC = () => {
         const message = err.response?.data as IResponseError;
         toast.error(message?.message);
       } else {
-        toast.error("Unknown Error Occurred Try Again!");
+        toast.error('Unknown Error Occurred Try Again!');
       }
     } finally {
       setLoading(false);
@@ -93,7 +103,7 @@ const Signup: FC = () => {
                   </label>
                   <input
                     className={`outline-none border rounded-[6px] px-3 py-3 ${
-                      fieldErrors.name && "border-red-500"
+                      fieldErrors.name && 'border-red-500'
                     }`}
                     type="text"
                     name="name"
@@ -113,7 +123,7 @@ const Signup: FC = () => {
                   </label>
                   <input
                     className={`outline-none border rounded-[6px] px-3 py-3 ${
-                      fieldErrors.email && "border-red-500"
+                      fieldErrors.email && 'border-red-500'
                     }`}
                     type="email"
                     name="email"
@@ -133,7 +143,7 @@ const Signup: FC = () => {
                   </label>
                   <input
                     className={`outline-none border rounded-[6px] px-3 py-3 ${
-                      fieldErrors.password && "border-red-500"
+                      fieldErrors.password && 'border-red-500'
                     }`}
                     type="password"
                     name="password"
@@ -154,9 +164,9 @@ const Signup: FC = () => {
                   <input
                     disabled={!payload.password}
                     className={`outline-none border rounded-[6px] px-3 py-3 ${
-                      !payload.password && "opacity-10 cursor-not-allowed"
+                      !payload.password && 'opacity-10 cursor-not-allowed'
                     } ${
-                      payload.password && !isPasswordMatched && "border-red-500"
+                      payload.password && !isPasswordMatched && 'border-red-500'
                     }`}
                     type="password"
                     name="confirmPassword"
@@ -172,8 +182,8 @@ const Signup: FC = () => {
                   disabled={!isPasswordMatched || loading}
                   className={`w-full font-bold px-8 rounded-[6px] py-2 ${
                     isPasswordMatched
-                      ? "bg-blue-500 cursor-pointer"
-                      : "bg-gray-500 cursor-not-allowed"
+                      ? 'bg-blue-500 cursor-pointer'
+                      : 'bg-gray-500 cursor-not-allowed'
                   }`}
                 >
                   {loading ? (
@@ -182,12 +192,12 @@ const Signup: FC = () => {
                       height={5}
                       color="#fff"
                       cssOverride={{
-                        display: "block",
-                        margin: "0 auto",
+                        display: 'block',
+                        margin: '0 auto',
                       }}
                     />
                   ) : (
-                    "Signup"
+                    'Signup'
                   )}
                 </button>
               </div>
@@ -195,10 +205,10 @@ const Signup: FC = () => {
           </div>
           <div className="mt-2">
             <p>
-              Already have an account?{" "}
+              Already have an account?{' '}
               <span
                 className="font-bold cursor-pointer text-blue-600"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate('/login')}
               >
                 Login
               </span>

@@ -1,12 +1,17 @@
-import { FC } from "react";
-import "./App.css";
-import "react-toastify/dist/ReactToastify.css";
+import { FC } from 'react';
+import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { RouterProvider } from "react-router-dom";
-import Route from "./routes/Route";
+import { RouterProvider } from 'react-router-dom';
+import Route from './routes/Route';
+import AuthProviders from './providers/AuthProviders';
 
 const App: FC = () => {
-  return <RouterProvider router={Route}></RouterProvider>;
+  return (
+    <AuthProviders>
+      <RouterProvider router={Route}></RouterProvider>
+    </AuthProviders>
+  );
 };
 
 export default App;
