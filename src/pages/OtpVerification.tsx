@@ -91,7 +91,6 @@ const OtpVerification: FC = () => {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    console.log('hello======');
     e.preventDefault();
     setVerifying(true);
     const enteredOtp = otp.join('');
@@ -99,12 +98,10 @@ const OtpVerification: FC = () => {
       email: email as string,
       otp: enteredOtp,
     };
-    console.log(payload);
     try {
-      console.log(payload);
       await processVerify(payload);
-      setUser(true);
       toast.success('Verification Successful');
+      setUser(true);
       Cookies.remove('v_ue');
       setTimeout(() => {
         navigate('/');

@@ -10,7 +10,6 @@ const useRetrieveHashed = () => {
   const [email, setEmail] = useState<string | null>(null);
   useEffect(() => {
     const hashed = Cookies.get('v_ue');
-    console.log(hashed);
     if (!hashed) {
       setEmail(null);
       return;

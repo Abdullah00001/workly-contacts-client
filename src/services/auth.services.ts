@@ -1,8 +1,9 @@
 import AuthApis from '../apis/auth.apis';
+import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
 import { ISignupPayload } from '../interfaces/signup.interfaces';
 
-const { signup, verify, resend, check, refresh, logout } = AuthApis;
+const { signup, verify, resend, check, refresh, logout, login } = AuthApis;
 
 const AuthServices = {
   processSignup: async (payload: ISignupPayload) => {
@@ -32,6 +33,18 @@ const AuthServices = {
   processResend: async (payload: IVerifyPayload) => {
     try {
       const response = await resend(payload);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Resend');
+      }
+    }
+  },
+  processLogin: async (payload: ILoginPayload) => {
+    try {
+      const response = await login(payload);
       return response.data.data;
     } catch (error) {
       if (error instanceof Error) {
