@@ -1,19 +1,20 @@
-import { FC } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import Header from "../components/layout/Header";
-import Sidebar from "../components/layout/Sidebar";
-import CreateContactSmall from "../components/ui/CreateContactSmall";
-import LogoutModal from "../components/ui/LogoutModal";
-import FeedbackModal from "../components/ui/FeedbackModal";
-import useAvatarDropDown from "../hooks/useAvatarDropDownContext";
+import { FC } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import Header from '../components/layout/Header';
+import Sidebar from '../components/layout/Sidebar';
+import CreateContactSmall from '../components/ui/CreateContactSmall';
+import LogoutModal from '../components/ui/LogoutModal';
+import FeedbackModal from '../components/ui/FeedbackModal';
+import useAvatarDropDown from '../hooks/useAvatarDropDownContext';
+import { ToastContainer } from 'react-toastify';
 
 const Main: FC = () => {
   const location = useLocation();
 
   // Hide CreateContactSmall on Contact Details page
-  const isContactDetailsPage = location.pathname.startsWith("/person/");
-  const isCreateContactPage = location.pathname.startsWith("/new");
-  const isProfilePage = location.pathname.startsWith("/me");
+  const isContactDetailsPage = location.pathname.startsWith('/person/');
+  const isCreateContactPage = location.pathname.startsWith('/new');
+  const isProfilePage = location.pathname.startsWith('/me');
   const {
     isFeedBackClicked,
     isLogOutClicked,
@@ -22,6 +23,7 @@ const Main: FC = () => {
   } = useAvatarDropDown();
   return (
     <>
+      <ToastContainer position="top-center" />
       <Header />
       <div className="hidden lg:block mt-5">
         <div className="flex min-h-[89vh]">
