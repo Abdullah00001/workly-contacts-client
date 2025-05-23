@@ -1,5 +1,5 @@
-import { FC, useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useAvatarDropDown from '../../../hooks/useAvatarDropDownContext';
 
 interface User {
@@ -9,24 +9,23 @@ interface User {
 
 const Avatar: FC = () => {
   const user: User = {
-    name: "Jane Doe",
+    name: 'Jane Doe',
     avatarUrl:
-      "https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXZhdGFyfGVufDB8fDB8fHww",
+      'https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXZhdGFyfGVufDB8fDB8fHww',
   };
-  const fallbackAvatarUrl = "https://via.placeholder.com/150?text=No+Avatar";
+  const fallbackAvatarUrl = 'https://via.placeholder.com/150?text=No+Avatar';
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const handleNavigateProfilePage = () => {
     setIsDropdownOpen(false);
-    navigate("/me", { state: { from: location.pathname } });
+    navigate('/me', { state: { from: location.pathname } });
   };
-
+  
   // Toggle dropdown visibility
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
-  const { setIsFeedBackClicked, setIsLogoutClicked } =
-    useAvatarDropDown();
+  const { setIsFeedBackClicked, setIsLogoutClicked } = useAvatarDropDown();
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,8 +37,8 @@ const Avatar: FC = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
@@ -65,21 +64,21 @@ const Avatar: FC = () => {
             </li>
             <li
               onClick={() => {
-                setIsLogoutClicked(true);
-                setIsDropdownOpen(false);
-              }}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
-            >
-              Sign Out
-            </li>
-            <li
-              onClick={() => {
                 setIsFeedBackClicked(true);
                 setIsDropdownOpen(false);
               }}
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
             >
               Feedback
+            </li>
+            <li
+              onClick={() => {
+                setIsLogoutClicked(true);
+                setIsDropdownOpen(false);
+              }}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
+            >
+              Sign Out
             </li>
           </ul>
         </div>
