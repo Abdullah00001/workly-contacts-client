@@ -9,7 +9,7 @@ const Trash: FC = () => {
     (async () => {
       try {
         const data = await axios.get(
-          "https://mocki.io/v1/1568fce4-83ba-42f7-980d-ac453ea0fee3"
+          "https://mocki.io/v1/5b7d1064-5c3e-44f8-a59c-6789ae383e58"
         );
         setContactData(data?.data);
       } catch (error) {

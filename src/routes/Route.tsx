@@ -15,6 +15,11 @@ import OtpVerification from '../pages/OtpVerification';
 import ProtectedRoute from '../components/Protected/ProtectedRoute';
 import ProtectedVerifyPage from '../components/Protected/ProtectedVerifyPage';
 import PublicRoute from '../components/Protected/PublicRoute';
+import RecoverAccount from '../layouts/RecoverAccount';
+import FindAccount from '../pages/FindAccount';
+import VerifyOtp from '../pages/VerifyOtp';
+import ResetPassword from '../pages/ResetPassword';
+import FoundAndSentOtp from '../pages/FoundAndSentOtp';
 
 const Route = createBrowserRouter([
   {
@@ -44,6 +49,36 @@ const Route = createBrowserRouter([
     ),
   },
   {
+    path: '/recover',
+    element: (
+      <PublicRoute>
+        <RecoverAccount />
+      </PublicRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <FindAccount />,
+      },
+      {
+        path: 'sent-otp',
+        element: <FoundAndSentOtp />,
+      },
+      {
+        path: 'verify',
+        element: (
+          // <ProtectedVerifyPage>
+          <VerifyOtp />
+          // </ProtectedVerifyPage>
+        ),
+      },
+      {
+        path: 'reset',
+        element: <ResetPassword />,
+      },
+    ],
+  },
+  {
     path: '/',
     element: (
       <ProtectedRoute>
@@ -54,35 +89,35 @@ const Route = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
+        index: true,
         element: <Contacts />,
       },
       {
-        path: '/me',
+        path: 'me',
         element: <Profile />,
       },
       {
-        path: '/recent',
+        path: 'recent',
         element: <Recent />,
       },
       {
-        path: '/favorite',
+        path: 'favorite',
         element: <Favorite />,
       },
       {
-        path: '/trash',
+        path: 'trash',
         element: <Trash />,
       },
       {
-        path: '/person/:id',
+        path: 'person/:id',
         element: <ContactDetails />,
       },
       {
-        path: '/person/edit/:id',
+        path: 'person/edit/:id',
         element: <EditContact />,
       },
       {
-        path: '/new',
+        path: 'new',
         element: <CreateContact />,
       },
     ],
