@@ -9,3 +9,7 @@ export interface IFoundUser {
   name: string;
   avatar: string | null;
 }
+
+export interface IVerifyRecoverOtpPayload {
+  otp: string;
+}

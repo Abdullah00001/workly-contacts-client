@@ -1,7 +1,10 @@
 import axiosClient from '../configs/axios.configs';
 import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
-import { IFindUser } from '../interfaces/recover.interfaces';
+import {
+  IFindUser,
+  IVerifyRecoverOtpPayload,
+} from '../interfaces/recover.interfaces';
 import { ISignupPayload } from '../interfaces/signup.interfaces';
 
 const AuthApis = {
@@ -31,6 +34,12 @@ const AuthApis = {
   },
   sentOtp: () => {
     return axiosClient.post('/auth/recover/sent-otp');
+  },
+  verifyOtp: (payload: IVerifyRecoverOtpPayload) => {
+    return axiosClient.post('/auth/recover/verify', payload);
+  },
+  reSentOtp: () => {
+    return axiosClient.post('/auth/recover/resent');
   },
 };
 

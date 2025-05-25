@@ -17,7 +17,7 @@ import ProtectedVerifyPage from '../components/Protected/ProtectedVerifyPage';
 import PublicRoute from '../components/Protected/PublicRoute';
 import RecoverAccount from '../layouts/RecoverAccount';
 import FindAccount from '../pages/FindAccount';
-import VerifyOtp from '../pages/VerifyOtp';
+import VerifyRecoverOtp from '../pages/VerifyRecoverOtp';
 import ResetPassword from '../pages/ResetPassword';
 import FoundAndSentOtp from '../pages/FoundAndSentOtp';
 import RecoverStep1Guard from '../components/Protected/RecoverStep1Guard';
@@ -75,7 +75,7 @@ const Route = createBrowserRouter([
         path: 'verify',
         element: (
           <RecoverStep2Guard>
-            <VerifyOtp />
+            <VerifyRecoverOtp />
           </RecoverStep2Guard>
         ),
       },

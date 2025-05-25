@@ -1,10 +1,21 @@
-import { FC, FormEvent, useEffect, useRef, useState } from "react";
-import env from "../configs/env.configs";
+import { FC, FormEvent, useEffect, useRef, useState } from 'react';
+import env from '../configs/env.configs';
+import { AxiosError } from 'axios';
+import { IResponseError } from '../interfaces/error.interfaces';
+import { toast, ToastContainer } from 'react-toastify';
+import AuthServices from '../services/auth.services';
+import { useNavigate } from 'react-router-dom';
+import { BarLoader } from 'react-spinners';
+import { IVerifyRecoverOtpPayload } from '../interfaces/recover.interfaces';
 
 const { OTP_LENGTH } = env;
+const { processReSentRecoverOtp, processVerifyRecoverOtp } = AuthServices;
 
-const VerifyOtp: FC = () => {
-  const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+const VerifyRecoverOtp: FC = () => {
+  const navigate = useNavigate();
+  const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
+  const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
   const [canResend, setCanResend] = useState(false);
@@ -24,23 +35,35 @@ const VerifyOtp: FC = () => {
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
       .toString()
-      .padStart(2, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
+      .padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (!canResend) return;
-
-    // TODO: Call resend OTP API here
-    console.log("OTP resent");
-
+    setResending(true);
     setCanResend(false);
-    setTimer(120); // Restart 2-minute timer
+    setTimer(120);
+    try {
+      await processReSentRecoverOtp();
+      toast.success('Email Resend Successful');
+    } catch (error) {
+      setResending(false);
+      if (error instanceof Error) {
+        const err = error as AxiosError;
+        const message = err.response?.data as IResponseError;
+        toast.error(message?.message);
+      } else {
+        toast.error('Unknown Error Occurred Try Again!');
+      }
+    } finally {
+      setResending(false);
+    }
   };
 
   const handleChange = (value: string, index: number) => {
-    if (/^\d$/.test(value) || value === "") {
+    if (/^\d$/.test(value) || value === '') {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
@@ -51,19 +74,41 @@ const VerifyOtp: FC = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const enteredOtp = otp.join("");
-    console.log("Submitted OTP:", enteredOtp);
+    setVerifying(true);
+    const enteredOtp = otp.join('');
+    const payload: IVerifyRecoverOtpPayload = {
+      otp: enteredOtp,
+    };
+    try {
+      await processVerifyRecoverOtp(payload);
+      toast.success('Verification Successful');
+      setTimeout(() => {
+        navigate('/recover/reset');
+      }, 2000);
+    } catch (error) {
+      setVerifying(false);
+      if (error instanceof Error) {
+        const err = error as AxiosError;
+        const message = err.response?.data as IResponseError;
+        toast.error(message?.message);
+      } else {
+        toast.error('Unknown Error Occurred Try Again!');
+      }
+    } finally {
+      setVerifying(false);
+    }
   };
 
   return (
     <section className="bg-neutral-950 text-white">
+      <ToastContainer position="top-center" />
       <div className="flex justify-center items-center h-screen flex-col">
         <div className="p-3 sm:p-8 sm:border sm:w-[400px] md:w-[500px] rounded-xl w-full ">
           <div>
@@ -101,7 +146,19 @@ const VerifyOtp: FC = () => {
                   type="submit"
                   className="w-full font-bold cursor-pointer px-8 rounded-[6px] py-2 bg-blue-500"
                 >
-                  Verify
+                  {verifying ? (
+                    <BarLoader
+                      width={150}
+                      height={5}
+                      color="#fff"
+                      cssOverride={{
+                        display: 'block',
+                        margin: '0 auto',
+                      }}
+                    />
+                  ) : (
+                    'Verify'
+                  )}
                 </button>
               </div>
             </form>
@@ -113,11 +170,23 @@ const VerifyOtp: FC = () => {
               disabled={!canResend}
               className={`transition-colors duration-200 font-medium px-4 py-1 rounded-md text-sm ${
                 canResend
-                  ? "text-blue-400 hover:text-blue-500 hover:bg-neutral-900"
-                  : "text-gray-500 cursor-not-allowed bg-neutral-800"
+                  ? 'text-blue-400 hover:text-blue-500 hover:bg-neutral-900'
+                  : 'text-gray-500 cursor-not-allowed bg-neutral-800'
               }`}
             >
-              Resend OTP
+              {resending ? (
+                <BarLoader
+                  width={80}
+                  height={5}
+                  color="#fff"
+                  cssOverride={{
+                    display: 'block',
+                    margin: '0 auto',
+                  }}
+                />
+              ) : (
+                'Resend Otp'
+              )}
             </button>
             {!canResend && (
               <p className="mt-2 text-xs text-gray-400 font-mono">
@@ -131,4 +200,4 @@ const VerifyOtp: FC = () => {
   );
 };
 
-export default VerifyOtp;
+export default VerifyRecoverOtp;
