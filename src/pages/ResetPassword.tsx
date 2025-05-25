@@ -1,25 +1,58 @@
-import { FC, FormEvent, useState } from 'react';
+import { FC, FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BarLoader } from 'react-spinners';
+import AuthServices from '../services/auth.services';
+import { toast, ToastContainer } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { IResponseError } from '../interfaces/error.interfaces';
+import useAuthContext from '../hooks/useAuthContext';
+
+const { processResetPassword } = AuthServices;
 
 const ResetPassword: FC = () => {
+  const navigate = useNavigate();
+  const { setUser } = useAuthContext();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isPasswordMatched, setIsPasswordMatched] = useState<boolean>(false);
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Reset password with:', { newPassword, confirmPassword });
-    // TODO: Add your business logic here
+    setLoading(true);
+    try {
+      await processResetPassword({ password: newPassword });
+      setUser(true);
+      toast.success('Password Reset Successful');
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (error) {
+      if (error instanceof Error) {
+        const err = error as AxiosError;
+        const message = err.response?.data as IResponseError;
+        toast.error(message?.message);
+      } else {
+        toast.error('Unknown Error Occurred Try Again!');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const handleBackToLogin = () => {
-    console.log('Navigate back to login');
-    // TODO: Add navigation logic here
-  };
-
+  useEffect(() => {
+    if (newPassword) {
+      const password = newPassword;
+      setIsPasswordMatched(password === confirmPassword);
+    } else {
+      return;
+    }
+  }, [confirmPassword, newPassword]);
   return (
     <section className="bg-neutral-950 text-white">
+      <ToastContainer position="top-center" />
       <div className="flex justify-center items-center h-screen flex-col">
         <div className="p-3 sm:p-8 sm:border sm:w-[400px] md:w-[500px] rounded-xl w-full">
           <div>
@@ -33,10 +66,7 @@ const ResetPassword: FC = () => {
           <div className="mt-6">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label
-                  htmlFor="newPassword"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
+                <label htmlFor="newPassword" className="block font-bold mb-2">
                   New password
                 </label>
                 <div className="relative">
@@ -46,7 +76,7 @@ const ResetPassword: FC = () => {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Enter your new password"
-                    className="w-full px-4 py-3 pr-12 text-white bg-neutral-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    className="w-full outline-none border rounded-[6px] px-3 py-3"
                     autoComplete="new-password"
                     autoFocus
                   />
@@ -97,18 +127,21 @@ const ResetPassword: FC = () => {
               <div className="mb-6">
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block font-bold mb-2"
                 >
                   Confirm new password
                 </label>
                 <div className="relative">
                   <input
                     id="confirmPassword"
+                    disabled={!newPassword}
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm your new password"
-                    className="w-full px-4 py-3 pr-12 text-white bg-neutral-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    className={`outline-none w-full border rounded-[6px] px-3 py-3 ${
+                      !newPassword && 'opacity-10 cursor-not-allowed'
+                    } ${newPassword && !isPasswordMatched && 'border-red-500'} ${isPasswordMatched && 'border-green-500'}`}
                     autoComplete="new-password"
                   />
                   <button
@@ -158,9 +191,26 @@ const ResetPassword: FC = () => {
               <div className="mt-6">
                 <button
                   type="submit"
-                  className="w-full font-bold px-8 py-3 bg-blue-500 rounded-md hover:bg-blue-600 transition-colors duration-200"
+                  disabled={!isPasswordMatched || loading}
+                  className={`w-full font-bold px-8 py-3 rounded-md transition-colors duration-200 ${
+                    isPasswordMatched
+                      ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+                      : 'bg-gray-500 cursor-not-allowed'
+                  }`}
                 >
-                  Reset Password
+                  {loading ? (
+                    <BarLoader
+                      width={150}
+                      height={5}
+                      color="#fff"
+                      cssOverride={{
+                        display: 'block',
+                        margin: '0 auto',
+                      }}
+                    />
+                  ) : (
+                    'Reset Password'
+                  )}
                 </button>
               </div>
             </form>
@@ -169,8 +219,8 @@ const ResetPassword: FC = () => {
           <div className="mt-6 text-center">
             <button
               type="button"
-              onClick={handleBackToLogin}
-              className="text-blue-400 hover:text-blue-500 font-medium text-sm transition-colors duration-200"
+              onClick={() => navigate('/login')}
+              className="text-blue-400 hover:text-blue-500 font-medium cursor-pointer text-sm transition-colors duration-200"
             >
               ← Back to login
             </button>

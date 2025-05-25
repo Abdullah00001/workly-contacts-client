@@ -3,6 +3,7 @@ import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
 import {
   IFindUser,
+  IResetPasswordPayload,
   IVerifyRecoverOtpPayload,
 } from '../interfaces/recover.interfaces';
 import { ISignupPayload } from '../interfaces/signup.interfaces';
@@ -19,6 +20,7 @@ const {
   sentOtp,
   reSentOtp,
   verifyOtp,
+  resetPassWord,
 } = AuthApis;
 
 const AuthServices = {
@@ -142,7 +144,6 @@ const AuthServices = {
       }
     }
   },
-  
   processReSentRecoverOtp: async () => {
     try {
       const response = await reSentOtp();
@@ -152,6 +153,18 @@ const AuthServices = {
         throw error;
       } else {
         throw new Error('Unexpected Error Occurred In Process Sent Otp');
+      }
+    }
+  },
+  processResetPassword: async (payload: IResetPasswordPayload) => {
+    try {
+      const response = await resetPassWord(payload);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Reset Password');
       }
     }
   },

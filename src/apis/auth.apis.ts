@@ -3,6 +3,7 @@ import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
 import {
   IFindUser,
+  IResetPasswordPayload,
   IVerifyRecoverOtpPayload,
 } from '../interfaces/recover.interfaces';
 import { ISignupPayload } from '../interfaces/signup.interfaces';
@@ -40,6 +41,9 @@ const AuthApis = {
   },
   reSentOtp: () => {
     return axiosClient.post('/auth/recover/resent');
+  },
+  resetPassWord: (payload: IResetPasswordPayload) => {
+    return axiosClient.patch('/auth/recover/reset', payload);
   },
 };
 

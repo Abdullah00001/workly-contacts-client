@@ -13,3 +13,7 @@ export interface IFoundUser {
 export interface IVerifyRecoverOtpPayload {
   otp: string;
 }
+
+export interface IResetPasswordPayload {
+  password: string;
+}
