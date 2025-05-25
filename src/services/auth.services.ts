@@ -1,9 +1,20 @@
 import AuthApis from '../apis/auth.apis';
 import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
+import { IFindUser } from '../interfaces/recover.interfaces';
 import { ISignupPayload } from '../interfaces/signup.interfaces';
 
-const { signup, verify, resend, check, refresh, logout, login } = AuthApis;
+const {
+  signup,
+  verify,
+  resend,
+  check,
+  refresh,
+  logout,
+  login,
+  findUser,
+  sentOtp,
+} = AuthApis;
 
 const AuthServices = {
   processSignup: async (payload: ISignupPayload) => {
@@ -87,6 +98,30 @@ const AuthServices = {
         throw error;
       } else {
         throw new Error('Unexpected Error Occurred In Process Logout');
+      }
+    }
+  },
+  processFindUser: async (payload: IFindUser) => {
+    try {
+      const response = await findUser(payload);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Find User');
+      }
+    }
+  },
+  processSentOtp: async () => {
+    try {
+      const response = await sentOtp();
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Sent Otp');
       }
     }
   },

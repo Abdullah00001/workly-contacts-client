@@ -20,6 +20,9 @@ import FindAccount from '../pages/FindAccount';
 import VerifyOtp from '../pages/VerifyOtp';
 import ResetPassword from '../pages/ResetPassword';
 import FoundAndSentOtp from '../pages/FoundAndSentOtp';
+import RecoverStep1Guard from '../components/Protected/RecoverStep1Guard';
+import RecoverStep2Guard from '../components/Protected/RecoverStep2Guard';
+import RecoverStep3Guard from '../components/Protected/RecoverStep3Guard';
 
 const Route = createBrowserRouter([
   {
@@ -62,19 +65,27 @@ const Route = createBrowserRouter([
       },
       {
         path: 'sent-otp',
-        element: <FoundAndSentOtp />,
+        element: (
+          <RecoverStep1Guard>
+            <FoundAndSentOtp />
+          </RecoverStep1Guard>
+        ),
       },
       {
         path: 'verify',
         element: (
-          // <ProtectedVerifyPage>
-          <VerifyOtp />
-          // </ProtectedVerifyPage>
+          <RecoverStep2Guard>
+            <VerifyOtp />
+          </RecoverStep2Guard>
         ),
       },
       {
         path: 'reset',
-        element: <ResetPassword />,
+        element: (
+          <RecoverStep3Guard>
+            <ResetPassword />
+          </RecoverStep3Guard>
+        ),
       },
     ],
   },

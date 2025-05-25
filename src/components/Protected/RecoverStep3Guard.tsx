@@ -1,31 +1,32 @@
 import { FC, useEffect, useState } from 'react';
 import { IChildrenProps } from '../../interfaces/authContext.interface';
-import useRetrieveHashed from '../../hooks/useRetrieveHashed';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { ClipLoader } from 'react-spinners';
 
-const ProtectedVerifyPage: FC<IChildrenProps> = ({ children }) => {
+const RecoverStep3Guard: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
   const navigate = useNavigate();
-  const email = useRetrieveHashed();
 
   useEffect(() => {
-    const checkEmailAccess = async () => {
+    const checkPermission = async () => {
       // Add small delay to show loading state
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
-      if (!email) {
-        navigate('/');
-        return;
+      const isExist = Cookies.get('r_stp3');
+      if (isExist) {
+        setHasPermission(true);
+      } else {
+        navigate('/recover');
       }
-
       setIsChecking(false);
     };
 
-    checkEmailAccess();
-  }, [email, navigate]);
+    checkPermission();
+  }, [navigate]);
 
-  // Show loading spinner while checking email access
+  // Show loading spinner while checking
   if (isChecking) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -34,7 +35,12 @@ const ProtectedVerifyPage: FC<IChildrenProps> = ({ children }) => {
     );
   }
 
+  // Don't render if no permission
+  if (!hasPermission) {
+    return null;
+  }
+
   return <>{children}</>;
 };
 
-export default ProtectedVerifyPage;
+export default RecoverStep3Guard;

@@ -1,31 +1,65 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { IFoundUser } from '../interfaces/recover.interfaces';
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import AuthServices from '../services/auth.services';
+import { toast, ToastContainer } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { IResponseError } from '../interfaces/error.interfaces';
+import { BarLoader } from 'react-spinners';
+
+const { processSentOtp } = AuthServices;
 
 const FoundAndSentOtp: FC = () => {
-  // Mock user data - replace with props or API data
-  const foundUser = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    avatar: 'JD', // You can use initials or image URL
-  };
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [foundUser, setFoundUser] = useState<IFoundUser>({
+    avatar: null,
+    email: '',
+    isVerified: false,
+    name: '',
+    userId: '',
+  });
 
-  const handleConfirmUser = () => {
-    console.log('User confirmed - send OTP');
-    // TODO: Add logic to send OTP and navigate to OTP verification page
+  const handleConfirmUser = async () => {
+    setLoading(true);
+    try {
+      await processSentOtp();
+      toast.success('User Found');
+      setTimeout(() => {
+        navigate('/recover/verify');
+      }, 2000);
+    } catch (error) {
+      if (error instanceof Error) {
+        const err = error as AxiosError;
+        const message = err.response?.data as IResponseError;
+        toast.error(message?.message);
+      } else {
+        toast.error('Unknown Error Occurred Try Again!');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNotMyAccount = () => {
-    console.log("Not user's account - go back to find user page");
-    // TODO: Add navigation logic to go back to find user page
+    navigate('/recover');
   };
 
   const handleBackToLogin = () => {
-    console.log('Navigate back to login');
-    // TODO: Add navigation logic here
+    navigate('/login');
   };
+
+  useEffect(() => {
+    const cookie = Cookies.get('r_stp1');
+    const decoded: IFoundUser = jwtDecode(cookie as string);
+    setFoundUser({ ...decoded });
+  }, []);
 
   return (
     <section className="bg-neutral-950 text-white">
+      <ToastContainer position="top-center" />
       <div className="flex justify-center items-center h-screen flex-col">
         <div className="p-3 sm:p-8 sm:border sm:w-[400px] md:w-[500px] rounded-xl w-full">
           <div>
@@ -42,7 +76,15 @@ const FoundAndSentOtp: FC = () => {
               <div className="flex items-center space-x-4">
                 {/* Avatar */}
                 <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                  {foundUser.avatar}
+                  <img
+                    src={
+                      foundUser.avatar
+                        ? foundUser.avatar
+                        : `https://api.dicebear.com/7.x/initials/svg?seed=${foundUser.name}`
+                    }
+                    alt="Avatar"
+                    className="rounded-full"
+                  />
                 </div>
 
                 {/* User Details */}
@@ -67,22 +109,6 @@ const FoundAndSentOtp: FC = () => {
                       </svg>
                       <span className="text-sm">{foundUser.email}</span>
                     </div>
-                    <div className="flex items-center text-gray-300">
-                      <svg
-                        className="w-4 h-4 mr-2 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                        />
-                      </svg>
-                      <span className="text-sm">{foundUser.phone}</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -94,7 +120,7 @@ const FoundAndSentOtp: FC = () => {
             <button
               type="button"
               onClick={handleConfirmUser}
-              className="w-full font-bold px-8 py-3 bg-blue-500 rounded-md hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center"
+              className="w-full font-bold cursor-pointer px-8 py-3 bg-blue-500 rounded-md hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center"
             >
               <svg
                 className="w-5 h-5 mr-2"
@@ -109,13 +135,25 @@ const FoundAndSentOtp: FC = () => {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              Yes, this is my account
+              {loading ? (
+                <BarLoader
+                  width={150}
+                  height={5}
+                  color="#fff"
+                  cssOverride={{
+                    display: 'block',
+                    margin: '0 auto',
+                  }}
+                />
+              ) : (
+                'Yes, this is my account'
+              )}
             </button>
 
             <button
               type="button"
               onClick={handleNotMyAccount}
-              className="w-full font-medium px-8 py-3 border border-gray-600 text-gray-300 rounded-md hover:bg-neutral-800 transition-colors duration-200 flex items-center justify-center"
+              className="w-full cursor-pointer font-medium px-8 py-3 border border-gray-600 text-gray-300 rounded-md hover:bg-neutral-800 transition-colors duration-200 flex items-center justify-center"
             >
               <svg
                 className="w-5 h-5 mr-2"
@@ -163,7 +201,7 @@ const FoundAndSentOtp: FC = () => {
             <button
               type="button"
               onClick={handleBackToLogin}
-              className="text-blue-400 hover:text-blue-500 font-medium text-sm transition-colors duration-200"
+              className="text-blue-400 cursor-pointer hover:text-blue-500 font-medium text-sm transition-colors duration-200"
             >
               ← Back to login
             </button>
