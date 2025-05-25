@@ -8,11 +8,14 @@ import { ClipLoader } from 'react-spinners';
 const PublicRoute: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
   const { user } = useAuthContext();
-  const email = useRetrieveHashed();
+  const { email, isLoading } = useRetrieveHashed(); // Destructure the new return value
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    // Don't make any decisions while email is still loading
+    if (isLoading) return;
+
     const checkRoute = async () => {
       // Add small delay to show loading state
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -31,10 +34,10 @@ const PublicRoute: FC<IChildrenProps> = ({ children }) => {
     };
 
     checkRoute();
-  }, [user, email, location.pathname, navigate]);
+  }, [user, email, isLoading, navigate]); // Remove location.pathname to prevent navigation loops
 
-  // Show loading spinner while checking route permissions
-  if (isChecking) {
+  // Show loading spinner while checking route permissions or email is loading
+  if (isChecking || isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <ClipLoader color="#3B82F6" size={50} />

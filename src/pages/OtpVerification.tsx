@@ -20,7 +20,7 @@ const OtpVerification: FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [verifying, setVerifying] = useState(false);
   const [resending, setResending] = useState(false);
-  const email = useRetrieveHashed();
+  const { email } = useRetrieveHashed();
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
   const [canResend, setCanResend] = useState(false);

@@ -7,9 +7,12 @@ import { ClipLoader } from 'react-spinners';
 const ProtectedVerifyPage: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
   const navigate = useNavigate();
-  const email = useRetrieveHashed();
+  const { email, isLoading } = useRetrieveHashed(); // Destructure the new return value
 
   useEffect(() => {
+    // Don't make any decisions while email is still loading
+    if (isLoading) return;
+
     const checkEmailAccess = async () => {
       // Add small delay to show loading state
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -23,10 +26,10 @@ const ProtectedVerifyPage: FC<IChildrenProps> = ({ children }) => {
     };
 
     checkEmailAccess();
-  }, [email, navigate]);
+  }, [email, isLoading, navigate]); // Add isLoading to dependencies
 
-  // Show loading spinner while checking email access
-  if (isChecking) {
+  // Show loading spinner while checking email access or email is loading
+  if (isChecking || isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <ClipLoader color="#3B82F6" size={50} />
