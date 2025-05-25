@@ -15,6 +15,14 @@ import OtpVerification from '../pages/OtpVerification';
 import ProtectedRoute from '../components/Protected/ProtectedRoute';
 import ProtectedVerifyPage from '../components/Protected/ProtectedVerifyPage';
 import PublicRoute from '../components/Protected/PublicRoute';
+import RecoverAccount from '../layouts/RecoverAccount';
+import FindAccount from '../pages/FindAccount';
+import VerifyRecoverOtp from '../pages/VerifyRecoverOtp';
+import ResetPassword from '../pages/ResetPassword';
+import FoundAndSentOtp from '../pages/FoundAndSentOtp';
+import RecoverStep1Guard from '../components/Protected/RecoverStep1Guard';
+import RecoverStep2Guard from '../components/Protected/RecoverStep2Guard';
+import RecoverStep3Guard from '../components/Protected/RecoverStep3Guard';
 
 const Route = createBrowserRouter([
   {
@@ -44,6 +52,44 @@ const Route = createBrowserRouter([
     ),
   },
   {
+    path: '/recover',
+    element: (
+      <PublicRoute>
+        <RecoverAccount />
+      </PublicRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <FindAccount />,
+      },
+      {
+        path: 'sent-otp',
+        element: (
+          <RecoverStep1Guard>
+            <FoundAndSentOtp />
+          </RecoverStep1Guard>
+        ),
+      },
+      {
+        path: 'verify',
+        element: (
+          <RecoverStep2Guard>
+            <VerifyRecoverOtp />
+          </RecoverStep2Guard>
+        ),
+      },
+      {
+        path: 'reset',
+        element: (
+          <RecoverStep3Guard>
+            <ResetPassword />
+          </RecoverStep3Guard>
+        ),
+      },
+    ],
+  },
+  {
     path: '/',
     element: (
       <ProtectedRoute>
@@ -54,35 +100,35 @@ const Route = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
+        index: true,
         element: <Contacts />,
       },
       {
-        path: '/me',
+        path: 'me',
         element: <Profile />,
       },
       {
-        path: '/recent',
+        path: 'recent',
         element: <Recent />,
       },
       {
-        path: '/favorite',
+        path: 'favorite',
         element: <Favorite />,
       },
       {
-        path: '/trash',
+        path: 'trash',
         element: <Trash />,
       },
       {
-        path: '/person/:id',
+        path: 'person/:id',
         element: <ContactDetails />,
       },
       {
-        path: '/person/edit/:id',
+        path: 'person/edit/:id',
         element: <EditContact />,
       },
       {
-        path: '/new',
+        path: 'new',
         element: <CreateContact />,
       },
     ],

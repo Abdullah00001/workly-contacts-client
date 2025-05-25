@@ -1,31 +1,32 @@
 import { FC, useEffect, useState } from 'react';
 import { IChildrenProps } from '../../interfaces/authContext.interface';
-import useAuthContext from '../../hooks/useAuthContext';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { ClipLoader } from 'react-spinners';
 
-const ProtectedRoute: FC<IChildrenProps> = ({ children }) => {
+const RecoverStep3Guard: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { user } = useAuthContext();
 
   useEffect(() => {
-    const checkAuthentication = async () => {
+    const checkPermission = async () => {
       // Add small delay to show loading state
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
-      if (!user) {
-        navigate('/login', { replace: true });
-        return;
+      const isExist = Cookies.get('r_stp3');
+      if (isExist) {
+        setHasPermission(true);
+      } else {
+        navigate('/recover');
       }
-
       setIsChecking(false);
     };
 
-    checkAuthentication();
-  }, [user, navigate]);
+    checkPermission();
+  }, [navigate]);
 
-  // Show loading spinner while checking authentication
+  // Show loading spinner while checking
   if (isChecking) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -34,7 +35,12 @@ const ProtectedRoute: FC<IChildrenProps> = ({ children }) => {
     );
   }
 
+  // Don't render if no permission
+  if (!hasPermission) {
+    return null;
+  }
+
   return <>{children}</>;
 };
 
-export default ProtectedRoute;
+export default RecoverStep3Guard;

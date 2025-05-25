@@ -1,26 +1,21 @@
 import { FC, FormEvent, useEffect, useRef, useState } from 'react';
 import env from '../configs/env.configs';
-import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
-import useRetrieveHashed from '../hooks/useRetrieveHashed';
 import { AxiosError } from 'axios';
 import { IResponseError } from '../interfaces/error.interfaces';
 import { toast, ToastContainer } from 'react-toastify';
 import AuthServices from '../services/auth.services';
 import { useNavigate } from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
-import Cookies from 'js-cookie';
-import useAuthContext from '../hooks/useAuthContext';
+import { IVerifyRecoverOtpPayload } from '../interfaces/recover.interfaces';
 
 const { OTP_LENGTH } = env;
-const { processVerify, processResend } = AuthServices;
+const { processReSentRecoverOtp, processVerifyRecoverOtp } = AuthServices;
 
-const OtpVerification: FC = () => {
+const VerifyRecoverOtp: FC = () => {
   const navigate = useNavigate();
-  const { setUser } = useAuthContext();
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [verifying, setVerifying] = useState(false);
   const [resending, setResending] = useState(false);
-  const { email } = useRetrieveHashed();
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
   const [canResend, setCanResend] = useState(false);
@@ -47,17 +42,11 @@ const OtpVerification: FC = () => {
 
   const handleResend = async () => {
     if (!canResend) return;
-    if (!email) {
-      return;
-    }
     setResending(true);
     setCanResend(false);
     setTimer(120);
-    const payload: IVerifyPayload = {
-      email: email as string,
-    };
     try {
-      await processResend(payload);
+      await processReSentRecoverOtp();
       toast.success('Email Resend Successful');
     } catch (error) {
       setResending(false);
@@ -94,17 +83,14 @@ const OtpVerification: FC = () => {
     e.preventDefault();
     setVerifying(true);
     const enteredOtp = otp.join('');
-    const payload: IVerifyPayload = {
-      email: email as string,
+    const payload: IVerifyRecoverOtpPayload = {
       otp: enteredOtp,
     };
     try {
-      await processVerify(payload);
+      await processVerifyRecoverOtp(payload);
       toast.success('Verification Successful');
-      setUser(true);
-      Cookies.remove('v_ue');
       setTimeout(() => {
-        navigate('/');
+        navigate('/recover/reset');
       }, 2000);
     } catch (error) {
       setVerifying(false);
@@ -214,4 +200,4 @@ const OtpVerification: FC = () => {
   );
 };
 
-export default OtpVerification;
+export default VerifyRecoverOtp;

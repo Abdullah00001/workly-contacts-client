@@ -8,10 +8,13 @@ const { VU_E_SECRET } = env;
 
 const useRetrieveHashed = () => {
   const [email, setEmail] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Add loading state
+
   useEffect(() => {
     const hashed = Cookies.get('v_ue');
     if (!hashed) {
       setEmail(null);
+      setIsLoading(false);
       return;
     }
     try {
@@ -21,8 +24,10 @@ const useRetrieveHashed = () => {
       console.error(error);
       setEmail(null);
     }
+    setIsLoading(false);
   }, []);
-  return email;
+
+  return { email, isLoading }; // Return both email and loading state
 };
 
 export default useRetrieveHashed;

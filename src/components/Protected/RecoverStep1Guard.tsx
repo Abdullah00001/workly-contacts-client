@@ -1,35 +1,33 @@
 import { FC, useEffect, useState } from 'react';
 import { IChildrenProps } from '../../interfaces/authContext.interface';
-import useRetrieveHashed from '../../hooks/useRetrieveHashed';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { ClipLoader } from 'react-spinners';
 
-const ProtectedVerifyPage: FC<IChildrenProps> = ({ children }) => {
+const RecoverStep1Guard: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { email, isLoading } = useRetrieveHashed(); // Destructure the new return value
 
   useEffect(() => {
-    // Don't make any decisions while email is still loading
-    if (isLoading) return;
-
-    const checkEmailAccess = async () => {
+    const checkPermission = async () => {
       // Add small delay to show loading state
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      if (!email) {
-        navigate('/');
-        return;
+      const isExist = Cookies.get('r_stp1');
+      if (isExist) {
+        setHasPermission(true);
+      } else {
+        navigate('/recover');
       }
-
       setIsChecking(false);
     };
 
-    checkEmailAccess();
-  }, [email, isLoading, navigate]); // Add isLoading to dependencies
+    checkPermission();
+  }, [navigate]);
 
-  // Show loading spinner while checking email access or email is loading
-  if (isChecking || isLoading) {
+  // Show loading spinner while checking
+  if (isChecking) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <ClipLoader color="#3B82F6" size={50} />
@@ -37,7 +35,12 @@ const ProtectedVerifyPage: FC<IChildrenProps> = ({ children }) => {
     );
   }
 
+  // Don't render if no permission
+  if (!hasPermission) {
+    return null;
+  }
+
   return <>{children}</>;
 };
 
-export default ProtectedVerifyPage;
+export default RecoverStep1Guard;

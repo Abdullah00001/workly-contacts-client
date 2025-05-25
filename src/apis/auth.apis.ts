@@ -1,6 +1,11 @@
 import axiosClient from '../configs/axios.configs';
 import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
+import {
+  IFindUser,
+  IResetPasswordPayload,
+  IVerifyRecoverOtpPayload,
+} from '../interfaces/recover.interfaces';
 import { ISignupPayload } from '../interfaces/signup.interfaces';
 
 const AuthApis = {
@@ -24,6 +29,21 @@ const AuthApis = {
   },
   logout: () => {
     return axiosClient.post('/auth/logout');
+  },
+  findUser: (payload: IFindUser) => {
+    return axiosClient.post('/auth/recover/find', payload);
+  },
+  sentOtp: () => {
+    return axiosClient.post('/auth/recover/sent-otp');
+  },
+  verifyOtp: (payload: IVerifyRecoverOtpPayload) => {
+    return axiosClient.post('/auth/recover/verify', payload);
+  },
+  reSentOtp: () => {
+    return axiosClient.post('/auth/recover/resent');
+  },
+  resetPassWord: (payload: IResetPasswordPayload) => {
+    return axiosClient.patch('/auth/recover/reset', payload);
   },
 };
 

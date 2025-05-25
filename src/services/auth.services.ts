@@ -1,9 +1,27 @@
 import AuthApis from '../apis/auth.apis';
 import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
+import {
+  IFindUser,
+  IResetPasswordPayload,
+  IVerifyRecoverOtpPayload,
+} from '../interfaces/recover.interfaces';
 import { ISignupPayload } from '../interfaces/signup.interfaces';
 
-const { signup, verify, resend, check, refresh, logout, login } = AuthApis;
+const {
+  signup,
+  verify,
+  resend,
+  check,
+  refresh,
+  logout,
+  login,
+  findUser,
+  sentOtp,
+  reSentOtp,
+  verifyOtp,
+  resetPassWord,
+} = AuthApis;
 
 const AuthServices = {
   processSignup: async (payload: ISignupPayload) => {
@@ -87,6 +105,66 @@ const AuthServices = {
         throw error;
       } else {
         throw new Error('Unexpected Error Occurred In Process Logout');
+      }
+    }
+  },
+  processFindUser: async (payload: IFindUser) => {
+    try {
+      const response = await findUser(payload);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Find User');
+      }
+    }
+  },
+  processSentOtp: async () => {
+    try {
+      const response = await sentOtp();
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Sent Otp');
+      }
+    }
+  },
+  processVerifyRecoverOtp: async (payload: IVerifyRecoverOtpPayload) => {
+    try {
+      const response = await verifyOtp(payload);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Sent Otp');
+      }
+    }
+  },
+  processReSentRecoverOtp: async () => {
+    try {
+      const response = await reSentOtp();
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Sent Otp');
+      }
+    }
+  },
+  processResetPassword: async (payload: IResetPasswordPayload) => {
+    try {
+      const response = await resetPassWord(payload);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Reset Password');
       }
     }
   },
