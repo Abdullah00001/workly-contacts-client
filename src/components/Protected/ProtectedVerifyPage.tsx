@@ -31,7 +31,7 @@ const ProtectedVerifyPage: FC<IChildrenProps> = ({ children }) => {
   // Show loading spinner while checking email access or email is loading
   if (isChecking || isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center bg-neutral-950 items-center min-h-screen">
         <ClipLoader color="#3B82F6" size={50} />
       </div>
     );

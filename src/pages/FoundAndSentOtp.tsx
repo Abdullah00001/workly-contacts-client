@@ -26,7 +26,7 @@ const FoundAndSentOtp: FC = () => {
     setLoading(true);
     try {
       await processSentOtp();
-      toast.success('User Found');
+      toast.success('Otp Sent Successful');
       setTimeout(() => {
         navigate('/recover/verify');
       }, 2000);
