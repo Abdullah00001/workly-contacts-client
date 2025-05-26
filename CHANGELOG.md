@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.1] - 2025-05-26
+
+### Fixed
+- Improved toast message on the forgot password **verify user info** page for clearer user feedback and better UX.
+
 ## [1.0.0] - 2025-05-25
 
 ### Added
