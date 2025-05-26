@@ -1,37 +1,29 @@
-# ------------ STAGE 1: Build Stage ------------
+# ------------ STAGE 1: Build the app with Vite ------------
     FROM node:22.14.0-slim AS builder
 
-    WORKDIR /usr/src/app
+    WORKDIR /app
     
-    # Copy only package files first for better Docker cache
     COPY package*.json ./
-    
     RUN npm install
     
-    # Copy source code
     COPY . .
-    
-    # Build the app (like compiling TypeScript to JavaScript)
     RUN npm run build
     
     
     
-    # ------------ STAGE 2: Production Stage ------------
-    FROM node:22.14.0-slim
+    # ------------ STAGE 2: Serve with Nginx ------------
+    FROM nginx:stable-alpine
     
-    WORKDIR /usr/src/app
+    # Clean default nginx html content
+    RUN rm -rf /usr/share/nginx/html/*
     
-    # Only copy needed files (final output only)
-    COPY package*.json ./
-    RUN npm install --omit=dev  # Only production deps
-    COPY .env .env
-
-    COPY --from=builder /usr/src/app/dist ./dist
+    # Copy built app from previous stage
+    COPY --from=builder /app/dist /usr/share/nginx/html
     
-    # If you have any static files (public folder), copy them too
-    # COPY --from=builder /usr/src/app/public ./public
+    # Copy custom nginx config
+    COPY nginx.conf /etc/nginx/conf.d/default.conf
     
-    EXPOSE 3000
+    EXPOSE 80
     
-    CMD ["node", "dist/server.js"]
+    CMD ["nginx", "-g", "daemon off;"]
     
