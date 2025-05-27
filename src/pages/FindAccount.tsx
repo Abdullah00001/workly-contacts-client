@@ -36,7 +36,7 @@ const FindAccount: FC = () => {
       await processFindUser(payload);
       toast.success('User Found');
       setTimeout(() => {
-        navigate('/recover/sent-otp');
+        navigate('/recover/identify');
       }, 2000);
     } catch (error) {
       if (error instanceof Error) {

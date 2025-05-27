@@ -1,8 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 import { IChildrenProps } from '../../interfaces/authContext.interface';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { ClipLoader } from 'react-spinners';
+import AuthServices from '../../services/auth.services';
+import Cookies from 'js-cookie';
+
+const { processCheckR_stp1 } = AuthServices;
 
 const RecoverStep1Guard: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
@@ -10,23 +13,26 @@ const RecoverStep1Guard: FC<IChildrenProps> = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkPermission = async () => {
-      // Add small delay to show loading state
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const isExist = Cookies.get('r_stp1');
-      if (isExist) {
+    (async () => {
+      setIsChecking(true);
+      setHasPermission(false);
+      try {
+        const data = await processCheckR_stp1();
+        Cookies.set('user', JSON.stringify(data), {
+          expires: 1 * 24 * 60 * 60 * 1000,
+          sameSite: 'Strict',
+          path: '/',
+          secure: true,
+        });
         setHasPermission(true);
-      } else {
-        navigate('/recover');
+      } catch (error) {
+        console.error(error);
+        setIsChecking(false);
+      } finally {
+        setIsChecking(false);
       }
-      setIsChecking(false);
-    };
-
-    checkPermission();
+    })();
   }, [navigate]);
-
-  // Show loading spinner while checking
   if (isChecking) {
     return (
       <div className="flex justify-center bg-neutral-950 items-center min-h-screen">
@@ -34,12 +40,7 @@ const RecoverStep1Guard: FC<IChildrenProps> = ({ children }) => {
       </div>
     );
   }
-
-  // Don't render if no permission
-  if (!hasPermission) {
-    return null;
-  }
-
+  if (!hasPermission && !isChecking) navigate('/recover');
   return <>{children}</>;
 };
 

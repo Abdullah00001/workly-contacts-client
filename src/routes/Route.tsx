@@ -64,7 +64,7 @@ const Route = createBrowserRouter([
         element: <FindAccount />,
       },
       {
-        path: 'sent-otp',
+        path: 'identify',
         element: (
           <RecoverStep1Guard>
             <FoundAndSentOtp />
