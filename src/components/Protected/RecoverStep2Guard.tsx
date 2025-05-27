@@ -3,6 +3,9 @@ import { IChildrenProps } from '../../interfaces/authContext.interface';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { ClipLoader } from 'react-spinners';
+import AuthServices from '../../services/auth.services';
+
+const {processCheckR_stp2}=AuthServices
 
 const RecoverStep2Guard: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);

@@ -21,6 +21,9 @@ const {
   reSentOtp,
   verifyOtp,
   resetPassWord,
+  checkR_stp1,
+  checkR_stp2,
+  checkR_stp3,
 } = AuthApis;
 
 const AuthServices = {
@@ -165,6 +168,42 @@ const AuthServices = {
         throw error;
       } else {
         throw new Error('Unexpected Error Occurred In Process Reset Password');
+      }
+    }
+  },
+  processCheckR_stp1: async () => {
+    try {
+      const response = await checkR_stp1();
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process CheckR_stp1');
+      }
+    }
+  },
+  processCheckR_stp2: async () => {
+    try {
+      const response = await checkR_stp1();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process CheckR_stp2');
+      }
+    }
+  },
+  processCheckR_stp3: async () => {
+    try {
+      const response = await checkR_stp3();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process CheckR_stp3');
       }
     }
   },
