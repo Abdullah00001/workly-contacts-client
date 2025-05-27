@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { IFoundUser } from '../interfaces/recover.interfaces';
 import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import AuthServices from '../services/auth.services';
 import { toast, ToastContainer } from 'react-toastify';
@@ -28,6 +27,7 @@ const FoundAndSentOtp: FC = () => {
       await processSentOtp();
       toast.success('Otp Sent Successful');
       setTimeout(() => {
+        Cookies.remove('user');
         navigate('/recover/verify');
       }, 2000);
     } catch (error) {
@@ -52,9 +52,9 @@ const FoundAndSentOtp: FC = () => {
   };
 
   useEffect(() => {
-    const cookie = Cookies.get('r_stp1');
-    const decoded: IFoundUser = jwtDecode(cookie as string);
-    setFoundUser({ ...decoded });
+    const cookie = Cookies.get('user');
+    const user = JSON.parse(cookie as string);
+    setFoundUser({ ...user });
   }, []);
 
   return (

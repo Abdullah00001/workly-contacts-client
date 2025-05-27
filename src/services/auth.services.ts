@@ -185,7 +185,7 @@ const AuthServices = {
   },
   processCheckR_stp2: async () => {
     try {
-      const response = await checkR_stp1();
+      const response = await checkR_stp2();
       return response.data;
     } catch (error) {
       if (error instanceof Error) {

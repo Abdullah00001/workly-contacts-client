@@ -46,13 +46,13 @@ const AuthApis = {
     return axiosClient.patch('/auth/recover/reset', payload);
   },
   checkR_stp1: () => {
-    return axiosClient.patch('/auth/recover/check/stp1');
+    return axiosClient.post('/auth/recover/check/stp1');
   },
   checkR_stp2: () => {
-    return axiosClient.patch('/auth/recover/check/stp2');
+    return axiosClient.post('/auth/recover/check/stp2');
   },
   checkR_stp3: () => {
-    return axiosClient.patch('/auth/recover/check/stp3');
+    return axiosClient.post('/auth/recover/check/stp3');
   },
 };
 

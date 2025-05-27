@@ -3,6 +3,7 @@ import { IChildrenProps } from '../../interfaces/authContext.interface';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import AuthServices from '../../services/auth.services';
+import Cookies from 'js-cookie';
 
 const { processCheckR_stp1 } = AuthServices;
 
@@ -17,7 +18,12 @@ const RecoverStep1Guard: FC<IChildrenProps> = ({ children }) => {
       setHasPermission(false);
       try {
         const data = await processCheckR_stp1();
-        console.log(data);
+        Cookies.set('user', JSON.stringify(data), {
+          expires: 1 * 24 * 60 * 60 * 1000,
+          sameSite: 'Strict',
+          path: '/',
+          secure: true,
+        });
         setHasPermission(true);
       } catch (error) {
         console.error(error);
