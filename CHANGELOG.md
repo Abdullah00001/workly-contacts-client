@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.1.1] - 2025-06-03
+### Fixed
+- Updated Vercel configuration to fix an issue in production where reloading the page caused an unintended redirect to the home page.
+
+
 ## [v1.1.0] - 2025-05-27
 
 ### ✨ Added
