@@ -8,6 +8,7 @@ const ContactServices = {
     console.log(payload);
     try {
       const response = await createContact(payload);
+      console.log(response);
       return response.data;
     } catch (error) {
       if (error instanceof Error) throw error;
@@ -15,8 +16,10 @@ const ContactServices = {
     }
   },
   processGetSingleContact: async (payload: string) => {
+    console.log(payload);
     try {
       const response = await getSingleContact(payload);
+      console.log(response);
       return response.data;
     } catch (error) {
       if (error instanceof Error) throw error;

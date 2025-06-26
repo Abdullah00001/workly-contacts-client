@@ -1,28 +1,35 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from 'react';
 import {
   FaArrowLeft,
   FaEdit,
   FaRegStar,
   FaStar,
   FaTrash,
-} from "react-icons/fa";
+} from 'react-icons/fa';
 import {
   MdOutlineCake,
   MdOutlineEmail,
   MdOutlineLocalPhone,
   MdOutlineLocationOn,
-} from "react-icons/md";
-import { useLocation, useNavigate } from "react-router-dom";
-import EditContact from "./EditContact";
-import SingleDeleteModal from "../components/ui/SingleDeleteModal";
+} from 'react-icons/md';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import EditContact from './EditContact';
+import SingleDeleteModal from '../components/ui/SingleDeleteModal';
+import { useQuery } from '@tanstack/react-query';
+import ContactServices from '../services/contacts.services';
+import DateUtils from '../utils/date.utils';
+
+const { processGetSingleContact } = ContactServices;
+const { formatDate } = DateUtils;
 
 const ContactDetails: FC = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
+  console.log(id);
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const handleReturn = () => {
-    const returnPath = location?.state?.from || "/";
+    const returnPath = location?.state?.from || '/';
     navigate(returnPath);
   };
   const [isFavorite, setIsFavorite] = useState(false);
@@ -36,6 +43,9 @@ const ContactDetails: FC = () => {
   const handleIsDelete = () => {
     setIsDelete(!isDelete);
   };
+  useEffect(()=>{
+    console.log('hfdgf')
+  },[id])
   return (
     <>
       {!isEdit ? (
@@ -77,15 +87,23 @@ const ContactDetails: FC = () => {
               </div>
               <div className="flex flex-col justify-center items-center lg:flex-row lg:justify-start lg:items-center lg:space-x-10 mt-[50px] space-y-7">
                 <div className="w-[112px] h-[112px] md:w-[268px] md:h-[268px] lg:w-[162px] lg:h-[162px] cursor-pointer">
-                  <img
-                    src={`https://api.dicebear.com/7.x/initials/svg?seed=Abdullah`}
-                    alt="Avatar"
-                    className="w-full rounded-full"
-                  />
+                  {data?.data?.avatar?.url ? (
+                    <img
+                      src={data?.data?.avatar?.url}
+                      alt="Avatar"
+                      className="w-full rounded-full"
+                    />
+                  ) : (
+                    <img
+                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${data.data?.firstName}`}
+                      alt="Avatar"
+                      className="w-full rounded-full"
+                    />
+                  )}
                 </div>
                 <div>
                   <h1 className="text-center font-normal text-wrap text-2xl lg:text-[28px]">
-                    Abdullah Bin Omar Chowdhury
+                    {data.data?.firstName} {data.data?.lastName}
                   </h1>
                 </div>
               </div>
@@ -102,9 +120,7 @@ const ContactDetails: FC = () => {
                         <MdOutlineEmail size={20} />
                       </div>
                       <div className="">
-                        <p className="break-all">
-                          abdullahbinomarchowdhury02@gmail.com
-                        </p>
+                        <p className="break-all">{data.data?.email}</p>
                       </div>
                     </div>
                     <div className="flex items-start justify-start space-x-3">
@@ -112,7 +128,7 @@ const ContactDetails: FC = () => {
                         <MdOutlineLocalPhone size={20} />
                       </div>
                       <div className="">
-                        <p className="break-all">01937868838</p>
+                        <p className="break-all">{data.data?.phone}</p>
                       </div>
                     </div>
                     <div className="flex items-start justify-start space-x-3">
@@ -121,7 +137,8 @@ const ContactDetails: FC = () => {
                       </div>
                       <div className="">
                         <p className="break-all">
-                          Unus Optics,Khilkhet,Dhaka 1229,BD
+                          {data.data?.streetAddress} {data?.data?.city}
+                          {data?.data?.postCode} {data?.data?.country}
                         </p>
                       </div>
                     </div>
@@ -130,7 +147,10 @@ const ContactDetails: FC = () => {
                         <MdOutlineCake size={20} />
                       </div>
                       <div className="">
-                        <p className="break-all">04 June 2002</p>
+                        <p className="break-all">
+                          {data.data?.day} {data?.data?.month}
+                          {data?.data?.year}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -139,8 +159,12 @@ const ContactDetails: FC = () => {
                   <div>
                     <h1 className="font-medium">History</h1>
                   </div>
-                  <div className="">Last Edited 3 April 2025</div>
-                  <div className="">Added To Contacts 1 April 2025</div>
+                  <div className="">
+                    Last Edited {formatDate(data?.data?.updatedAt)}
+                  </div>
+                  <div className="">
+                    Added To Contacts {formatDate(data?.data?.createdAt)}
+                  </div>
                 </div>
               </div>
             </>
