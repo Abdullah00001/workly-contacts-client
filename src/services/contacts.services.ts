@@ -1,7 +1,10 @@
 import ContactApi from '../apis/contacts.apis';
-import { ICreateContactPayload } from '../interfaces/contacts.interface';
+import {
+  ICreateContactPayload,
+  IFavoritePayload,
+} from '../interfaces/contacts.interface';
 
-const { createContact, getSingleContact } = ContactApi;
+const { createContact, getSingleContact, changeFavoriteStatus } = ContactApi;
 
 const ContactServices = {
   processCreateContact: async (payload: ICreateContactPayload) => {
@@ -20,6 +23,17 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In Create Contact Service');
+    }
+  },
+  processChangeFavoriteStatus: async ({ id, payload }: IFavoritePayload) => {
+    try {
+      const response = await changeFavoriteStatus({ id, payload });
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error(
+        'Unknown Error Occurred In Change Favorite Status Service'
+      );
     }
   },
 };

@@ -87,3 +87,12 @@ export type TCreateContact = {
   location: TLocation;
   birthday: TBirthDate;
 };
+
+export interface IFavorite {
+  isFavorite: boolean;
+}
+
+export interface IFavoritePayload {
+  id: string;
+  payload: IFavorite;
+}

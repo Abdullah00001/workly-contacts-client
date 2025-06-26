@@ -16,22 +16,47 @@ import {
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import EditContact from './EditContact';
 import SingleDeleteModal from '../components/ui/SingleDeleteModal';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import ContactServices from '../services/contacts.services';
 import DateUtils from '../utils/date.utils';
 import { ClipLoader } from 'react-spinners';
+import { IFavoritePayload } from '../interfaces/contacts.interface';
+import { toast, ToastContainer } from 'react-toastify';
 
-const { processGetSingleContact } = ContactServices;
+const { processGetSingleContact, processChangeFavoriteStatus } =
+  ContactServices;
 const { formatDate } = DateUtils;
 
 const ContactDetails: FC = () => {
+  const queryClient = useQueryClient();
   const { id } = useParams();
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ['contacts', id],
+    queryKey: ['contact', id],
     queryFn: async () => {
       return await processGetSingleContact(id as string);
     },
     enabled: !!id,
+  });
+  const { mutate: changeFavoriteStatus } = useMutation({
+    mutationFn: async ({ id, payload }: IFavoritePayload) =>
+      await processChangeFavoriteStatus({ id, payload }),
+    onSuccess: (data) => {
+      toast.dismiss();
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['contact', id] });
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      if (data.data.isFavorite === false)
+        toast.success(
+          `Removed ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
+        );
+      if (data.data.isFavorite === true)
+        toast.success(
+          `Added ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
+        );
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
@@ -40,10 +65,15 @@ const ContactDetails: FC = () => {
     const returnPath = location?.state?.from || '/';
     navigate(returnPath);
   };
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    toast.info('Working...');
+    const currentFavorite = data.data.isFavorite;
+    const newFavoriteStatus = !currentFavorite;
+    changeFavoriteStatus({
+      id: id as string,
+      payload: { isFavorite: newFavoriteStatus },
+    });
   };
   const handleEdit = () => {
     setIsEdit(!isEdit);
@@ -81,6 +111,7 @@ const ContactDetails: FC = () => {
     <>
       {!isEdit ? (
         <section className="lg:h-full relative lg:overflow-y-scroll">
+          <ToastContainer position="top-center" />
           <div className="w-full lg:w-full xl:w-[950px] xl:p-8">
             <>
               <div className="flex justify-between items-center">
@@ -92,7 +123,7 @@ const ContactDetails: FC = () => {
                 {/* Right side icons (Favorite, Edit, Delete) */}
                 <div className="flex items-center justify-end space-x-1">
                   <div className="p-2 cursor-pointer">
-                    {isFavorite ? (
+                    {data?.data?.isFavorite ? (
                       <span
                         className=" text-blue-600 "
                         onClick={handleFavorite}

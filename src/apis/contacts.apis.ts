@@ -1,6 +1,9 @@
 import axiosClient from '../configs/axios.configs';
 import env from '../configs/env.configs';
-import { ICreateContactPayload } from '../interfaces/contacts.interface';
+import {
+  ICreateContactPayload,
+  IFavoritePayload,
+} from '../interfaces/contacts.interface';
 
 const { BASE_URL } = env;
 
@@ -10,6 +13,9 @@ const ContactApi = {
   },
   getSingleContact: (payload: string) => {
     return axiosClient.get(`${BASE_URL}/contacts/${payload}`);
+  },
+  changeFavoriteStatus: ({ id, payload }: IFavoritePayload) => {
+    return axiosClient.patch(`${BASE_URL}/favorites/${id}`, payload);
   },
 };
 
