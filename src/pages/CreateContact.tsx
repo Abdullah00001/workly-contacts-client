@@ -1,5 +1,5 @@
 import { UserRound } from 'lucide-react';
-import { FC, useState, useRef } from 'react';
+import { FC, useState, useRef, ChangeEvent, FormEvent } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import {
@@ -17,6 +17,7 @@ import ImageServices from '../services/image.services';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast, ToastContainer } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
+import { contactSchema } from '../schemas/contacts.schemas';
 
 const { processImageUpload, processImageDelete } = ImageServices;
 
@@ -30,14 +31,27 @@ const CreateContact: FC = () => {
   };
   const [payload, setPayload] = useState<TCreateContact>({
     avatar: null,
-    birthday: null,
-    email: null,
-    firstName: null,
-    lastName: null,
-    location: null,
-    phone: null,
-    worksAt: null,
+    birthday: {
+      day: null,
+      month: null,
+      year: null,
+    },
+    email: '',
+    firstName: '',
+    lastName: '',
+    location: {
+      city: null,
+      country: null,
+      postCode: null,
+      streetAddress: null,
+    },
+    phone: '',
+    worksAt: {
+      companyName: null,
+      jobTitle: null,
+    },
   });
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const { mutate: uploadImage, isPending: isUploading } = useMutation({
     mutationFn: async (payload: FormData) => await processImageUpload(payload),
     onSuccess: (data) => {
@@ -75,6 +89,31 @@ const CreateContact: FC = () => {
       );
     },
   });
+  const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleChangeWorksAt = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({
+      ...prev,
+      worksAt: { ...prev.worksAt, [name]: value },
+    }));
+  };
+  const handleChangeLocation = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({
+      ...prev,
+      location: { ...prev.location, [name]: value },
+    }));
+  };
+  const handleChangeBirthday = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({
+      ...prev,
+      birthday: { ...prev.birthday, [name]: value },
+    }));
+  };
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -111,6 +150,22 @@ const CreateContact: FC = () => {
       fileInputRef.current.value = '';
     }
   };
+  const handleSave = async (e: FormEvent) => {
+    e.preventDefault();
+    const result = contactSchema.safeParse(payload);
+    if (!result.success) {
+      const fieldErrors: { [key: string]: string } = {};
+      result.error.errors.forEach((err) => {
+        if (err.path.length > 0) {
+          const fieldName = err.path[0];
+          fieldErrors[fieldName] = err.message;
+        }
+      });
+      setFieldErrors(fieldErrors);
+      return;
+    }
+    console.log(payload);
+  };
   return (
     <section className="lg:h-full lg:overflow-y-scroll">
       <ToastContainer position="top-center" />
@@ -120,7 +175,10 @@ const CreateContact: FC = () => {
             <FaArrowLeft size={20} className=" text-[#444746] " />
           </div>
           <div className="flex items-center justify-end space-x-1">
-            <button className="px-5 cursor-pointer py-2 bg-blue-700 rounded-[40px] text-white">
+            <button
+              onClick={handleSave}
+              className="px-5 cursor-pointer py-2 bg-blue-700 rounded-[40px] text-white"
+            >
               Save
             </button>
           </div>
@@ -225,21 +283,37 @@ const CreateContact: FC = () => {
               <div className="flex w-full flex-col space-y-2">
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeBasicField}
                     placeholder="First Name"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors.email && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="firstName"
                     id="firstName"
                   />
+                  {fieldErrors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldErrors.firstName}
+                    </p>
+                  )}
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeBasicField}
                     placeholder="Last Name"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors.email && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="lastName"
                     id="lastName"
                   />
+                  {fieldErrors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldErrors.lastName}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -250,6 +324,7 @@ const CreateContact: FC = () => {
               <div className="flex w-full flex-col space-y-2">
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeWorksAt}
                     placeholder="Company"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
@@ -259,6 +334,7 @@ const CreateContact: FC = () => {
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeWorksAt}
                     placeholder="Job Title"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
@@ -275,12 +351,20 @@ const CreateContact: FC = () => {
               <div className="flex w-full flex-col space-y-2">
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeBasicField}
                     placeholder="Email"
                     type="email"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors.email && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="email"
                     id="email"
                   />
+                  {fieldErrors.email && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldErrors.email}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -291,12 +375,20 @@ const CreateContact: FC = () => {
               <div className="flex w-full flex-col space-y-2">
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeBasicField}
                     placeholder="Phone"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors.email && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="phone"
                     id="phone"
                   />
+                  {fieldErrors.phone && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldErrors.phone}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -307,6 +399,7 @@ const CreateContact: FC = () => {
               <div className="flex w-full flex-col space-y-2">
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeLocation}
                     placeholder="Country"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
@@ -316,6 +409,7 @@ const CreateContact: FC = () => {
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeLocation}
                     placeholder="City"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
@@ -325,6 +419,7 @@ const CreateContact: FC = () => {
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeLocation}
                     placeholder="Post Code"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
@@ -334,6 +429,7 @@ const CreateContact: FC = () => {
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeLocation}
                     placeholder="Street Address"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
@@ -350,15 +446,17 @@ const CreateContact: FC = () => {
               <div className="flex w-full flex-col space-y-2">
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeBirthday}
                     placeholder="Date"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
-                    name="date"
-                    id="date"
+                    name="day"
+                    id="day"
                   />
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeBirthday}
                     placeholder="Month"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
@@ -368,6 +466,7 @@ const CreateContact: FC = () => {
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
+                    onChange={handleChangeBirthday}
                     placeholder="Year"
                     type="text"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"

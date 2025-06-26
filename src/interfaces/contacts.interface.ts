@@ -27,16 +27,34 @@ export interface ILocation {
   postCode: number;
   streetAddress: string;
 }
+
+export type TLocation = {
+  country: string | null;
+  city: string | null;
+  postCode: number | null;
+  streetAddress: string | null;
+};
 export interface IWorksAt {
   companyName: string;
   jobTitle: string;
 }
+
+export type TWorksAt = {
+  companyName: string | null;
+  jobTitle: string | null;
+};
 
 export interface IBirthDate {
   day: number;
   month: Month;
   year: number;
 }
+
+export type TBirthDate = {
+  day: number | null;
+  month: Month | null;
+  year: number | null;
+};
 
 export interface IImage {
   url: string;
@@ -45,10 +63,10 @@ export interface IImage {
 
 export interface ICreateContactPayload {
   avatar?: IImage;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
   worksAt?: IWorksAt;
   location?: ILocation;
   birthday?: IBirthDate;
@@ -56,11 +74,11 @@ export interface ICreateContactPayload {
 
 export type TCreateContact = {
   avatar: IImage | null;
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
-  phone: string | null;
-  worksAt: IWorksAt | null;
-  location: ILocation | null;
-  birthday: IBirthDate | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  worksAt: TWorksAt;
+  location: TLocation;
+  birthday: TBirthDate;
 };
