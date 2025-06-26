@@ -5,6 +5,7 @@ const { createContact, getSingleContact } = ContactApi;
 
 const ContactServices = {
   processCreateContact: async (payload: ICreateContactPayload) => {
+    console.log(payload);
     try {
       const response = await createContact(payload);
       return response.data;

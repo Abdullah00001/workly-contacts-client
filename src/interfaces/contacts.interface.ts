@@ -61,6 +61,11 @@ export interface IImage {
   publicId: string;
 }
 
+export type TImage = {
+  url: string | null;
+  publicId: string | null;
+};
+
 export interface ICreateContactPayload {
   avatar?: IImage;
   firstName: string;
@@ -73,7 +78,7 @@ export interface ICreateContactPayload {
 }
 
 export type TCreateContact = {
-  avatar: IImage | null;
+  avatar: TImage;
   firstName: string;
   lastName: string;
   email: string;

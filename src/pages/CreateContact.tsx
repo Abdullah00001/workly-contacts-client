@@ -1,5 +1,5 @@
 import { UserRound } from 'lucide-react';
-import { FC, useState, useRef, ChangeEvent, FormEvent } from 'react';
+import { FC, useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import {
@@ -12,14 +12,19 @@ import {
   MdPhone,
 } from 'react-icons/md';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { TCreateContact } from '../interfaces/contacts.interface';
+import {
+  ICreateContactPayload,
+  TCreateContact,
+} from '../interfaces/contacts.interface';
 import ImageServices from '../services/image.services';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast, ToastContainer } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import { contactSchema } from '../schemas/contacts.schemas';
+import ContactServices from '../services/contacts.services';
 
 const { processImageUpload, processImageDelete } = ImageServices;
+const { processCreateContact } = ContactServices;
 
 const CreateContact: FC = () => {
   const queryClient = useQueryClient();
@@ -30,7 +35,10 @@ const CreateContact: FC = () => {
     navigate(returnPath);
   };
   const [payload, setPayload] = useState<TCreateContact>({
-    avatar: null,
+    avatar: {
+      publicId: null,
+      url: null,
+    },
     birthday: {
       day: null,
       month: null,
@@ -72,12 +80,33 @@ const CreateContact: FC = () => {
       );
     },
   });
+  const { mutate: createContact, isPending: isCreateContactPending } =
+    useMutation({
+      mutationFn: async (payload: ICreateContactPayload) =>
+        await processCreateContact(payload),
+      onSuccess: (data) => {
+        toast.dismiss();
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        toast.success('Contact Created');
+        setTimeout(() => {
+          navigate(`/person/${data.data._id}`);
+        }, 2000);
+      },
+      onError: (error: any) => {
+        console.error('Contact Creation failed:', error);
+        toast.dismiss();
+        toast.error(
+          error?.response?.data?.message ||
+            'Failed to create contact. Please try again.'
+        );
+      },
+    });
   const { mutate: deleteImage, isPending: isDeleteing } = useMutation({
     mutationFn: async (payload: string) => await processImageDelete(payload),
     onSuccess: () => {
       setPayload((prev) => ({
         ...prev,
-        avatar: null,
+        avatar: { ...prev.avatar, publicId: null, url: null },
       }));
       toast.success('Image delete successfully!');
     },
@@ -102,11 +131,25 @@ const CreateContact: FC = () => {
   };
   const handleChangeLocation = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    const updatedValue =
+      name === 'postCode'
+        ? value === ''
+          ? null
+          : Number(value)
+        : value === ''
+          ? null
+          : value;
+
     setPayload((prev) => ({
       ...prev,
-      location: { ...prev.location, [name]: value },
+      location: {
+        ...prev.location,
+        [name]: updatedValue,
+      },
     }));
   };
+
   const handleChangeBirthday = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPayload((prev) => ({
@@ -152,6 +195,7 @@ const CreateContact: FC = () => {
   };
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
+    setFieldErrors({});
     const result = contactSchema.safeParse(payload);
     if (!result.success) {
       const fieldErrors: { [key: string]: string } = {};
@@ -164,8 +208,12 @@ const CreateContact: FC = () => {
       setFieldErrors(fieldErrors);
       return;
     }
-    console.log(payload);
+    createContact(payload as ICreateContactPayload);
   };
+  useEffect(() => {
+    if (!isCreateContactPending) return;
+    toast.success('Contact Is Creating...');
+  }, [isCreateContactPending]);
   return (
     <section className="lg:h-full lg:overflow-y-scroll">
       <ToastContainer position="top-center" />
@@ -185,7 +233,7 @@ const CreateContact: FC = () => {
         </div>
         <div className="flex justify-center lg:justify-start items-center mt-12 space-y-6 ">
           <div className="relative w-[100px] bg-blue-200 rounded-full h-[100px] lg:w-[162px] lg:h-[162px]">
-            {payload.avatar ? (
+            {payload.avatar.url ? (
               <div className="relative group w-full h-full">
                 <img
                   src={payload.avatar.url}
@@ -421,7 +469,7 @@ const CreateContact: FC = () => {
                   <input
                     onChange={handleChangeLocation}
                     placeholder="Post Code"
-                    type="text"
+                    type="number"
                     className="px-3 w-full py-2 border border-gray-500 rounded-lg"
                     name="postCode"
                     id="postCode"
