@@ -7,21 +7,22 @@ import { ClipLoader } from 'react-spinners';
 
 const PublicRoute: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
-  const { user } = useAuthContext();
+  const { user, authChecked } = useAuthContext();
   const { email, isLoading } = useRetrieveHashed(); // Destructure the new return value
   const navigate = useNavigate();
   const location = useLocation();
-
+  const PUBLIC_ONLY_ROUTES = ['/login', '/signup', '/verify', '/recover'];
   useEffect(() => {
     // Don't make any decisions while email is still loading
+    if (!authChecked) return;
     if (isLoading) return;
 
     const checkRoute = async () => {
       // Add small delay to show loading state
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      if (user) {
-        navigate('/');
+      if (user && PUBLIC_ONLY_ROUTES.includes(location.pathname)) {
+        navigate('/', { replace: true });
         return;
       }
 
@@ -34,7 +35,7 @@ const PublicRoute: FC<IChildrenProps> = ({ children }) => {
     };
 
     checkRoute();
-  }, [user, email, isLoading, navigate]); // Remove location.pathname to prevent navigation loops
+  }, [user, email, isLoading, navigate, authChecked]); // Remove location.pathname to prevent navigation loops
 
   // Show loading spinner while checking route permissions or email is loading
   if (isChecking || isLoading) {
