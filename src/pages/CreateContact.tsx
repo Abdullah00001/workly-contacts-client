@@ -14,6 +14,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ICreateContactPayload,
+  Month,
   TCreateContact,
 } from '../interfaces/contacts.interface';
 import ImageServices from '../services/image.services';
@@ -150,11 +151,22 @@ const CreateContact: FC = () => {
     }));
   };
 
-  const handleChangeBirthday = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeBirthday = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
+    console.log(name, value);
+    const updatedValue =
+      name === 'day' || name === 'year'
+        ? value === ''
+          ? null
+          : Number(value)
+        : value === ''
+          ? null
+          : value;
     setPayload((prev) => ({
       ...prev,
-      birthday: { ...prev.birthday, [name]: value },
+      birthday: { ...prev.birthday, [name]: updatedValue },
     }));
   };
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -164,13 +176,11 @@ const CreateContact: FC = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error('Please select a valid image file.');
       return;
     }
 
-    // Validate file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       toast.error('Image size should be less than 5MB.');
       return;
@@ -182,12 +192,12 @@ const CreateContact: FC = () => {
   };
 
   const handleImageClick = () => {
-    if (isUploading || isDeleteing) return; // Prevent clicking during upload
+    if (isUploading || isDeleteing) return;
     fileInputRef.current?.click();
   };
 
   const removeImage = () => {
-    if (isUploading || isDeleteing) return; // Prevent removal during upload
+    if (isUploading || isDeleteing) return;
     deleteImage(payload.avatar?.publicId as string);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -201,7 +211,7 @@ const CreateContact: FC = () => {
       const fieldErrors: { [key: string]: string } = {};
       result.error.errors.forEach((err) => {
         if (err.path.length > 0) {
-          const fieldName = err.path[0];
+          const fieldName = err.path.join('.');
           fieldErrors[fieldName] = err.message;
         }
       });
@@ -375,7 +385,9 @@ const CreateContact: FC = () => {
                     onChange={handleChangeWorksAt}
                     placeholder="Company"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors['worksAt'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="companyName"
                     id="companyName"
                   />
@@ -385,11 +397,18 @@ const CreateContact: FC = () => {
                     onChange={handleChangeWorksAt}
                     placeholder="Job Title"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors['worksAt'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="jobTitle"
                     id="jobTitle"
                   />
                 </div>
+                {fieldErrors['worksAt'] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {fieldErrors['worksAt']}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center w-full space-x-4">
@@ -450,7 +469,9 @@ const CreateContact: FC = () => {
                     onChange={handleChangeLocation}
                     placeholder="Country"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors['location'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="country"
                     id="country"
                   />
@@ -460,7 +481,9 @@ const CreateContact: FC = () => {
                     onChange={handleChangeLocation}
                     placeholder="City"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors['location'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="city"
                     id="city"
                   />
@@ -470,7 +493,9 @@ const CreateContact: FC = () => {
                     onChange={handleChangeLocation}
                     placeholder="Post Code"
                     type="number"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors['location'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="postCode"
                     id="postCode"
                   />
@@ -480,11 +505,18 @@ const CreateContact: FC = () => {
                     onChange={handleChangeLocation}
                     placeholder="Street Address"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors['location'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="streetAddress"
                     id="streetAddress"
                   />
                 </div>
+                {fieldErrors['location'] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {fieldErrors['location']}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-baseline w-full space-x-4">
@@ -496,32 +528,61 @@ const CreateContact: FC = () => {
                   <input
                     onChange={handleChangeBirthday}
                     placeholder="Date"
-                    type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    type="number"
+                    className={`${
+                      fieldErrors['birthday'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="day"
                     id="day"
                   />
                 </div>
                 <div className="w-full lg:w-[520px]">
-                  <input
+                  {/* <input
                     onChange={handleChangeBirthday}
                     placeholder="Month"
                     type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    className={`${
+                      fieldErrors['birthday'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="month"
                     id="month"
-                  />
+                  /> */}
+                  <select
+                    onChange={handleChangeBirthday}
+                    name="month"
+                    id="month"
+                    className={`${
+                      fieldErrors['birthday'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      Select Month
+                    </option>
+                    {Object.values(Month).map((month) => (
+                      <option key={month} value={month}>
+                        {month.charAt(0).toUpperCase() + month.slice(1)}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBirthday}
                     placeholder="Year"
-                    type="text"
-                    className="px-3 w-full py-2 border border-gray-500 rounded-lg"
+                    type="number"
+                    className={`${
+                      fieldErrors['birthday'] && 'border-red-500'
+                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="year"
                     id="year"
                   />
                 </div>
+                {fieldErrors['birthday'] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {fieldErrors['birthday']}
+                  </p>
+                )}
               </div>
             </div>
           </form>

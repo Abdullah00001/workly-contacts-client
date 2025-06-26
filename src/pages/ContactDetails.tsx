@@ -1,7 +1,8 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import {
   FaArrowLeft,
   FaEdit,
+  FaExclamationTriangle,
   FaRegStar,
   FaStar,
   FaTrash,
@@ -18,13 +19,20 @@ import SingleDeleteModal from '../components/ui/SingleDeleteModal';
 import { useQuery } from '@tanstack/react-query';
 import ContactServices from '../services/contacts.services';
 import DateUtils from '../utils/date.utils';
+import { ClipLoader } from 'react-spinners';
 
 const { processGetSingleContact } = ContactServices;
 const { formatDate } = DateUtils;
 
 const ContactDetails: FC = () => {
   const { id } = useParams();
-  console.log(id);
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ['contacts', id],
+    queryFn: async () => {
+      return await processGetSingleContact(id as string);
+    },
+    enabled: !!id,
+  });
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,9 +51,32 @@ const ContactDetails: FC = () => {
   const handleIsDelete = () => {
     setIsDelete(!isDelete);
   };
-  useEffect(()=>{
-    console.log('hfdgf')
-  },[id])
+  if (isPending) {
+    return (
+      <div className="flex justify-center  items-center min-h-screen">
+        <ClipLoader color="#3B82F6" size={50} />
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen  text-red-600 px-4">
+        <FaExclamationTriangle size={50} className="text-red-500 mb-4" />
+        <h1 className="text-2xl font-semibold mb-2">Something went wrong</h1>
+        <p className="text-lg text-center max-w-md">
+          {error.message ||
+            'An unexpected error occurred. Please try again later.'}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg text-white font-medium"
+        >
+          Refresh Page
+        </button>
+      </div>
+    );
+  }
+
   return (
     <>
       {!isEdit ? (
@@ -103,8 +134,14 @@ const ContactDetails: FC = () => {
                 </div>
                 <div>
                   <h1 className="text-center font-normal text-wrap text-2xl lg:text-[28px]">
-                    {data.data?.firstName} {data.data?.lastName}
+                    {data?.data?.firstName} {data?.data?.lastName}
                   </h1>
+                  <h4 className="text-[16px] text-gray-800">
+                    {data?.data?.worksAt?.jobTitle &&
+                      data?.data?.worksAt?.companyName &&
+                      `${data?.data?.worksAt?.jobTitle}•
+                    ${data?.data?.worksAt?.companyName}`}
+                  </h4>
                 </div>
               </div>
               <div className="flex flex-col justify-start lg:justify-start lg:flex-row lg:space-x-4 lg:items-start">
@@ -120,7 +157,9 @@ const ContactDetails: FC = () => {
                         <MdOutlineEmail size={20} />
                       </div>
                       <div className="">
-                        <p className="break-all">{data.data?.email}</p>
+                        <p className="break-all text-[14px]">
+                          {data?.data?.email}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start justify-start space-x-3">
@@ -128,7 +167,9 @@ const ContactDetails: FC = () => {
                         <MdOutlineLocalPhone size={20} />
                       </div>
                       <div className="">
-                        <p className="break-all">{data.data?.phone}</p>
+                        <p className="break-all text-[14px]">
+                          {data?.data?.phone}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start justify-start space-x-3">
@@ -136,10 +177,24 @@ const ContactDetails: FC = () => {
                         <MdOutlineLocationOn size={20} />
                       </div>
                       <div className="">
-                        <p className="break-all">
-                          {data.data?.streetAddress} {data?.data?.city}
-                          {data?.data?.postCode} {data?.data?.country}
-                        </p>
+                        {data.data?.location?.streetAddress &&
+                        data?.data?.location?.city &&
+                        data?.data?.location?.postCode &&
+                        data?.data?.location?.country ? (
+                          <p className="wrap-break-word text-[14px]">
+                            {`${data.data?.location?.streetAddress}
+                          ${data?.data?.location?.city}
+                          ${data?.data?.location?.postCode}
+                          ${data?.data?.location?.country}`}
+                          </p>
+                        ) : (
+                          <p
+                            className="text-[14px] font-medium text-blue-500 cursor-pointer"
+                            onClick={handleEdit}
+                          >
+                            Add Location
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-start justify-start space-x-3">
@@ -147,10 +202,22 @@ const ContactDetails: FC = () => {
                         <MdOutlineCake size={20} />
                       </div>
                       <div className="">
-                        <p className="break-all">
-                          {data.data?.day} {data?.data?.month}
-                          {data?.data?.year}
-                        </p>
+                        {data.data?.birthday?.day &&
+                        data?.data?.birthday?.month &&
+                        data?.data?.birthday?.year ? (
+                          <p className="break-all text-[14px]">
+                            {`${data.data?.birthday?.day}
+                            ${data?.data?.birthday?.month}
+                            ${data?.data?.birthday?.year}`}
+                          </p>
+                        ) : (
+                          <p
+                            className="text-[14px] font-medium text-blue-500 cursor-pointer"
+                            onClick={handleEdit}
+                          >
+                            Add Birthday
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
