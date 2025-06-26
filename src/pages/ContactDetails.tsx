@@ -153,7 +153,7 @@ const ContactDetails: FC = () => {
                     <img
                       src={data?.data?.avatar?.url}
                       alt="Avatar"
-                      className="w-full rounded-full"
+                      className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
                     <img
@@ -270,7 +270,7 @@ const ContactDetails: FC = () => {
           {isDelete && <SingleDeleteModal handleIsDelete={handleIsDelete} />}
         </section>
       ) : (
-        <EditContact handleEdit={handleEdit} />
+        <EditContact contactData={data?.data} handleEdit={handleEdit} />
       )}
     </>
   );

@@ -96,3 +96,26 @@ export interface IFavoritePayload {
   id: string;
   payload: IFavorite;
 }
+
+export type TContacts = {
+  _id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  avatar: TImage;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  worksAt: TWorksAt;
+  location: TLocation;
+  birthday: TBirthDate;
+  isFavorite: boolean;
+  isTrashed: boolean;
+  trashedAt: Date | string;
+  userId: string;
+};
+
+export interface IEditContactMainProps {
+  handleEdit?: () => void;
+  contactData?: TContacts;
+}
