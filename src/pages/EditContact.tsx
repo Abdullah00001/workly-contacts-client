@@ -13,24 +13,30 @@ import {
 } from 'react-icons/md';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  IBirthDate,
+  IEditContact,
   IEditContactMainProps,
+  ILocation,
+  IUpdateOneContactPayload,
+  IWorksAt,
   Month,
   TContacts,
 } from '../interfaces/contacts.interface';
-import ImageServices from '../services/image.services';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast, ToastContainer } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import { contactSchema } from '../schemas/contacts.schemas';
 import ContactServices from '../services/contacts.services';
 
-const { processImageUpload, processImageDelete } = ImageServices;
-const {} = ContactServices;
+const { processPatchEditContact, processPutEditContact } = ContactServices;
 
 const EditContact: FC<IEditContactMainProps> = ({
   contactData,
   handleEdit,
+  isEdit,
+  setIsEdit,
 }) => {
+  const [newImage, setNewImage] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,43 +77,58 @@ const EditContact: FC<IEditContactMainProps> = ({
     updatedAt: '',
   });
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
-  const { mutate: uploadImage, isPending: isUploading } = useMutation({
-    mutationFn: async (payload: FormData) => await processImageUpload(payload),
-    onSuccess: (data) => {
-      setPayload((prev) => ({
-        ...prev,
-        avatar: {
-          publicId: data?.data?.image?.publicId,
-          url: data?.data?.image?.url,
-        },
-      }));
-      toast.success('Image uploaded successfully!');
-    },
-    onError: (error: any) => {
-      console.error('Image upload failed:', error);
-      toast.error(
-        error?.response?.data?.message ||
-          'Failed to upload image. Please try again.'
-      );
-    },
-  });
-  const { mutate: deleteImage, isPending: isDeleteing } = useMutation({
-    mutationFn: async (payload: string) => await processImageDelete(payload),
-    onSuccess: () => {
-      setPayload((prev) => ({
-        ...prev,
-        avatar: { ...prev.avatar, publicId: null, url: null },
-      }));
-      toast.success('Image delete successfully!');
-    },
-    onError: (error: any) => {
-      console.error('Image delete failed:', error);
-      toast.error(
-        error?.response?.data?.message ||
-          'Failed to delete image. Please try again.'
-      );
-    },
-  });
+  const { mutate: putEditContact, isPending: isPutEditContactPending } =
+    useMutation({
+      mutationFn: async ({ id, payload }: IEditContact) =>
+        await processPutEditContact({ id, payload }),
+      onSuccess: (data) => {
+        toast.dismiss();
+        const response = data?.data;
+        setPayload((prev) => ({ ...prev, response }));
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        queryClient.invalidateQueries({
+          queryKey: ['contacts', response?._id],
+        });
+        toast.success('Contact Updated');
+        setTimeout(() => {
+          setIsEdit(false);
+        }, 2000);
+      },
+      onError: (error: any) => {
+        console.error('Contact update failed:', error);
+        toast.dismiss();
+        toast.error(
+          error?.response?.data?.message ||
+            'Failed to update contact. Please try again.'
+        );
+      },
+    });
+  const { mutate: patchEditContact, isPending: isPatchEditContactPending } =
+    useMutation({
+      mutationFn: async ({ id, payload }: IEditContact) =>
+        await processPatchEditContact({ id, payload }),
+      onSuccess: (data) => {
+        toast.dismiss();
+        const response = data?.data;
+        setPayload((prev) => ({ ...prev, response }));
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        queryClient.invalidateQueries({
+          queryKey: ['contacts', response?._id],
+        });
+        toast.success('Contact Updated');
+        setTimeout(() => {
+          setIsEdit(false);
+        }, 2000);
+      },
+      onError: (error: any) => {
+        console.error('Contact update failed:', error);
+        toast.dismiss();
+        toast.error(
+          error?.response?.data?.message ||
+            'Failed to update contact. Please try again.'
+        );
+      },
+    });
   const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPayload((prev) => ({ ...prev, [name]: value }));
@@ -174,20 +195,36 @@ const EditContact: FC<IEditContactMainProps> = ({
       toast.error('Image size should be less than 5MB.');
       return;
     }
-
-    const payload = new FormData();
-    payload.append('image', file);
-    uploadImage(payload);
+    if (payload.avatar?.url) {
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, url: null },
+      }));
+    }
+    setNewImage(file);
+    const previewUrl = URL.createObjectURL(file);
+    setPayload((prev) => ({
+      ...prev,
+      avatar: {
+        ...prev.avatar,
+        url: previewUrl,
+      },
+    }));
   };
 
   const handleImageClick = () => {
-    if (isUploading || isDeleteing) return;
     fileInputRef.current?.click();
   };
 
   const removeImage = () => {
-    if (isUploading || isDeleteing) return;
-    deleteImage(payload.avatar?.publicId as string);
+    if (payload.avatar?.url) {
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, url: null },
+      }));
+    } else {
+      setNewImage(null);
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -207,10 +244,57 @@ const EditContact: FC<IEditContactMainProps> = ({
       setFieldErrors(fieldErrors);
       return;
     }
+    if (newImage) {
+      const {
+        avatar,
+        birthday,
+        email,
+        firstName,
+        lastName,
+        location,
+        phone,
+        worksAt,
+        _id,
+      } = payload;
+      const updatedPayload = new FormData();
+      if (avatar) updatedPayload.append('avatar', JSON.stringify(avatar));
+      if (birthday) updatedPayload.append('birthday', JSON.stringify(birthday));
+      if (email) updatedPayload.append('email', email);
+      if (firstName) updatedPayload.append('firstName', firstName);
+      if (lastName) updatedPayload.append('lastName', lastName);
+      if (location) updatedPayload.append('location', JSON.stringify(location));
+      if (phone) updatedPayload.append('phone', phone);
+      if (worksAt) updatedPayload.append('worksAt', JSON.stringify(worksAt));
+      updatedPayload.append('avatarImage', newImage);
+      putEditContact({ id: _id as string, payload: updatedPayload });
+      return;
+    }
+    const {
+      avatar,
+      birthday,
+      email,
+      firstName,
+      lastName,
+      location,
+      phone,
+      worksAt,
+      _id,
+    } = payload;
+    const updatedPayload: IUpdateOneContactPayload = {
+      avatar,
+      birthday: birthday as IBirthDate,
+      email,
+      firstName,
+      lastName,
+      location: location as ILocation,
+      phone,
+      worksAt: worksAt as IWorksAt,
+    };
+    patchEditContact({ id: _id as string, payload: updatedPayload });
+    return;
   };
   useEffect(() => {
     if (contactData) {
-      console.log(contactData);
       setPayload(contactData);
     }
   }, [contactData]);
@@ -220,7 +304,7 @@ const EditContact: FC<IEditContactMainProps> = ({
       <div className="w-full lg:w-ful  xl:w-[950px] xl:p-4 ">
         <div className="flex justify-between items-center">
           <div
-            onClick={handleEdit ? handleEdit : handleReturn}
+            onClick={isEdit ? handleEdit : handleReturn}
             className="p-2 cursor-pointer"
           >
             <FaArrowLeft size={20} className=" text-[#444746] " />
@@ -248,7 +332,9 @@ const EditContact: FC<IEditContactMainProps> = ({
                   <div className="flex space-x-2">
                     <button
                       onClick={handleImageClick}
-                      disabled={isUploading || isDeleteing}
+                      disabled={
+                        isPutEditContactPending || isPatchEditContactPending
+                      }
                       className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Change photo"
                     >
@@ -256,7 +342,9 @@ const EditContact: FC<IEditContactMainProps> = ({
                     </button>
                     <button
                       onClick={removeImage}
-                      disabled={isUploading || isDeleteing}
+                      disabled={
+                        isPutEditContactPending || isPatchEditContactPending
+                      }
                       className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Remove photo"
                     >
@@ -278,7 +366,7 @@ const EditContact: FC<IEditContactMainProps> = ({
                   </div>
                 </div>
                 {/* Loading overlay */}
-                {(isUploading || isDeleteing) && (
+                {(isPutEditContactPending || isPatchEditContactPending) && (
                   <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
                     <ClipLoader color="#ffffff" size={30} />
                   </div>
@@ -288,13 +376,13 @@ const EditContact: FC<IEditContactMainProps> = ({
               <div
                 onClick={handleImageClick}
                 className={`flex justify-center items-center h-full cursor-pointer hover:bg-blue-300 transition-colors rounded-full relative group ${
-                  isUploading || isDeleteing
+                  isPutEditContactPending || isPatchEditContactPending
                     ? 'opacity-50 cursor-not-allowed'
                     : ''
                 }`}
               >
                 <div className="relative">
-                  {isUploading || isDeleteing ? (
+                  {isPutEditContactPending || isPatchEditContactPending ? (
                     <div className="flex items-center justify-center">
                       <ClipLoader color="#2563eb" size={40} />
                     </div>
@@ -321,7 +409,7 @@ const EditContact: FC<IEditContactMainProps> = ({
               accept="image/*"
               onChange={handleImageUpload}
               className="hidden"
-              disabled={isUploading || isDeleteing}
+              disabled={isPutEditContactPending || isPatchEditContactPending}
             />
           </div>
         </div>

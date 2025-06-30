@@ -1,10 +1,17 @@
 import ContactApi from '../apis/contacts.apis';
 import {
   ICreateContactPayload,
+  IEditContact,
   IFavoritePayload,
 } from '../interfaces/contacts.interface';
 
-const { createContact, getSingleContact, changeFavoriteStatus } = ContactApi;
+const {
+  createContact,
+  getSingleContact,
+  changeFavoriteStatus,
+  patchEditContact,
+  putEditContact,
+} = ContactApi;
 
 const ContactServices = {
   processCreateContact: async (payload: ICreateContactPayload) => {
@@ -34,6 +41,24 @@ const ContactServices = {
       throw new Error(
         'Unknown Error Occurred In Change Favorite Status Service'
       );
+    }
+  },
+  processPutEditContact: async (payload: IEditContact) => {
+    try {
+      const response = await putEditContact(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Put Edit Contact Service');
+    }
+  },
+  processPatchEditContact: async (payload: IEditContact) => {
+    try {
+      const response = await patchEditContact(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Patch Edit Contact Service');
     }
   },
 };

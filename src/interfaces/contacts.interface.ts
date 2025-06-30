@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 export interface IContactInfo {
   id: string;
   name: string;
@@ -116,6 +117,25 @@ export type TContacts = {
 };
 
 export interface IEditContactMainProps {
-  handleEdit?: () => void;
-  contactData?: TContacts;
+  setIsEdit: Dispatch<SetStateAction<true | false>>;
+  isEdit: boolean;
+  handleEdit: () => void;
+  contactData: TContacts;
+}
+export interface IUpdateOneContactPayload {
+  avatarImage?: string;
+  avatar?: TImage;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  worksAt?: IWorksAt;
+  location?: ILocation;
+  birthday?: IBirthDate;
+}
+export type TEditContactPayload = IUpdateOneContactPayload | FormData;
+
+export interface IEditContact {
+  id: string;
+  payload: TEditContactPayload;
 }

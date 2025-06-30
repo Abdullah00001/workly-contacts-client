@@ -270,7 +270,12 @@ const ContactDetails: FC = () => {
           {isDelete && <SingleDeleteModal handleIsDelete={handleIsDelete} />}
         </section>
       ) : (
-        <EditContact contactData={data?.data} handleEdit={handleEdit} />
+        <EditContact
+          contactData={data?.data}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          handleEdit={handleEdit}
+        />
       )}
     </>
   );
