@@ -23,6 +23,7 @@ import FoundAndSentOtp from '../pages/FoundAndSentOtp';
 import RecoverStep1Guard from '../components/Protected/RecoverStep1Guard';
 import RecoverStep2Guard from '../components/Protected/RecoverStep2Guard';
 import RecoverStep3Guard from '../components/Protected/RecoverStep3Guard';
+import PersonEdit from '../pages/PersonEdit';
 
 const Route = createBrowserRouter([
   {
@@ -125,7 +126,7 @@ const Route = createBrowserRouter([
       },
       {
         path: 'person/edit/:id',
-        element: <EditContact />,
+        element: <PersonEdit />,
       },
       {
         path: 'new',

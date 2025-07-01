@@ -1,6 +1,9 @@
-import { UserRound } from 'lucide-react';
 import { FC, useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import ContactServices from '../services/contacts.services';
+import { ClipLoader } from 'react-spinners';
+import { FaArrowLeft, FaExclamationTriangle } from 'react-icons/fa';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import {
   MdCameraAlt,
@@ -11,39 +14,32 @@ import {
   MdPersonOutline,
   MdPhone,
 } from 'react-icons/md';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   IBirthDate,
   IEditContact,
-  IEditContactMainProps,
   ILocation,
   IUpdateOneContactPayload,
   IWorksAt,
   Month,
   TContacts,
 } from '../interfaces/contacts.interface';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast, ToastContainer } from 'react-toastify';
-import { ClipLoader } from 'react-spinners';
 import { contactSchema } from '../schemas/contacts.schemas';
-import ContactServices from '../services/contacts.services';
+import { UserRound } from 'lucide-react';
 
-const { processPatchEditContact, processPutEditContact } = ContactServices;
+const {
+  processPatchEditContact,
+  processPutEditContact,
+  processGetSingleContact,
+} = ContactServices;
 
-const EditContact: FC<IEditContactMainProps> = ({
-  contactData,
-  handleEdit,
-  isEdit,
-  setIsEdit,
-}) => {
+const PersonEdit: FC = () => {
+  const { id } = useParams();
   const [newImage, setNewImage] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
-  const handleReturn = () => {
-    const returnPath = location?.state?.from || '/';
-    navigate(returnPath);
-  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [payload, setPayload] = useState<TContacts>({
     name: '',
     avatar: {
@@ -77,7 +73,13 @@ const EditContact: FC<IEditContactMainProps> = ({
     createdAt: '',
     updatedAt: '',
   });
-  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ['contact', id],
+    queryFn: async () => {
+      return await processGetSingleContact(id as string);
+    },
+    enabled: !!id,
+  });
   const { mutate: putEditContact, isPending: isPutEditContactPending } =
     useMutation({
       mutationFn: async ({ id, payload }: IEditContact) =>
@@ -92,7 +94,7 @@ const EditContact: FC<IEditContactMainProps> = ({
         });
         toast.success('Contact Updated');
         setTimeout(() => {
-          setIsEdit(false);
+          navigate(`/person/${response?._id}`);
         }, 2000);
       },
       onError: (error: any) => {
@@ -118,7 +120,7 @@ const EditContact: FC<IEditContactMainProps> = ({
         });
         toast.success('Contact Updated');
         setTimeout(() => {
-          setIsEdit(false);
+          navigate(`/person/${response?._id}`);
         }, 2000);
       },
       onError: (error: any) => {
@@ -130,6 +132,7 @@ const EditContact: FC<IEditContactMainProps> = ({
         );
       },
     });
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPayload((prev) => ({ ...prev, [name]: value }));
@@ -180,7 +183,27 @@ const EditContact: FC<IEditContactMainProps> = ({
       birthday: { ...prev.birthday, [name]: updatedValue },
     }));
   };
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleReturn = () => {
+    const returnPath = location?.state?.from || '/';
+    navigate(returnPath);
+  };
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const removeImage = () => {
+    if (payload.avatar?.url) {
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, url: null },
+      }));
+    } else {
+      setNewImage(null);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -211,24 +234,6 @@ const EditContact: FC<IEditContactMainProps> = ({
         url: previewUrl,
       },
     }));
-  };
-
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const removeImage = () => {
-    if (payload.avatar?.url) {
-      setPayload((prev) => ({
-        ...prev,
-        avatar: { ...prev.avatar, url: null },
-      }));
-    } else {
-      setNewImage(null);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   };
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
@@ -295,19 +300,40 @@ const EditContact: FC<IEditContactMainProps> = ({
     return;
   };
   useEffect(() => {
-    if (contactData) {
-      setPayload(contactData);
-    }
-  }, [contactData]);
+    if (isPending && !data) return;
+    setPayload(data?.data);
+  }, [data?.data]);
+  if (isPending) {
+    return (
+      <div className="flex justify-center  items-center min-h-screen">
+        <ClipLoader color="#3B82F6" size={50} />
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen  text-red-600 px-4">
+        <FaExclamationTriangle size={50} className="text-red-500 mb-4" />
+        <h1 className="text-2xl font-semibold mb-2">Something went wrong</h1>
+        <p className="text-lg text-center max-w-md">
+          {error.message ||
+            'An unexpected error occurred. Please try again later.'}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg text-white font-medium"
+        >
+          Refresh Page
+        </button>
+      </div>
+    );
+  }
   return (
     <section className="lg:h-full lg:overflow-y-scroll">
       <ToastContainer position="top-center" />
       <div className="w-full lg:w-ful  xl:w-[950px] xl:p-4 ">
         <div className="flex justify-between items-center">
-          <div
-            onClick={isEdit ? handleEdit : handleReturn}
-            className="p-2 cursor-pointer"
-          >
+          <div onClick={handleReturn} className="p-2 cursor-pointer">
             <FaArrowLeft size={20} className=" text-[#444746] " />
           </div>
           <div className="flex items-center justify-end space-x-1">
@@ -428,7 +454,7 @@ const EditContact: FC<IEditContactMainProps> = ({
                     placeholder="First Name"
                     type="text"
                     className={`${
-                      fieldErrors.email && 'border-red-500'
+                      fieldErrors.firstName && 'border-red-500'
                     } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="firstName"
                     id="firstName"
@@ -446,7 +472,7 @@ const EditContact: FC<IEditContactMainProps> = ({
                     placeholder="Last Name"
                     type="text"
                     className={`${
-                      fieldErrors.email && 'border-red-500'
+                      fieldErrors.lastName && 'border-red-500'
                     } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="lastName"
                     id="lastName"
@@ -534,7 +560,7 @@ const EditContact: FC<IEditContactMainProps> = ({
                     placeholder="Phone"
                     type="text"
                     className={`${
-                      fieldErrors.email && 'border-red-500'
+                      fieldErrors.phone && 'border-red-500'
                     } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="phone"
                     id="phone"
@@ -677,4 +703,4 @@ const EditContact: FC<IEditContactMainProps> = ({
   );
 };
 
-export default EditContact;
+export default PersonEdit;
