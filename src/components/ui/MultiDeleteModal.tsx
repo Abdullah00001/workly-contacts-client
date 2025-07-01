@@ -1,15 +1,60 @@
-import { FC } from "react";
+import { FC, Dispatch, SetStateAction, useEffect } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import ContactServices from '../../services/contacts.services';
+import {
+  IBulkTrashPayload,
+  TContacts,
+} from '../../interfaces/contacts.interface';
 interface ISingleDeleteModalProps {
   handleIsDelete: () => void;
   selectedItems: string[];
+  setContacts: Dispatch<SetStateAction<TContacts[]>>;
+  setSelectedContacts: Dispatch<SetStateAction<string[]>>;
 }
-const MultiDeleteModal: FC<ISingleDeleteModalProps> = ({ handleIsDelete,selectedItems }) => {
+
+const { processBulkTrash } = ContactServices;
+
+const MultiDeleteModal: FC<ISingleDeleteModalProps> = ({
+  handleIsDelete,
+  selectedItems,
+  setContacts,
+  setSelectedContacts,
+}) => {
+  const queryClient = useQueryClient();
+  const { mutate: addBulkTrash, isPending } = useMutation({
+    mutationFn: async (payload: IBulkTrashPayload) =>
+      await processBulkTrash(payload),
+    onSuccess: () => {
+      toast.dismiss();
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      selectedItems.forEach((item) =>
+        queryClient.invalidateQueries({ queryKey: ['contact', item] })
+      );
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      setContacts((prev) =>
+        prev.filter((item) => !selectedItems.includes(item._id as string))
+      );
+      setSelectedContacts([]);
+      toast.success(`${selectedItems.length} add to trash`);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
   const processDelete = () => {
-    console.log(selectedItems);
+    addBulkTrash({ contactIds: selectedItems });
+    handleIsDelete();
   };
+  useEffect(() => {
+    if (!isPending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isPending]);
   return (
     <div
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       className="fixed inset-0 flex items-center justify-center p-5 md:p-0"
     >
       <div className="bg-white p-5  rounded-lg md:p-6 md:w-96 shadow-lg">
@@ -28,6 +73,7 @@ const MultiDeleteModal: FC<ISingleDeleteModalProps> = ({ handleIsDelete,selected
           <button
             className="px-4 py-2 text-[14px] bg-red-600 text-white rounded-lg hover:bg-red-700"
             onClick={processDelete}
+            disabled={isPending}
           >
             Move To Trash
           </button>

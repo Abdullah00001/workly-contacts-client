@@ -1,6 +1,7 @@
 import axiosClient from '../configs/axios.configs';
 import env from '../configs/env.configs';
 import {
+  IBulkTrashPayload,
   ICreateContactPayload,
   IEditContact,
   IFavoritePayload,
@@ -30,6 +31,9 @@ const ContactApi = {
   },
   getAllContacts: () => {
     return axiosClient.get(`${BASE_URL}/contacts`);
+  },
+  bulkTrash: (payload: IBulkTrashPayload) => {
+    return axiosClient.patch(`${BASE_URL}/trash`, payload);
   },
 };
 

@@ -105,7 +105,7 @@ export type TContacts = {
   avatar: TImage;
   firstName: string;
   lastName: string;
-  name:string
+  name: string;
   email: string;
   phone: string;
   worksAt: TWorksAt;
@@ -139,4 +139,8 @@ export type TEditContactPayload = IUpdateOneContactPayload | FormData;
 export interface IEditContact {
   id: string;
   payload: TEditContactPayload;
+}
+
+export interface IBulkTrashPayload {
+  contactIds: string[];
 }

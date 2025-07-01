@@ -1,5 +1,6 @@
 import ContactApi from '../apis/contacts.apis';
 import {
+  IBulkTrashPayload,
   ICreateContactPayload,
   IEditContact,
   IFavoritePayload,
@@ -12,6 +13,7 @@ const {
   patchEditContact,
   putEditContact,
   getAllContacts,
+  bulkTrash,
 } = ContactApi;
 
 const ContactServices = {
@@ -69,6 +71,15 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In Get All Contact Service');
+    }
+  },
+  processBulkTrash: async (payload: IBulkTrashPayload) => {
+    try {
+      const response = await bulkTrash(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Bulk Trash Service');
     }
   },
 };

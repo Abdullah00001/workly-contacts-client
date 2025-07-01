@@ -14,9 +14,9 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   const [isDropdown, setIsDropdown] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
+  const [contacts, setContacts] = useState<TContacts[] | []>([]);
   const handleSelectAll = () => {
-    setSelectedContacts(contactData.map(({ _id }) => _id as string));
+    setSelectedContacts(contacts.map(({ _id }) => _id as string));
     setIsDropdown(false);
   };
 
@@ -31,7 +31,6 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    console.log(contactData);
     function handleClickOutside(event: MouseEvent) {
       if (
         dropdownRef.current &&
@@ -43,7 +42,9 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
+  useEffect(() => {
+    setContacts(contactData);
+  }, [contactData]);
   return (
     <div className="w-full overflow-y-scroll relative">
       <table className="w-full table-fixed">
@@ -141,7 +142,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
             <td className="hidden py-2  md:table-cell"></td>
             <td className="py-2 hidden lg:table-cell"></td>
           </tr>
-          {contactData.map(
+          {contacts.map(
             ({ email, phone, _id, name, avatar, isFavorite, isTrashed }) => (
               <>
                 {!isTrashed && (
@@ -163,8 +164,10 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
       </table>
       {isDelete && (
         <MultiDeleteModal
+          setContacts={setContacts}
           handleIsDelete={handleDelete}
           selectedItems={selectedContacts}
+          setSelectedContacts={setSelectedContacts}
         />
       )}
     </div>
