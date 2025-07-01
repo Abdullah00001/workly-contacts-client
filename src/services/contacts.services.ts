@@ -11,6 +11,7 @@ const {
   changeFavoriteStatus,
   patchEditContact,
   putEditContact,
+  getAllContacts,
 } = ContactApi;
 
 const ContactServices = {
@@ -59,6 +60,15 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In Patch Edit Contact Service');
+    }
+  },
+  processGetAllContacts: async () => {
+    try {
+      const response = await getAllContacts();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Get All Contact Service');
     }
   },
 };

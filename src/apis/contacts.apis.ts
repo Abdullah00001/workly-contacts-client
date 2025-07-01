@@ -28,6 +28,9 @@ const ContactApi = {
   patchEditContact: ({ id, payload }: IEditContact) => {
     return axiosClient.patch(`${BASE_URL}/contacts/${id}`, payload);
   },
+  getAllContacts: () => {
+    return axiosClient.get(`${BASE_URL}/contacts`);
+  },
 };
 
 export default ContactApi;

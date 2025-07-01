@@ -1,12 +1,12 @@
-import { FC, useState, useRef, useEffect } from "react";
-import { FaChevronDown, FaMinusSquare, FaTrash } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
-import { IContactInfo } from "../../interfaces/contacts.interface";
-import TableBodyRow from "../ui/table/TableBodyRow";
-import MultiDeleteModal from "../ui/MultiDeleteModal";
+import { FC, useState, useRef, useEffect } from 'react';
+import { FaChevronDown, FaMinusSquare, FaTrash } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TContacts } from '../../interfaces/contacts.interface';
+import TableBodyRow from '../ui/table/TableBodyRow';
+import MultiDeleteModal from '../ui/MultiDeleteModal';
 
 interface ContactTableProps {
-  contactData: IContactInfo[];
+  contactData: TContacts[];
 }
 
 const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
@@ -16,7 +16,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleSelectAll = () => {
-    setSelectedContacts(contactData.map(({ id }) => id));
+    setSelectedContacts(contactData.map(({ _id }) => _id as string));
     setIsDropdown(false);
   };
 
@@ -31,6 +31,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
 
   // Close dropdown when clicking outside
   useEffect(() => {
+    console.log(contactData);
     function handleClickOutside(event: MouseEvent) {
       if (
         dropdownRef.current &&
@@ -39,8 +40,8 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
         setIsDropdown(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
@@ -70,7 +71,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                           initial={{ opacity: 0, y: -5 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -5 }}
-                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                          transition={{ duration: 0.2, ease: 'easeInOut' }}
                           ref={dropdownRef}
                           className="absolute left-24 mt-27 bg-white border rounded-lg shadow-lg w-32 z-50"
                         >
@@ -91,7 +92,10 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                     </AnimatePresence>
                   </div>
 
-                  <div onClick={handleDelete} className="block pr-3 md:hidden cursor-pointer">
+                  <div
+                    onClick={handleDelete}
+                    className="block pr-3 md:hidden cursor-pointer"
+                  >
                     <FaTrash size={15} />
                   </div>
                 </div>
@@ -137,17 +141,24 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
             <td className="hidden py-2  md:table-cell"></td>
             <td className="py-2 hidden lg:table-cell"></td>
           </tr>
-          {contactData.map(({ email, id, name, phone }) => (
-            <TableBodyRow
-              selectedContacts={selectedContacts}
-              key={id}
-              email={email}
-              name={name}
-              phone={phone}
-              id={id}
-              setSelectedContacts={setSelectedContacts}
-            />
-          ))}
+          {contactData.map(
+            ({ email, phone, _id, name, avatar, isFavorite, isTrashed }) => (
+              <>
+                {!isTrashed && (
+                  <TableBodyRow
+                    selectedContacts={selectedContacts}
+                    avatar={avatar}
+                    isFavorite={isFavorite}
+                    email={email}
+                    name={name}
+                    phone={phone}
+                    id={_id as string}
+                    setSelectedContacts={setSelectedContacts}
+                  />
+                )}
+              </>
+            )
+          )}
         </tbody>
       </table>
       {isDelete && (

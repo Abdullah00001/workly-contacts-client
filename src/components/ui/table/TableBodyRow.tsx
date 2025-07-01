@@ -1,27 +1,73 @@
-import { ChangeEvent, Dispatch, FC, MouseEvent, useState } from "react";
-import { FaEdit, FaStar, FaRegStar } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  MouseEvent,
+  useEffect,
+  useState,
+} from 'react';
+import { FaEdit, FaStar, FaRegStar } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import ContactServices from '../../../services/contacts.services';
+import {
+  IFavoritePayload,
+  TImage,
+} from '../../../interfaces/contacts.interface';
 
 interface ITableBodyRowProps {
+  name: string;
   email: string;
   phone: string;
-  name: string;
+  isFavorite: boolean;
+  avatar: TImage;
   id: string;
   selectedContacts: string[];
   setSelectedContacts: Dispatch<React.SetStateAction<string[]>>;
 }
+const { processChangeFavoriteStatus } = ContactServices;
 
 const TableBodyRow: FC<ITableBodyRowProps> = ({
   email,
   phone,
   name,
   id,
+  avatar,
+  isFavorite: isFavoriteProp,
   selectedContacts,
   setSelectedContacts,
 }) => {
+  const queryClient = useQueryClient();
   const isSelected = selectedContacts.includes(id);
+
+  const [isFavorite, setIsFavorite] = useState<boolean>(isFavoriteProp);
   const [isHover, setIsHover] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { mutate: changeFavoriteStatus, isPending } = useMutation({
+    mutationFn: async ({ id, payload }: IFavoritePayload) =>
+      await processChangeFavoriteStatus({ id, payload }),
+    onSuccess: (data) => {
+      toast.dismiss();
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['contact', id] });
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      if (data.data.isFavorite === false) {
+        setIsFavorite(data.data.isFavorite);
+        toast.success(
+          `Removed ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
+        );
+      }
+      if (data.data.isFavorite === true) {
+        setIsFavorite(data.data.isFavorite);
+        toast.success(
+          `Added ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
+        );
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
   const handleSelect = (e: ChangeEvent<HTMLInputElement> | MouseEvent) => {
     e.stopPropagation();
     setSelectedContacts((prev) =>
@@ -30,7 +76,7 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
   };
   const handleFavorite = (e: MouseEvent) => {
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    changeFavoriteStatus({ id, payload: { isFavorite: !isFavorite } });
   };
   const handleEditClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -40,22 +86,27 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
   const handleDetails = (e: MouseEvent<HTMLTableRowElement>) => {
     const target = e.target as HTMLElement;
     if (
-      target.tagName === "INPUT" ||
-      target.tagName === "BUTTON" ||
-      target.closest("svg") ||
-      target.closest("label")
+      target.tagName === 'INPUT' ||
+      target.tagName === 'BUTTON' ||
+      target.closest('svg') ||
+      target.closest('label')
     ) {
       return;
     }
     navigate(`/person/${id}`, { state: { from: location.pathname } });
   };
+  useEffect(() => {
+    if (!isPending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isPending]);
   return (
     <tr
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       onClick={handleDetails}
-      className={`${isSelected && "bg-blue-300"} ${
-        isSelected ? "hover:bg-blue-300" : "hover:bg-gray-300"
+      className={`${isSelected && 'bg-blue-300'} ${
+        isSelected ? 'hover:bg-blue-300' : 'hover:bg-gray-300'
       }  cursor-pointer transition-all duration-300 ease-in-out`}
     >
       {/* For Laptop And Desktop Devices */}
@@ -87,11 +138,19 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
                   handleSelect(e);
                 }}
               >
-                <img
-                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
-                  alt="Avatar"
-                  className="w-10 h-10 cursor-pointer rounded-full"
-                />
+                {avatar.url ? (
+                  <img
+                    src={avatar.url}
+                    alt="Avatar"
+                    className="w-10 h-10 cursor-pointer rounded-full"
+                  />
+                ) : (
+                  <img
+                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
+                    alt="Avatar"
+                    className="w-10 h-10 cursor-pointer rounded-full"
+                  />
+                )}
               </div>
             )}
           </div>
@@ -113,11 +172,21 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
                 className="cursor-pointer w-5 h-5"
               />
             ) : (
-              <img
-                src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
-                alt="Avatar"
-                className="w-10 h-10 cursor-pointer rounded-full"
-              />
+              <>
+                {avatar.url ? (
+                  <img
+                    src={avatar.url}
+                    alt="Avatar"
+                    className="w-10 h-10 cursor-pointer rounded-full"
+                  />
+                ) : (
+                  <img
+                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
+                    alt="Avatar"
+                    className="w-10 h-10 cursor-pointer rounded-full"
+                  />
+                )}
+              </>
             )}
           </div>
           <div>{name}</div>
