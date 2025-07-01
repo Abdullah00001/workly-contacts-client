@@ -1,11 +1,11 @@
 import { FC, Dispatch, SetStateAction, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import ContactServices from '../../services/contacts.services';
+import ContactServices from '../../../services/contacts.services';
 import {
   IBulkTrashPayload,
   TContacts,
-} from '../../interfaces/contacts.interface';
+} from '../../../interfaces/contacts.interface';
 interface ISingleDeleteModalProps {
   handleIsDelete: () => void;
   selectedItems: string[];
@@ -15,7 +15,7 @@ interface ISingleDeleteModalProps {
 
 const { processBulkTrash } = ContactServices;
 
-const MultiDeleteModal: FC<ISingleDeleteModalProps> = ({
+const MultiTrashModal: FC<ISingleDeleteModalProps> = ({
   handleIsDelete,
   selectedItems,
   setContacts,
@@ -83,4 +83,4 @@ const MultiDeleteModal: FC<ISingleDeleteModalProps> = ({
   );
 };
 
-export default MultiDeleteModal;
+export default MultiTrashModal;

@@ -1,29 +1,52 @@
-import { FC, useEffect, useState } from "react";
-import ContactTable from "../components/layout/ContactTable";
-import { IContactInfo } from "../interfaces/contacts.interface";
-import axios from "axios";
+import { FC } from 'react';
+import { TTrashContact } from '../interfaces/contacts.interface';
+import { ToastContainer } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
+import ContactServices from '../services/contacts.services';
+import { useQuery } from '@tanstack/react-query';
+import TrashTable from '../components/layout/TrashTable';
+
+const { processGetAllTrashes } = ContactServices;
 
 const Trash: FC = () => {
-  const [contactData, setContactData] = useState<IContactInfo[] | []>([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await axios.get(
-          "https://mocki.io/v1/5b7d1064-5c3e-44f8-a59c-6789ae383e58"
-        );
-        setContactData(data?.data);
-      } catch (error) {
-        setContactData([]);
-        console.log(error);
-      }
-    })();
-  }, []);
+  const { data, isPending } = useQuery({
+    queryKey: ['trash'],
+    queryFn: async () => await processGetAllTrashes(),
+  });
+  const contactData: TTrashContact[] = data?.data || [];
   return (
     <div className="max-w-full">
-      <div className="mb-6">
-        <h1 className="text-2xl font-medium">Trash {contactData?.length}</h1>
-      </div>
-      <ContactTable contactData={contactData} />
+      <ToastContainer position="top-center" />
+      {isPending ? (
+        <div className="flex justify-center items-center h-[100vh]">
+          <div>
+            <ClipLoader
+              color="#3B82F6"
+              loading={isPending}
+              size={50}
+              aria-label="Loading contacts"
+            />
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="mt-1">
+            <div className="flex justify-start items-center gap-2 bg-[#e1e3e1]">
+              <p className="p-4  text-[#444746]">
+                Contacts that have been in Trash more than 30 days will be
+                deleted forever
+              </p>
+              <button className=" text-[#115bd0] font-[400] px-4 py-2 hover:bg-[#d0d8e0] hover:rounded-[40px]">
+                Empty Trash now
+              </button>
+            </div>
+          </div>
+          <div className="mb-6 mt-3">
+            <h1 className="text-2xl pl-2 font-medium">Trash </h1>
+          </div>
+          <TrashTable contactData={contactData} />
+        </>
+      )}
     </div>
   );
 };

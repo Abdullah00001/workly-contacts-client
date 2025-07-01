@@ -38,6 +38,12 @@ const ContactApi = {
   getAllFavorites: () => {
     return axiosClient.get(`${BASE_URL}/favorites`);
   },
+  getAllTrashes: () => {
+    return axiosClient.get(`${BASE_URL}/trash`);
+  },
+  bulkDelete: (payload: IBulkTrashPayload) => {
+    return axiosClient.delete(`${BASE_URL}/contacts/delete`, { data: payload });
+  },
 };
 
 export default ContactApi;

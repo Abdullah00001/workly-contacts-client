@@ -1,20 +1,20 @@
 import { FC, useState, useRef, useEffect } from 'react';
 import { FaChevronDown, FaMinusSquare, FaTrash } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TContacts } from '../../interfaces/contacts.interface';
-import TableBodyRow from '../ui/table/TableBodyRow';
-import MultiDeleteModal from '../ui/modal/MultiTrashModal';
+import { TTrashContact } from '../../interfaces/contacts.interface';
+import MultiDeleteModal from '../ui/modal/MultiDeleteModal';
+import TrashTableBodyRow from '../ui/table/TrashTableBodyRow';
 
-interface ContactTableProps {
-  contactData: TContacts[];
+interface TrashTableProps {
+  contactData: TTrashContact[];
 }
 
-const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
+const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [isDropdown, setIsDropdown] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [contacts, setContacts] = useState<TContacts[] | []>([]);
+  const [contacts, setContacts] = useState<TTrashContact[] | []>([]);
   const handleSelectAll = () => {
     setSelectedContacts(contacts.map(({ _id }) => _id as string));
     setIsDropdown(false);
@@ -47,7 +47,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   }, [contactData]);
   return (
     <div className="w-full overflow-y-scroll relative">
-      <table className="w-full table-fixed">
+      <table className="w-full">
         <thead>
           {selectedContacts.length > 0 ? (
             <tr className="border-gray-600 border-b">
@@ -112,27 +112,23 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                 </div>
               </th>
               <th className="text-[16px] font-semibold text-left py-4 hidden lg:table-cell">
-                <div className="flex justify-end items-center">
-                  <div
-                    onClick={handleDelete}
-                    className="lg:block pr-3 md:hidden cursor-pointer"
-                  >
-                    <FaTrash size={15} />
-                  </div>
+                <div className="flex justify-end items-center space-x-3">
+                  <button className="cursor-pointer" onClick={handleDelete}>
+                    Delete forever
+                  </button>
+                  <button className="pr-3 cursor-pointer">Recover</button>
                 </div>
               </th>
             </tr>
           ) : (
             <tr className="border-gray-600 border-b">
-              <th className="text-[16px] font-semibold text-left pl-3 py-4">
+              <th className="w-1/3 text-[16px] font-semibold text-left pl-3 py-4">
                 Name
               </th>
-              <th className="text-[16px] font-semibold text-left py-4 hidden md:table-cell">
-                Email
+              <th className="w-1/3 text-[16px] font-semibold text-left py-4 hidden lg:table-cell">
+                Date deleted
               </th>
-              <th className="text-[16px] font-semibold text-left py-4 hidden lg:table-cell">
-                Phone
-              </th>
+              <th className="text-[16px] font-semibold text-left py-4 hidden lg:table-cell"></th>
             </tr>
           )}
         </thead>
@@ -142,15 +138,13 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
             <td className="hidden py-2  md:table-cell"></td>
             <td className="py-2 hidden lg:table-cell"></td>
           </tr>
-          {contacts.map(({ email, phone, _id, name, avatar, isFavorite }) => (
-            <TableBodyRow
+          {contacts.map(({ _id, name, avatar, trashedAt }) => (
+            <TrashTableBodyRow
               key={_id}
               selectedContacts={selectedContacts}
               avatar={avatar}
-              isFavorite={isFavorite}
-              email={email}
               name={name}
-              phone={phone}
+              trashedAt={trashedAt}
               id={_id as string}
               setSelectedContacts={setSelectedContacts}
             />
@@ -169,4 +163,4 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   );
 };
 
-export default ContactTable;
+export default TrashTable;

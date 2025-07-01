@@ -15,6 +15,8 @@ const {
   getAllContacts,
   bulkTrash,
   getAllFavorites,
+  getAllTrashes,
+  bulkDelete,
 } = ContactApi;
 
 const ContactServices = {
@@ -90,6 +92,24 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In Get All Favorites Service');
+    }
+  },
+  processGetAllTrashes: async () => {
+    try {
+      const response = await getAllTrashes();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Get All Trashes Service');
+    }
+  },
+  processBulkDelete: async (payload: IBulkTrashPayload) => {
+    try {
+      const response = await bulkDelete(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Bulk Delete Service');
     }
   },
 };

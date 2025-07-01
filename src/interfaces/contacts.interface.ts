@@ -117,6 +117,15 @@ export type TContacts = {
   userId: string;
 };
 
+export type TTrashContact = {
+  name: string;
+  avatar: TImage;
+  _id: string;
+  trashedAt: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+};
+
 export interface IEditContactMainProps {
   setIsEdit: Dispatch<SetStateAction<true | false>>;
   isEdit: boolean;
