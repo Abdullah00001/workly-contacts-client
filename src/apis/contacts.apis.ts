@@ -35,6 +35,9 @@ const ContactApi = {
   bulkTrash: (payload: IBulkTrashPayload) => {
     return axiosClient.patch(`${BASE_URL}/trash`, payload);
   },
+  getAllFavorites: () => {
+    return axiosClient.get(`${BASE_URL}/favorites`);
+  },
 };
 
 export default ContactApi;
