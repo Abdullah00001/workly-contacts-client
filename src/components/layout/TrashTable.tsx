@@ -1,5 +1,10 @@
 import { FC, useState, useRef, useEffect } from 'react';
-import { FaChevronDown, FaMinusSquare, FaTrash } from 'react-icons/fa';
+import {
+  FaChevronDown,
+  FaMinusSquare,
+  FaTrash,
+  FaEllipsisV,
+} from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TTrashContact } from '../../interfaces/contacts.interface';
 import MultiDeleteModal from '../ui/modal/MultiDeleteModal';
@@ -12,6 +17,7 @@ interface TrashTableProps {
 const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [isDropdown, setIsDropdown] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [contacts, setContacts] = useState<TTrashContact[] | []>([]);
@@ -45,6 +51,20 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
   useEffect(() => {
     setContacts(contactData);
   }, [contactData]);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="w-full overflow-y-scroll relative">
       <table className="w-full">
@@ -94,20 +114,89 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
                   </div>
 
                   <div
-                    onClick={handleDelete}
+                    ref={menuRef}
                     className="block pr-3 md:hidden cursor-pointer"
                   >
-                    <FaTrash size={15} />
+                    <button
+                      aria-haspopup="menu"
+                      aria-expanded={isMobileMenuOpen}
+                      aria-controls="mobile-actions-menu"
+                      onClick={() => setIsMobileMenuOpen(true)}
+                    >
+                      <FaEllipsisV size={18} />
+                    </button>
+                    {isMobileMenuOpen && (
+                      <div
+                        id="mobile-actions-menu"
+                        role="menu"
+                        aria-labelledby="mobile-actions-trigger"
+                        className="absolute right-4 top-7 z-50 w-40 bg-white shadow-md rounded-md border"
+                      >
+                        <button
+                          onClick={() => {
+                            // recover logic here
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        >
+                          Recover
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleDelete();
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                        >
+                          Delete Forever
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </th>
               <th className="text-[16px] font-semibold text-left py-4 hidden md:table-cell">
                 <div className="flex justify-end items-center">
                   <div
-                    onClick={handleDelete}
+                    ref={menuRef}
                     className="hidden md:block pr-3 lg:hidden cursor-pointer"
                   >
-                    <FaTrash size={15} />
+                    <button
+                      aria-haspopup="menu"
+                      aria-expanded={isMobileMenuOpen}
+                      aria-controls="mobile-actions-menu"
+                      onClick={() => setIsMobileMenuOpen(true)}
+                    >
+                      <FaEllipsisV size={18} />
+                    </button>
+
+                    {isMobileMenuOpen && (
+                      <div
+                        id="mobile-actions-menu"
+                        role="menu"
+                        aria-labelledby="mobile-actions-trigger"
+                        className="absolute mobile-menu z-50 w-40 bg-white shadow-md rounded-md border"
+                      >
+                        <button
+                          onClick={() => {
+                            // recover logic here
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        >
+                          Recover
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleDelete();
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                        >
+                          Delete Forever
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </th>

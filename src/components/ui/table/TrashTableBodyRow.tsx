@@ -21,7 +21,7 @@ interface ITrashTableBodyRowProps {
   selectedContacts: string[];
   setSelectedContacts: Dispatch<React.SetStateAction<string[]>>;
 }
-const { processChangeFavoriteStatus } = ContactServices;
+const {} = ContactServices;
 const { formatDate } = DateUtils;
 
 const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
@@ -138,6 +138,7 @@ const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
           <div>{name}</div>
         </div>
       </td>
+      <td className='lg:hidden'></td>
       {/* Date Column (centered always) */}
       <td className="w-1/3 py-2 text-center hidden lg:table-cell">
         <span>{formatDate(trashedAt)}</span>
