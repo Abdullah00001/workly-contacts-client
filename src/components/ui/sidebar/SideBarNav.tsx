@@ -1,6 +1,5 @@
 import { FC, JSX } from 'react';
 import {
-  AiOutlineClockCircle,
   AiOutlineContacts,
   AiOutlineDelete,
   AiOutlineStar,

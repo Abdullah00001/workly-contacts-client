@@ -2,7 +2,6 @@ import { FC, useState, useRef, useEffect } from 'react';
 import {
   FaChevronDown,
   FaMinusSquare,
-  FaTrash,
   FaEllipsisV,
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';

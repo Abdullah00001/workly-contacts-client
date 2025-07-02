@@ -6,7 +6,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import ContactServices from '../../../services/contacts.services';
@@ -21,7 +20,7 @@ interface ITrashTableBodyRowProps {
   selectedContacts: string[];
   setSelectedContacts: Dispatch<React.SetStateAction<string[]>>;
 }
-const {} = ContactServices;
+const { processSingleDelete } = ContactServices;
 const { formatDate } = DateUtils;
 
 const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
@@ -35,17 +34,30 @@ const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
   const queryClient = useQueryClient();
   const isSelected = selectedContacts.includes(id);
   const [isHover, setIsHover] = useState(false);
+  const { isPending: isSingleDeletePending, mutate: singleDelete } =
+    useMutation({
+      mutationFn: async () => await processSingleDelete({ id }),
+      mutationKey: ['trash', id],
+      onSuccess: () => {
+        toast.dismiss();
+        queryClient.invalidateQueries({ queryKey: ['trash'] });
+        toast.success('Contact Deleted');
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   const handleSelect = (e: ChangeEvent<HTMLInputElement> | MouseEvent) => {
     e.stopPropagation();
     setSelectedContacts((prev) =>
       isSelected ? prev.filter((contactId) => contactId !== id) : [...prev, id]
     );
   };
-  //   useEffect(() => {
-  //     if (!isPending) return;
-  //     toast.dismiss();
-  //     toast.info('Working...');
-  //   }, [isPending]);
+  useEffect(() => {
+    if (!isSingleDeletePending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isSingleDeletePending]);
   return (
     <tr
       onMouseEnter={() => setIsHover(true)}
@@ -138,7 +150,7 @@ const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
           <div>{name}</div>
         </div>
       </td>
-      <td className='lg:hidden'></td>
+      <td className="lg:hidden"></td>
       {/* Date Column (centered always) */}
       <td className="w-1/3 py-2 text-center hidden lg:table-cell">
         <span>{formatDate(trashedAt)}</span>
@@ -149,10 +161,15 @@ const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
         <div className="flex justify-end items-center space-x-2">
           {isHover && (
             <>
-              <button className="text-[#115bd0] font-[400] px-4 py-2 hover:bg-[#d0d8e0] rounded-full transition">
+              <button className="text-[#115bd0] cursor-pointer font-[400] px-4 py-2 hover:bg-[#cadff5] rounded-full transition">
                 Recover
               </button>
-              <button className="text-[#115bd0] font-[400] px-4 py-2 hover:bg-[#d0d8e0] rounded-full transition">
+              <button
+                onClick={() => {
+                  singleDelete();
+                }}
+                className="text-[#115bd0] cursor-pointer font-[400] px-4 py-2 hover:bg-[#cadff5] rounded-full transition"
+              >
                 Delete Forever
               </button>
             </>

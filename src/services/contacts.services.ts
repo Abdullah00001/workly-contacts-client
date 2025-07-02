@@ -17,6 +17,7 @@ const {
   getAllFavorites,
   getAllTrashes,
   bulkDelete,
+  singleDelete,
 } = ContactApi;
 
 const ContactServices = {
@@ -110,6 +111,15 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In Bulk Delete Service');
+    }
+  },
+  processSingleDelete: async (payload: { id: string }) => {
+    try {
+      const response = await singleDelete(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In single Delete Service');
     }
   },
 };

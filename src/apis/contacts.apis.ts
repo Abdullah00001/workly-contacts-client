@@ -44,6 +44,9 @@ const ContactApi = {
   bulkDelete: (payload: IBulkTrashPayload) => {
     return axiosClient.delete(`${BASE_URL}/contacts/delete`, { data: payload });
   },
+  singleDelete: ({ id }: { id: string }) => {
+    return axiosClient.delete(`${BASE_URL}/contacts/delete/${id}`);
+  },
 };
 
 export default ContactApi;
