@@ -31,12 +31,12 @@ const Trash: FC = () => {
       ) : (
         <>
           <div className="mt-1">
-            <div className="flex justify-start items-center gap-2 bg-[#e1e3e1]">
-              <p className="p-4  text-[#444746]">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-start  justify-between gap-2 bg-[#e1e3e1] p-4 rounded-md w-full">
+              <p className="text-[#444746] text-sm md:text-base">
                 Contacts that have been in Trash more than 30 days will be
                 deleted forever
               </p>
-              <button className=" text-[#115bd0] font-[400] px-4 py-2 hover:bg-[#d0d8e0] hover:rounded-[40px]">
+              <button className="text-[#115bd0] font-medium md:px-4 md:py-2 hover:bg-[#d0d8e0] rounded-full w-fit">
                 Empty Trash now
               </button>
             </div>
