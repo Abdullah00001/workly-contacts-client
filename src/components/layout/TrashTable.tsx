@@ -122,13 +122,12 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
             </tr>
           ) : (
             <tr className="border-gray-600 border-b">
-              <th className="w-1/3 text-[16px] font-semibold text-left pl-3 py-4">
+              <th className="text-[16px] font-semibold text-left pl-3 py-4">
                 Name
               </th>
-              <th className="w-1/3 text-[16px] font-semibold text-left py-4 hidden lg:table-cell">
+              <th className="text-[16px] font-semibold text-center py-4 hidden lg:table-cell">
                 Date deleted
               </th>
-              <th className="text-[16px] font-semibold text-left py-4 hidden lg:table-cell"></th>
             </tr>
           )}
         </thead>
