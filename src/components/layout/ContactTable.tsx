@@ -3,7 +3,7 @@ import { FaChevronDown, FaMinusSquare, FaTrash } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TContacts } from '../../interfaces/contacts.interface';
 import TableBodyRow from '../ui/table/TableBodyRow';
-import MultiDeleteModal from '../ui/modal/MultiTrashModal';
+import MultiTrashModal from '../ui/modal/MultiTrashModal';
 
 interface ContactTableProps {
   contactData: TContacts[];
@@ -158,7 +158,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
         </tbody>
       </table>
       {isDelete && (
-        <MultiDeleteModal
+        <MultiTrashModal
           setContacts={setContacts}
           handleIsDelete={handleDelete}
           selectedItems={selectedContacts}

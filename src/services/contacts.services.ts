@@ -18,6 +18,7 @@ const {
   getAllTrashes,
   bulkDelete,
   singleDelete,
+  singleContactRecover,
 } = ContactApi;
 
 const ContactServices = {
@@ -120,6 +121,15 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In single Delete Service');
+    }
+  },
+  processSingleContactRecover: async (payload: { id: string }) => {
+    try {
+      const response = await singleContactRecover(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Single Recover Service');
     }
   },
 };

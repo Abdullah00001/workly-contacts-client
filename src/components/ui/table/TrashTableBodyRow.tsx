@@ -20,7 +20,7 @@ interface ITrashTableBodyRowProps {
   selectedContacts: string[];
   setSelectedContacts: Dispatch<React.SetStateAction<string[]>>;
 }
-const { processSingleDelete } = ContactServices;
+const { processSingleDelete, processSingleContactRecover } = ContactServices;
 const { formatDate } = DateUtils;
 
 const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
@@ -47,6 +47,22 @@ const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
         toast.error(error.message);
       },
     });
+  const {
+    isPending: isSingleContactRecoverPending,
+    mutate: singleContactRecover,
+  } = useMutation({
+    mutationFn: async () => await processSingleContactRecover({ id }),
+    mutationKey: ['trash', id],
+    onSuccess: () => {
+      toast.dismiss();
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      toast.success('Contact recovered');
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
   const handleSelect = (e: ChangeEvent<HTMLInputElement> | MouseEvent) => {
     e.stopPropagation();
     setSelectedContacts((prev) =>
@@ -58,6 +74,11 @@ const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
     toast.dismiss();
     toast.info('Working...');
   }, [isSingleDeletePending]);
+  useEffect(() => {
+    if (!isSingleContactRecoverPending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isSingleContactRecoverPending]);
   return (
     <tr
       onMouseEnter={() => setIsHover(true)}
@@ -161,13 +182,14 @@ const TrashTableBodyRow: FC<ITrashTableBodyRowProps> = ({
         <div className="flex justify-end items-center space-x-2">
           {isHover && (
             <>
-              <button className="text-[#115bd0] cursor-pointer font-[400] px-4 py-2 hover:bg-[#cadff5] rounded-full transition">
+              <button
+                onClick={() => singleContactRecover()}
+                className="text-[#115bd0] cursor-pointer font-[400] px-4 py-2 hover:bg-[#cadff5] rounded-full transition"
+              >
                 Recover
               </button>
               <button
-                onClick={() => {
-                  singleDelete();
-                }}
+                onClick={() => singleDelete()}
                 className="text-[#115bd0] cursor-pointer font-[400] px-4 py-2 hover:bg-[#cadff5] rounded-full transition"
               >
                 Delete Forever

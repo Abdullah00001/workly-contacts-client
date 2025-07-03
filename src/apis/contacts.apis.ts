@@ -47,6 +47,9 @@ const ContactApi = {
   singleDelete: ({ id }: { id: string }) => {
     return axiosClient.delete(`${BASE_URL}/contacts/delete/${id}`);
   },
+  singleContactRecover: ({ id }: { id: string }) => {
+    return axiosClient.patch(`${BASE_URL}/contacts/recover/${id}`);
+  },
 };
 
 export default ContactApi;
