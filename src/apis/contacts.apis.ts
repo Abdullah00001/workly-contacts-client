@@ -1,5 +1,4 @@
 import axiosClient from '../configs/axios.configs';
-import env from '../configs/env.configs';
 import {
   IBulkTrashPayload,
   ICreateContactPayload,
@@ -7,57 +6,58 @@ import {
   IFavoritePayload,
 } from '../interfaces/contacts.interface';
 
-const { BASE_URL } = env;
-
 const ContactApi = {
   createContact: (payload: ICreateContactPayload) => {
-    return axiosClient.post(`${BASE_URL}/contacts`, payload);
+    return axiosClient.post(`/contacts`, payload);
   },
   getSingleContact: (payload: string) => {
-    return axiosClient.get(`${BASE_URL}/contacts/${payload}`);
+    return axiosClient.get(`/contacts/${payload}`);
   },
   changeFavoriteStatus: ({ id, payload }: IFavoritePayload) => {
-    return axiosClient.patch(`${BASE_URL}/favorites/${id}`, payload);
+    return axiosClient.patch(`/favorites/${id}`, payload);
   },
   putEditContact: ({ id, payload }: IEditContact) => {
-    return axiosClient.put(`${BASE_URL}/contacts/${id}`, payload, {
+    return axiosClient.put(`/contacts/${id}`, payload, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
   },
   patchEditContact: ({ id, payload }: IEditContact) => {
-    return axiosClient.patch(`${BASE_URL}/contacts/${id}`, payload);
+    return axiosClient.patch(`/contacts/${id}`, payload);
   },
   getAllContacts: () => {
-    return axiosClient.get(`${BASE_URL}/contacts`);
+    return axiosClient.get(`/contacts`);
   },
   singleTrash: ({ id }: { id: string }) => {
-    return axiosClient.patch(`${BASE_URL}/trash/${id}`);
+    return axiosClient.patch(`/trash/${id}`);
   },
   bulkTrash: (payload: IBulkTrashPayload) => {
-    return axiosClient.patch(`${BASE_URL}/trash`, payload);
+    return axiosClient.patch(`/trash`, payload);
   },
   getAllFavorites: () => {
-    return axiosClient.get(`${BASE_URL}/favorites`);
+    return axiosClient.get(`/favorites`);
   },
   getAllTrashes: () => {
-    return axiosClient.get(`${BASE_URL}/trash`);
+    return axiosClient.get(`/trash`);
   },
   bulkDelete: (payload: IBulkTrashPayload) => {
-    return axiosClient.delete(`${BASE_URL}/contacts/delete`, { data: payload });
+    return axiosClient.delete(`/contacts/delete`, { data: payload });
   },
   singleDelete: ({ id }: { id: string }) => {
-    return axiosClient.delete(`${BASE_URL}/contacts/delete/${id}`);
+    return axiosClient.delete(`/contacts/delete/${id}`);
   },
   singleContactRecover: ({ id }: { id: string }) => {
-    return axiosClient.patch(`${BASE_URL}/contacts/recover/${id}`);
+    return axiosClient.patch(`/contacts/recover/${id}`);
   },
   bulkContactRecover: (payload: IBulkTrashPayload) => {
-    return axiosClient.patch(`${BASE_URL}/contacts/recover`, payload);
+    return axiosClient.patch(`/contacts/recover`, payload);
   },
   emptyTrash: () => {
-    return axiosClient.delete(`${BASE_URL}/contacts/empty`);
+    return axiosClient.delete(`/contacts/empty`);
+  },
+  searchContact: (payload: string) => {
+    return axiosClient.get(`/search?query=${payload}`);
   },
 };
 

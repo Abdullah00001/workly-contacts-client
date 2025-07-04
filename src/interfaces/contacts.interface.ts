@@ -158,3 +158,12 @@ export interface IDiscardModal {
   handleResetState: () => void;
   setIsDiscardModalOpen: Dispatch<SetStateAction<Boolean>>;
 }
+
+export type TEmail = string | null;
+
+export interface ISearchResult {
+  _id: string;
+  name: string;
+  email: TEmail;
+  avatar: TImage;
+}

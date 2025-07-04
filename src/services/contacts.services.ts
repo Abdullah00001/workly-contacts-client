@@ -22,6 +22,7 @@ const {
   bulkContactRecover,
   emptyTrash,
   singleTrash,
+  searchContact,
 } = ContactApi;
 
 const ContactServices = {
@@ -160,6 +161,15 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In Single Trash Service');
+    }
+  },
+  processSearchContact: async (payload: string) => {
+    try {
+      const response = await searchContact(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Search Contact Service');
     }
   },
 };
