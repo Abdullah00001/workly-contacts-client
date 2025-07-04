@@ -23,6 +23,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import { contactSchema } from '../schemas/contacts.schemas';
 import ContactServices from '../services/contacts.services';
+import DiscardModal from '../components/ui/modal/DiscardModal';
 
 const { processImageUpload, processImageDelete } = ImageServices;
 const { processCreateContact } = ContactServices;
@@ -31,10 +32,7 @@ const CreateContact: FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
-  const handleReturn = () => {
-    const returnPath = location?.state?.from || '/';
-    navigate(returnPath);
-  };
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<Boolean>(false);
   const [payload, setPayload] = useState<TCreateContact>({
     avatar: {
       publicId: null,
@@ -81,6 +79,64 @@ const CreateContact: FC = () => {
       );
     },
   });
+  const handleResetState = () => {
+    setPayload((prev) => ({
+      ...prev,
+      avatar: {
+        publicId: null,
+        url: null,
+      },
+      birthday: {
+        day: null,
+        month: null,
+        year: null,
+      },
+      email: '',
+      firstName: '',
+      lastName: '',
+      location: {
+        city: null,
+        country: null,
+        postCode: null,
+        streetAddress: null,
+      },
+      phone: '',
+      worksAt: {
+        companyName: null,
+        jobTitle: null,
+      },
+    }));
+    const returnPath = location?.state?.from || '/';
+    navigate(returnPath);
+  };
+  const hasPayloadValues = () => {
+    return (
+      payload.firstName.trim() !== '' ||
+      payload.lastName.trim() !== '' ||
+      payload.email.trim() !== '' ||
+      payload.phone.trim() !== '' ||
+      payload.avatar.url !== null ||
+      payload.worksAt.companyName !== null ||
+      payload.worksAt.jobTitle !== null ||
+      payload.location.country !== null ||
+      payload.location.city !== null ||
+      payload.location.postCode !== null ||
+      payload.location.streetAddress !== null ||
+      payload.birthday.day !== null ||
+      payload.birthday.month !== null ||
+      payload.birthday.year !== null
+    );
+  };
+
+  // Modify the back button click handler
+  const handleBackClick = () => {
+    if (hasPayloadValues()) {
+      setIsDiscardModalOpen(true);
+    } else {
+      const returnPath = location?.state?.from || '/';
+      navigate(returnPath);
+    }
+  };
   const { mutate: createContact, isPending: isCreateContactPending } =
     useMutation({
       mutationFn: async (payload: ICreateContactPayload) =>
@@ -229,7 +285,7 @@ const CreateContact: FC = () => {
       <ToastContainer position="top-center" />
       <div className="w-full lg:w-ful  xl:w-[950px] xl:p-4 ">
         <div className="flex justify-between items-center">
-          <div onClick={handleReturn} className="p-2 cursor-pointer">
+          <div onClick={handleBackClick} className="p-2 cursor-pointer">
             <FaArrowLeft size={20} className=" text-[#444746] " />
           </div>
           <div className="flex items-center justify-end space-x-1">
@@ -588,6 +644,12 @@ const CreateContact: FC = () => {
           </form>
         </div>
       </div>
+      {isDiscardModalOpen && (
+        <DiscardModal
+          handleResetState={handleResetState}
+          setIsDiscardModalOpen={setIsDiscardModalOpen}
+        />
+      )}
     </section>
   );
 };

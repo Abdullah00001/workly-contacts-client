@@ -153,3 +153,8 @@ export interface IEditContact {
 export interface IBulkTrashPayload {
   contactIds: string[];
 }
+
+export interface IDiscardModal {
+  handleResetState: () => void;
+  setIsDiscardModalOpen: Dispatch<SetStateAction<Boolean>>;
+}
