@@ -1,29 +1,84 @@
-import { FC, useEffect, useState } from "react";
-import ContactTable from "../components/layout/ContactTable";
-import { IContactInfo } from "../interfaces/contacts.interface";
-import axios from "axios";
+import { FC, useEffect } from 'react';
+import { TTrashContact } from '../interfaces/contacts.interface';
+import { toast, ToastContainer } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
+import ContactServices from '../services/contacts.services';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import TrashTable from '../components/layout/TrashTable';
+import { useNavigate } from 'react-router-dom';
+import EmptyData from '../components/ui/EmptyData';
+
+const { processGetAllTrashes, processEmptyTrash } = ContactServices;
 
 const Trash: FC = () => {
-  const [contactData, setContactData] = useState<IContactInfo[] | []>([]);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data, isPending } = useQuery({
+    queryKey: ['trash'],
+    queryFn: async () => await processGetAllTrashes(),
+  });
+  const { isPending: isEmptyTrashPending, mutate: emptyTrash } = useMutation({
+    mutationFn: async () => await processEmptyTrash(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      toast.dismiss();
+      toast.success('Trash emptied');
+    },
+    onError: (error) => {
+      toast.dismiss();
+      toast.error(error.message);
+    },
+  });
+  const contactData: TTrashContact[] = data?.data || [];
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await axios.get(
-          "https://mocki.io/v1/5b7d1064-5c3e-44f8-a59c-6789ae383e58"
-        );
-        setContactData(data?.data);
-      } catch (error) {
-        setContactData([]);
-        console.log(error);
-      }
-    })();
-  }, []);
+    if (!isEmptyTrashPending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isEmptyTrashPending]);
+
   return (
     <div className="max-w-full">
-      <div className="mb-6">
-        <h1 className="text-2xl font-medium">Trash {contactData?.length}</h1>
-      </div>
-      <ContactTable contactData={contactData} />
+      <ToastContainer position="top-center" />
+      {isPending ? (
+        <div className="flex justify-center items-center h-[100vh]">
+          <div>
+            <ClipLoader
+              color="#3B82F6"
+              loading={isPending}
+              size={50}
+              aria-label="Loading contacts"
+            />
+          </div>
+        </div>
+      ) : (
+        <>
+          {contactData.length === 0 ? (
+            <EmptyData type="trash" onCreateContact={() => navigate('/new')} />
+          ) : (
+            <>
+              <div className="mt-1">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-start  justify-between gap-2 bg-[#e1e3e1] p-4 rounded-md w-full">
+                  <p className="text-[#444746] text-sm md:text-base">
+                    Contacts that have been in Trash more than 30 days will be
+                    deleted forever
+                  </p>
+                  <button
+                    onClick={() => emptyTrash()}
+                    className="text-[#115bd0] font-medium md:px-4 md:py-2 hover:bg-[#d0d8e0] rounded-full w-fit cursor-pointer disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:opacity-50"
+                    disabled={contactData.length === 0}
+                  >
+                    Empty Trash now
+                  </button>
+                </div>
+              </div>
+              <div className="mb-6 mt-3">
+                <h1 className="text-2xl pl-2 font-medium">Trash </h1>
+              </div>
+              <TrashTable contactData={contactData} />
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 };

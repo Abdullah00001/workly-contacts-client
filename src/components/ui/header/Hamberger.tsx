@@ -1,33 +1,27 @@
-import { FC, useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, ArrowLeft } from "lucide-react";
+import { FC, useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, ArrowLeft } from 'lucide-react';
 import {
   AiOutlineContacts,
-  AiOutlineClockCircle,
   AiOutlineStar,
   AiOutlineDelete,
-} from "react-icons/ai";
-import { Link, NavLink } from "react-router-dom";
+} from 'react-icons/ai';
+import { Link, NavLink } from 'react-router-dom';
 
 const navItems = [
   {
-    path: "/",
-    pathName: "Contacts",
+    path: '/',
+    pathName: 'Contacts',
     icon: <AiOutlineContacts className="w-5 h-5" />,
   },
   {
-    path: "/recent",
-    pathName: "Recent",
-    icon: <AiOutlineClockCircle className="w-5 h-5" />,
-  },
-  {
-    path: "/favorite",
-    pathName: "Favorite",
+    path: '/favorite',
+    pathName: 'Favorite',
     icon: <AiOutlineStar className="w-5 h-5" />,
   },
   {
-    path: "/trash",
-    pathName: "Trash",
+    path: '/trash',
+    pathName: 'Trash',
     icon: <AiOutlineDelete className="w-5 h-5" />,
   },
 ];
@@ -48,13 +42,13 @@ const Hamburger: FC = () => {
     };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
 
@@ -76,16 +70,16 @@ const Hamburger: FC = () => {
           >
             <motion.div
               ref={drawerRef}
-              initial={{ x: "-100%" }}
+              initial={{ x: '-100%' }}
               animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
+              exit={{ x: '-100%' }}
               transition={{ duration: 0.3 }}
               className="fixed top-0 left-0 h-full w-[70%] md:w-[40%] sm:w-[70%] bg-white shadow-lg p-4 z-50"
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside drawer
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between mb-4">
-                <Link to={"/"}>
+                <Link to={'/'}>
                   <h1 className="text-lg font-bold">Amar Contacts</h1>
                 </Link>
                 <button onClick={() => setIsOpen(false)}>
@@ -102,8 +96,8 @@ const Hamburger: FC = () => {
                       className={({ isActive }) =>
                         `flex items-center gap-2 p-2 font-medium ${
                           isActive
-                            ? "bg-blue-500 font-bold rounded-[8px] text-white"
-                            : "hover:bg-gray-200"
+                            ? 'bg-blue-500 font-bold rounded-[8px] text-white'
+                            : 'hover:bg-gray-200'
                         }`
                       }
                     >

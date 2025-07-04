@@ -1,12 +1,12 @@
-import { FC, useState, useRef, useEffect } from "react";
-import { FaChevronDown, FaMinusSquare, FaTrash } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
-import { IContactInfo } from "../../interfaces/contacts.interface";
-import TableBodyRow from "../ui/table/TableBodyRow";
-import MultiDeleteModal from "../ui/MultiDeleteModal";
+import { FC, useState, useRef, useEffect } from 'react';
+import { FaChevronDown, FaMinusSquare, FaTrash } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TContacts } from '../../interfaces/contacts.interface';
+import TableBodyRow from '../ui/table/TableBodyRow';
+import MultiTrashModal from '../ui/modal/MultiTrashModal';
 
 interface ContactTableProps {
-  contactData: IContactInfo[];
+  contactData: TContacts[];
 }
 
 const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
@@ -14,9 +14,9 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
   const [isDropdown, setIsDropdown] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
+  const [contacts, setContacts] = useState<TContacts[] | []>([]);
   const handleSelectAll = () => {
-    setSelectedContacts(contactData.map(({ id }) => id));
+    setSelectedContacts(contacts.map(({ _id }) => _id as string));
     setIsDropdown(false);
   };
 
@@ -39,10 +39,12 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
         setIsDropdown(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
+  useEffect(() => {
+    setContacts(contactData);
+  }, [contactData]);
   return (
     <div className="w-full overflow-y-scroll relative">
       <table className="w-full table-fixed">
@@ -70,7 +72,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                           initial={{ opacity: 0, y: -5 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -5 }}
-                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                          transition={{ duration: 0.2, ease: 'easeInOut' }}
                           ref={dropdownRef}
                           className="absolute left-24 mt-27 bg-white border rounded-lg shadow-lg w-32 z-50"
                         >
@@ -91,7 +93,10 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
                     </AnimatePresence>
                   </div>
 
-                  <div onClick={handleDelete} className="block pr-3 md:hidden cursor-pointer">
+                  <div
+                    onClick={handleDelete}
+                    className="block pr-3 md:hidden cursor-pointer"
+                  >
                     <FaTrash size={15} />
                   </div>
                 </div>
@@ -137,23 +142,27 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
             <td className="hidden py-2  md:table-cell"></td>
             <td className="py-2 hidden lg:table-cell"></td>
           </tr>
-          {contactData.map(({ email, id, name, phone }) => (
+          {contacts.map(({ email, phone, _id, name, avatar, isFavorite }) => (
             <TableBodyRow
+              key={_id}
               selectedContacts={selectedContacts}
-              key={id}
+              avatar={avatar}
+              isFavorite={isFavorite}
               email={email}
               name={name}
               phone={phone}
-              id={id}
+              id={_id as string}
               setSelectedContacts={setSelectedContacts}
             />
           ))}
         </tbody>
       </table>
       {isDelete && (
-        <MultiDeleteModal
+        <MultiTrashModal
+          setContacts={setContacts}
           handleIsDelete={handleDelete}
           selectedItems={selectedContacts}
+          setSelectedContacts={setSelectedContacts}
         />
       )}
     </div>

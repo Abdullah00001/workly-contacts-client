@@ -1,12 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Main from '../layouts/Main';
 import Contacts from '../pages/Contacts';
-import Recent from '../pages/Recent';
 import Trash from '../pages/Trash';
 import Favorite from '../pages/Favorite';
 import CreateContact from '../pages/CreateContact';
 import ContactDetails from '../pages/ContactDetails';
-import EditContact from '../pages/EditContact';
 import Profile from '../pages/Profile';
 import AvatarDropDownProvider from '../providers/AvatarDropDownProvider';
 import Login from '../pages/Login';
@@ -23,6 +21,7 @@ import FoundAndSentOtp from '../pages/FoundAndSentOtp';
 import RecoverStep1Guard from '../components/Protected/RecoverStep1Guard';
 import RecoverStep2Guard from '../components/Protected/RecoverStep2Guard';
 import RecoverStep3Guard from '../components/Protected/RecoverStep3Guard';
+import PersonEdit from '../pages/PersonEdit';
 
 const Route = createBrowserRouter([
   {
@@ -108,10 +107,6 @@ const Route = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path: 'recent',
-        element: <Recent />,
-      },
-      {
         path: 'favorite',
         element: <Favorite />,
       },
@@ -125,7 +120,7 @@ const Route = createBrowserRouter([
       },
       {
         path: 'person/edit/:id',
-        element: <EditContact />,
+        element: <PersonEdit />,
       },
       {
         path: 'new',

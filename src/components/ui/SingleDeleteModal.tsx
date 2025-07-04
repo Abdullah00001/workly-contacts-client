@@ -1,13 +1,18 @@
-import { FC } from "react";
+import { UseMutateFunction } from '@tanstack/react-query';
+import { FC } from 'react';
 
 interface ISingleDeleteModalProps {
   handleIsDelete: () => void;
+  singleTrash: UseMutateFunction;
 }
 
-const SingleDeleteModal: FC<ISingleDeleteModalProps> = ({ handleIsDelete }) => {
+const SingleDeleteModal: FC<ISingleDeleteModalProps> = ({
+  handleIsDelete,
+  singleTrash,
+}) => {
   return (
     <div
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       className="fixed inset-0 flex items-center justify-center p-5 md:p-0"
     >
       <div className="bg-white p-5  rounded-lg md:p-6 md:w-96 shadow-lg">
@@ -26,7 +31,7 @@ const SingleDeleteModal: FC<ISingleDeleteModalProps> = ({ handleIsDelete }) => {
           <button
             className="px-4 py-2 text-[14px] bg-red-600 text-white rounded-lg hover:bg-red-700"
             onClick={() => {
-              console.log("Contact deleted"); // Replace with delete function
+              singleTrash();
               handleIsDelete();
             }}
           >

@@ -1,6 +1,9 @@
-import { UserRound } from 'lucide-react';
 import { FC, useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import ContactServices from '../services/contacts.services';
+import { ClipLoader } from 'react-spinners';
+import { FaArrowLeft, FaExclamationTriangle } from 'react-icons/fa';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import {
   MdCameraAlt,
@@ -11,29 +14,38 @@ import {
   MdPersonOutline,
   MdPhone,
 } from 'react-icons/md';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  ICreateContactPayload,
+  IBirthDate,
+  IEditContact,
+  ILocation,
+  IUpdateOneContactPayload,
+  IWorksAt,
   Month,
-  TCreateContact,
+  TContacts,
 } from '../interfaces/contacts.interface';
-import ImageServices from '../services/image.services';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast, ToastContainer } from 'react-toastify';
-import { ClipLoader } from 'react-spinners';
 import { contactSchema } from '../schemas/contacts.schemas';
-import ContactServices from '../services/contacts.services';
+import { UserRound } from 'lucide-react';
 import DiscardModal from '../components/ui/modal/DiscardModal';
 
-const { processImageUpload, processImageDelete } = ImageServices;
-const { processCreateContact } = ContactServices;
+const {
+  processPatchEditContact,
+  processPutEditContact,
+  processGetSingleContact,
+} = ContactServices;
 
-const CreateContact: FC = () => {
+const PersonEdit: FC = () => {
+  const { id } = useParams();
+  const [newImage, setNewImage] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<Boolean>(false);
-  const [payload, setPayload] = useState<TCreateContact>({
+  const [originalData, setOriginalData] = useState<TContacts | null>(null);
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
+  const [payload, setPayload] = useState<TContacts>({
+    name: '',
     avatar: {
       publicId: null,
       url: null,
@@ -57,124 +69,127 @@ const CreateContact: FC = () => {
       companyName: null,
       jobTitle: null,
     },
+    isFavorite: false,
+    isTrashed: false,
+    trashedAt: '',
+    userId: '',
+    _id: '',
+    createdAt: '',
+    updatedAt: '',
   });
-  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
-  const { mutate: uploadImage, isPending: isUploading } = useMutation({
-    mutationFn: async (payload: FormData) => await processImageUpload(payload),
-    onSuccess: (data) => {
-      setPayload((prev) => ({
-        ...prev,
-        avatar: {
-          publicId: data?.data?.image?.publicId,
-          url: data?.data?.image?.url,
-        },
-      }));
-      toast.success('Image uploaded successfully!');
-    },
-    onError: (error: any) => {
-      console.error('Image upload failed:', error);
-      toast.error(
-        error?.response?.data?.message ||
-          'Failed to upload image. Please try again.'
-      );
-    },
-  });
-  const handleResetState = () => {
-    setPayload((prev) => ({
-      ...prev,
-      avatar: {
-        publicId: null,
-        url: null,
-      },
-      birthday: {
-        day: null,
-        month: null,
-        year: null,
-      },
-      email: '',
-      firstName: '',
-      lastName: '',
-      location: {
-        city: null,
-        country: null,
-        postCode: null,
-        streetAddress: null,
-      },
-      phone: '',
-      worksAt: {
-        companyName: null,
-        jobTitle: null,
-      },
-    }));
-    const returnPath = location?.state?.from || '/';
-    navigate(returnPath);
-  };
-  const hasPayloadValues = () => {
-    return (
-      payload.firstName.trim() !== '' ||
-      payload.lastName.trim() !== '' ||
-      payload.email.trim() !== '' ||
-      payload.phone.trim() !== '' ||
-      payload.avatar.url !== null ||
-      payload.worksAt.companyName !== null ||
-      payload.worksAt.jobTitle !== null ||
-      payload.location.country !== null ||
-      payload.location.city !== null ||
-      payload.location.postCode !== null ||
-      payload.location.streetAddress !== null ||
-      payload.birthday.day !== null ||
-      payload.birthday.month !== null ||
-      payload.birthday.year !== null
-    );
-  };
+  const checkForChanges = (currentPayload: TContacts, original: TContacts) => {
+    if (!original) return false;
 
-  // Modify the back button click handler
-  const handleBackClick = () => {
-    if (hasPayloadValues()) {
-      setIsDiscardModalOpen(true);
-    } else {
-      const returnPath = location?.state?.from || '/';
-      navigate(returnPath);
+    // Check basic fields
+    if (
+      currentPayload.firstName !== original.firstName ||
+      currentPayload.lastName !== original.lastName ||
+      currentPayload.email !== original.email ||
+      currentPayload.phone !== original.phone
+    ) {
+      return true;
     }
+
+    // Check worksAt fields
+    if (
+      currentPayload.worksAt?.companyName !== original.worksAt?.companyName ||
+      currentPayload.worksAt?.jobTitle !== original.worksAt?.jobTitle
+    ) {
+      return true;
+    }
+
+    // Check location fields
+    if (
+      currentPayload.location?.country !== original.location?.country ||
+      currentPayload.location?.city !== original.location?.city ||
+      currentPayload.location?.postCode !== original.location?.postCode ||
+      currentPayload.location?.streetAddress !==
+        original.location?.streetAddress
+    ) {
+      return true;
+    }
+
+    // Check birthday fields
+    if (
+      currentPayload.birthday?.day !== original.birthday?.day ||
+      currentPayload.birthday?.month !== original.birthday?.month ||
+      currentPayload.birthday?.year !== original.birthday?.year
+    ) {
+      return true;
+    }
+
+    // Check if new image is uploaded
+    if (newImage) {
+      return true;
+    }
+
+    // Check if avatar URL was removed
+    if (currentPayload.avatar?.url !== original.avatar?.url) {
+      return true;
+    }
+
+    return false;
   };
-  const { mutate: createContact, isPending: isCreateContactPending } =
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ['contact', id],
+    queryFn: async () => {
+      return await processGetSingleContact(id as string);
+    },
+    enabled: !!id,
+  });
+  const { mutate: putEditContact, isPending: isPutEditContactPending } =
     useMutation({
-      mutationFn: async (payload: ICreateContactPayload) =>
-        await processCreateContact(payload),
+      mutationFn: async ({ id, payload }: IEditContact) =>
+        await processPutEditContact({ id, payload }),
       onSuccess: (data) => {
         toast.dismiss();
+        const response = data?.data;
+        setPayload((prev) => ({ ...prev, response }));
         queryClient.invalidateQueries({ queryKey: ['contacts'] });
-        toast.success('Contact Created');
+        queryClient.invalidateQueries({
+          queryKey: ['contacts', response?._id],
+        });
+        toast.success('Contact Updated');
         setTimeout(() => {
-          navigate(`/person/${data.data._id}`);
+          navigate(`/person/${response?._id}`);
         }, 2000);
       },
       onError: (error: any) => {
-        console.error('Contact Creation failed:', error);
+        console.error('Contact update failed:', error);
         toast.dismiss();
         toast.error(
           error?.response?.data?.message ||
-            'Failed to create contact. Please try again.'
+            'Failed to update contact. Please try again.'
         );
       },
     });
-  const { mutate: deleteImage, isPending: isDeleteing } = useMutation({
-    mutationFn: async (payload: string) => await processImageDelete(payload),
-    onSuccess: () => {
-      setPayload((prev) => ({
-        ...prev,
-        avatar: { ...prev.avatar, publicId: null, url: null },
-      }));
-      toast.success('Image delete successfully!');
-    },
-    onError: (error: any) => {
-      console.error('Image delete failed:', error);
-      toast.error(
-        error?.response?.data?.message ||
-          'Failed to delete image. Please try again.'
-      );
-    },
-  });
+  const { mutate: patchEditContact, isPending: isPatchEditContactPending } =
+    useMutation({
+      mutationFn: async ({ id, payload }: IEditContact) =>
+        await processPatchEditContact({ id, payload }),
+      onSuccess: (data) => {
+        toast.dismiss();
+        const response = data?.data;
+        setPayload((prev) => ({ ...prev, response }));
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        queryClient.invalidateQueries({
+          queryKey: ['contacts', response?._id],
+        });
+        toast.success('Contact Updated');
+        setTimeout(() => {
+          navigate(`/person/${response?._id}`);
+        }, 2000);
+      },
+      onError: (error: any) => {
+        console.error('Contact update failed:', error);
+        toast.dismiss();
+        toast.error(
+          error?.response?.data?.message ||
+            'Failed to update contact. Please try again.'
+        );
+      },
+    });
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPayload((prev) => ({ ...prev, [name]: value }));
@@ -225,7 +240,23 @@ const CreateContact: FC = () => {
       birthday: { ...prev.birthday, [name]: updatedValue },
     }));
   };
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const removeImage = () => {
+    if (payload.avatar?.url) {
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, url: null },
+      }));
+    } else {
+      setNewImage(null);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -241,23 +272,21 @@ const CreateContact: FC = () => {
       toast.error('Image size should be less than 5MB.');
       return;
     }
-
-    const payload = new FormData();
-    payload.append('image', file);
-    uploadImage(payload);
-  };
-
-  const handleImageClick = () => {
-    if (isUploading || isDeleteing) return;
-    fileInputRef.current?.click();
-  };
-
-  const removeImage = () => {
-    if (isUploading || isDeleteing) return;
-    deleteImage(payload.avatar?.publicId as string);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    if (payload.avatar?.url) {
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, url: null },
+      }));
     }
+    setNewImage(file);
+    const previewUrl = URL.createObjectURL(file);
+    setPayload((prev) => ({
+      ...prev,
+      avatar: {
+        ...prev.avatar,
+        url: previewUrl,
+      },
+    }));
   };
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
@@ -274,12 +303,103 @@ const CreateContact: FC = () => {
       setFieldErrors(fieldErrors);
       return;
     }
-    createContact(payload as ICreateContactPayload);
+    if (newImage) {
+      const {
+        avatar,
+        birthday,
+        email,
+        firstName,
+        lastName,
+        location,
+        phone,
+        worksAt,
+        _id,
+      } = payload;
+      const updatedPayload = new FormData();
+      if (avatar) updatedPayload.append('avatar', JSON.stringify(avatar));
+      if (birthday) updatedPayload.append('birthday', JSON.stringify(birthday));
+      if (email) updatedPayload.append('email', email);
+      if (firstName) updatedPayload.append('firstName', firstName);
+      if (lastName) updatedPayload.append('lastName', lastName);
+      if (location) updatedPayload.append('location', JSON.stringify(location));
+      if (phone) updatedPayload.append('phone', phone);
+      if (worksAt) updatedPayload.append('worksAt', JSON.stringify(worksAt));
+      updatedPayload.append('avatarImage', newImage);
+      putEditContact({ id: _id as string, payload: updatedPayload });
+      return;
+    }
+    const {
+      avatar,
+      birthday,
+      email,
+      firstName,
+      lastName,
+      location,
+      phone,
+      worksAt,
+      _id,
+    } = payload;
+    const updatedPayload: IUpdateOneContactPayload = {
+      avatar,
+      birthday: birthday as IBirthDate,
+      email,
+      firstName,
+      lastName,
+      location: location as ILocation,
+      phone,
+      worksAt: worksAt as IWorksAt,
+    };
+    patchEditContact({ id: _id as string, payload: updatedPayload });
+    return;
+  };
+  const handleResetState = () => {
+    removeImage();
+    const returnPath = location?.state?.from || '/';
+    navigate(returnPath);
+  };
+  const handleBackClick = () => {
+    if (hasChanges) {
+      setIsDiscardModalOpen(true);
+    } else {
+      handleResetState();
+    }
   };
   useEffect(() => {
-    if (!isCreateContactPending) return;
-    toast.success('Contact Is Creating...');
-  }, [isCreateContactPending]);
+    if (isPending && !data) return;
+    setPayload(data?.data);
+    setOriginalData(data?.data);
+  }, [data?.data]);
+  useEffect(() => {
+    if (originalData && payload) {
+      const changes = checkForChanges(payload, originalData);
+      setHasChanges(changes);
+    }
+  }, [payload, originalData, newImage]);
+  if (isPending) {
+    return (
+      <div className="flex justify-center  items-center min-h-screen">
+        <ClipLoader color="#3B82F6" size={50} />
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen  text-red-600 px-4">
+        <FaExclamationTriangle size={50} className="text-red-500 mb-4" />
+        <h1 className="text-2xl font-semibold mb-2">Something went wrong</h1>
+        <p className="text-lg text-center max-w-md">
+          {error.message ||
+            'An unexpected error occurred. Please try again later.'}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg text-white font-medium"
+        >
+          Refresh Page
+        </button>
+      </div>
+    );
+  }
   return (
     <section className="lg:h-full lg:overflow-y-scroll">
       <ToastContainer position="top-center" />
@@ -311,7 +431,9 @@ const CreateContact: FC = () => {
                   <div className="flex space-x-2">
                     <button
                       onClick={handleImageClick}
-                      disabled={isUploading || isDeleteing}
+                      disabled={
+                        isPutEditContactPending || isPatchEditContactPending
+                      }
                       className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Change photo"
                     >
@@ -319,7 +441,9 @@ const CreateContact: FC = () => {
                     </button>
                     <button
                       onClick={removeImage}
-                      disabled={isUploading || isDeleteing}
+                      disabled={
+                        isPutEditContactPending || isPatchEditContactPending
+                      }
                       className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Remove photo"
                     >
@@ -341,7 +465,7 @@ const CreateContact: FC = () => {
                   </div>
                 </div>
                 {/* Loading overlay */}
-                {(isUploading || isDeleteing) && (
+                {(isPutEditContactPending || isPatchEditContactPending) && (
                   <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
                     <ClipLoader color="#ffffff" size={30} />
                   </div>
@@ -351,13 +475,13 @@ const CreateContact: FC = () => {
               <div
                 onClick={handleImageClick}
                 className={`flex justify-center items-center h-full cursor-pointer hover:bg-blue-300 transition-colors rounded-full relative group ${
-                  isUploading || isDeleteing
+                  isPutEditContactPending || isPatchEditContactPending
                     ? 'opacity-50 cursor-not-allowed'
                     : ''
                 }`}
               >
                 <div className="relative">
-                  {isUploading || isDeleteing ? (
+                  {isPutEditContactPending || isPatchEditContactPending ? (
                     <div className="flex items-center justify-center">
                       <ClipLoader color="#2563eb" size={40} />
                     </div>
@@ -384,7 +508,7 @@ const CreateContact: FC = () => {
               accept="image/*"
               onChange={handleImageUpload}
               className="hidden"
-              disabled={isUploading || isDeleteing}
+              disabled={isPutEditContactPending || isPatchEditContactPending}
             />
           </div>
         </div>
@@ -398,10 +522,11 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBasicField}
+                    value={payload?.firstName}
                     placeholder="First Name"
                     type="text"
                     className={`${
-                      fieldErrors.email && 'border-red-500'
+                      fieldErrors.firstName && 'border-red-500'
                     } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="firstName"
                     id="firstName"
@@ -415,10 +540,11 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBasicField}
+                    value={payload?.lastName}
                     placeholder="Last Name"
                     type="text"
                     className={`${
-                      fieldErrors.email && 'border-red-500'
+                      fieldErrors.lastName && 'border-red-500'
                     } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="lastName"
                     id="lastName"
@@ -439,6 +565,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeWorksAt}
+                    value={payload?.worksAt?.companyName as string}
                     placeholder="Company"
                     type="text"
                     className={`${
@@ -451,6 +578,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeWorksAt}
+                    value={payload?.worksAt?.jobTitle as string}
                     placeholder="Job Title"
                     type="text"
                     className={`${
@@ -475,6 +603,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBasicField}
+                    value={payload?.email}
                     placeholder="Email"
                     type="email"
                     className={`${
@@ -499,10 +628,11 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBasicField}
+                    value={payload?.phone}
                     placeholder="Phone"
                     type="text"
                     className={`${
-                      fieldErrors.email && 'border-red-500'
+                      fieldErrors.phone && 'border-red-500'
                     } px-3 w-full py-2 border border-gray-500 rounded-lg`}
                     name="phone"
                     id="phone"
@@ -523,6 +653,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeLocation}
+                    value={payload?.location?.country as string}
                     placeholder="Country"
                     type="text"
                     className={`${
@@ -535,6 +666,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeLocation}
+                    value={payload?.location?.city as string}
                     placeholder="City"
                     type="text"
                     className={`${
@@ -547,6 +679,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeLocation}
+                    value={payload?.location?.postCode as number}
                     placeholder="Post Code"
                     type="number"
                     className={`${
@@ -559,6 +692,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeLocation}
+                    value={payload?.location?.streetAddress as string}
                     placeholder="Street Address"
                     type="text"
                     className={`${
@@ -583,6 +717,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBirthday}
+                    value={payload?.birthday?.day as number}
                     placeholder="Date"
                     type="number"
                     className={`${
@@ -593,18 +728,9 @@ const CreateContact: FC = () => {
                   />
                 </div>
                 <div className="w-full lg:w-[520px]">
-                  {/* <input
-                    onChange={handleChangeBirthday}
-                    placeholder="Month"
-                    type="text"
-                    className={`${
-                      fieldErrors['birthday'] && 'border-red-500'
-                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
-                    name="month"
-                    id="month"
-                  /> */}
                   <select
                     onChange={handleChangeBirthday}
+                    value={payload?.birthday?.month as Month}
                     name="month"
                     id="month"
                     className={`${
@@ -625,6 +751,7 @@ const CreateContact: FC = () => {
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBirthday}
+                    value={payload?.birthday?.year as number}
                     placeholder="Year"
                     type="number"
                     className={`${
@@ -654,4 +781,4 @@ const CreateContact: FC = () => {
   );
 };
 
-export default CreateContact;
+export default PersonEdit;

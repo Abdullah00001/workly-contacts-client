@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 export interface IContactInfo {
   id: string;
   name: string;
@@ -95,4 +96,74 @@ export interface IFavorite {
 export interface IFavoritePayload {
   id: string;
   payload: IFavorite;
+}
+
+export type TContacts = {
+  _id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  avatar: TImage;
+  firstName: string;
+  lastName: string;
+  name: string;
+  email: string;
+  phone: string;
+  worksAt: TWorksAt;
+  location: TLocation;
+  birthday: TBirthDate;
+  isFavorite: boolean;
+  isTrashed: boolean;
+  trashedAt: Date | string;
+  userId: string;
+};
+
+export type TTrashContact = {
+  name: string;
+  avatar: TImage;
+  _id: string;
+  trashedAt: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+};
+
+export interface IEditContactMainProps {
+  setIsEdit: Dispatch<SetStateAction<true | false>>;
+  isEdit: boolean;
+  handleEdit: () => void;
+  contactData: TContacts;
+}
+export interface IUpdateOneContactPayload {
+  avatarImage?: string;
+  avatar?: TImage;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  worksAt?: IWorksAt;
+  location?: ILocation;
+  birthday?: IBirthDate;
+}
+export type TEditContactPayload = IUpdateOneContactPayload | FormData;
+
+export interface IEditContact {
+  id: string;
+  payload: TEditContactPayload;
+}
+
+export interface IBulkTrashPayload {
+  contactIds: string[];
+}
+
+export interface IDiscardModal {
+  handleResetState: () => void;
+  setIsDiscardModalOpen: Dispatch<SetStateAction<Boolean>>;
+}
+
+export type TEmail = string | null;
+
+export interface ISearchResult {
+  _id: string;
+  name: string;
+  email: TEmail;
+  avatar: TImage;
 }
