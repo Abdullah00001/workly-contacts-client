@@ -32,7 +32,7 @@ const CreateContact: FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<Boolean>(false);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<boolean>(false);
   const [payload, setPayload] = useState<TCreateContact>({
     avatar: {
       publicId: null,

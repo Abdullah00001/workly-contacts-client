@@ -156,7 +156,7 @@ export interface IBulkTrashPayload {
 
 export interface IDiscardModal {
   handleResetState: () => void;
-  setIsDiscardModalOpen: Dispatch<SetStateAction<Boolean>>;
+  setIsDiscardModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export type TEmail = string | null;

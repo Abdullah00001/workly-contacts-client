@@ -41,7 +41,7 @@ const PersonEdit: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<Boolean>(false);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<boolean>(false);
   const [originalData, setOriginalData] = useState<TContacts | null>(null);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
   const [payload, setPayload] = useState<TContacts>({
