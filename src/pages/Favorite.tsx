@@ -17,10 +17,6 @@ const Favorite: FC = () => {
     queryFn: async () => await processGetAllFavorites(),
   });
   const contactData: TContacts[] = data?.data || [];
-  if (contactData.length === 0)
-    return (
-      <EmptyData type="favorites" onCreateContact={() => navigate('/new')} />
-    );
   return (
     <div className="max-w-full">
       <ToastContainer position="top-center" />
@@ -37,12 +33,21 @@ const Favorite: FC = () => {
         </div>
       ) : (
         <>
-          <div className="mb-6">
-            <h1 className="text-2xl font-medium">
-              Favorites {contactData?.length}
-            </h1>
-          </div>
-          <ContactTable contactData={contactData} />
+          {contactData.length === 0 ? (
+            <EmptyData
+              type="favorites"
+              onCreateContact={() => navigate('/new')}
+            />
+          ) : (
+            <>
+              <div className="mb-6">
+                <h1 className="text-2xl font-medium">
+                  Favorites {contactData?.length}
+                </h1>
+              </div>
+              <ContactTable contactData={contactData} />
+            </>
+          )}
         </>
       )}
     </div>

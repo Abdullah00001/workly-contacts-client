@@ -1,20 +1,53 @@
-import { FC, useState } from "react";
+import { FC, useState } from 'react';
+import {
+  IFeedback,
+  IFeedbackModalProps,
+} from '../../interfaces/feedback.interface';
+import FeedbackServices from '../../services/feedback.services';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
 
-interface IFeedbackModalProps {
-  handleIsFeedback: () => void;
-}
+const { processSendFeedback } = FeedbackServices;
 
-const FeedbackModal: FC<IFeedbackModalProps> = ({ handleIsFeedback }) => {
-  const [feedback, setFeedback] = useState("");
-
+const FeedbackModal: FC<IFeedbackModalProps> = ({
+  handleIsFeedback,
+  setIsFeedbackSuccess,
+}) => {
+  const [feedback, setFeedback] = useState('');
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: IFeedback) =>
+      await processSendFeedback(payload),
+    onSuccess: () => {
+      setIsFeedbackSuccess(true);
+    },
+    onError: (error: any) => {
+      toast.dismiss();
+      toast.error(
+        error?.response?.data?.message ||
+          'Failed send feedback. Please try again.'
+      );
+    },
+  });
   const handleSubmitFeedback = () => {
-    console.log("Feedback submitted:", feedback); // Replace with feedback submission function
+    mutate({ message: feedback });
     handleIsFeedback();
   };
 
-  return (
+  return isPending ? (
+    <div className="flex justify-center items-center h-[100vh]">
+      <div>
+        <ClipLoader
+          color="#3B82F6"
+          loading={isPending}
+          size={50}
+          aria-label="Loading contacts"
+        />
+      </div>
+    </div>
+  ) : (
     <div
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       className="fixed inset-0 flex items-center justify-center p-5 md:p-0"
     >
       <div className="bg-white p-5 rounded-lg md:p-6 md:w-96 shadow-lg">

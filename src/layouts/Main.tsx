@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
@@ -7,6 +7,7 @@ import LogoutModal from '../components/ui/LogoutModal';
 import FeedbackModal from '../components/ui/FeedbackModal';
 import useAvatarDropDown from '../hooks/useAvatarDropDownContext';
 import { ToastContainer } from 'react-toastify';
+import FeedbackSuccessModal from '../components/ui/modal/FeedbackSuccessModal';
 
 const Main: FC = () => {
   const location = useLocation();
@@ -15,12 +16,22 @@ const Main: FC = () => {
   const isContactDetailsPage = location.pathname.startsWith('/person/');
   const isCreateContactPage = location.pathname.startsWith('/new');
   const isProfilePage = location.pathname.startsWith('/me');
+  const [isFeedbackSuccess, setIsFeedbackSuccess] = useState<boolean>(false);
   const {
     isFeedBackClicked,
     isLogOutClicked,
     setIsFeedBackClicked,
     setIsLogoutClicked,
   } = useAvatarDropDown();
+  useEffect(() => {
+    if (isFeedbackSuccess) {
+      const timer = setTimeout(() => {
+        setIsFeedbackSuccess(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isFeedbackSuccess]);
   return (
     <>
       <ToastContainer position="top-center" />
@@ -53,8 +64,12 @@ const Main: FC = () => {
         )}
         {isFeedBackClicked && (
           <FeedbackModal
+            setIsFeedbackSuccess={setIsFeedbackSuccess}
             handleIsFeedback={() => setIsFeedBackClicked(!isFeedBackClicked)}
           />
+        )}
+        {isFeedbackSuccess && (
+          <FeedbackSuccessModal setIsFeedbackSuccess={setIsFeedbackSuccess} />
         )}
       </div>
     </>

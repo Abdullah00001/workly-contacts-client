@@ -35,8 +35,7 @@ const Trash: FC = () => {
     toast.dismiss();
     toast.info('Working...');
   }, [isEmptyTrashPending]);
-  if (contactData.length === 0)
-    return <EmptyData type="trash" onCreateContact={() => navigate('/new')} />;
+
   return (
     <div className="max-w-full">
       <ToastContainer position="top-center" />
@@ -53,25 +52,31 @@ const Trash: FC = () => {
         </div>
       ) : (
         <>
-          <div className="mt-1">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-start  justify-between gap-2 bg-[#e1e3e1] p-4 rounded-md w-full">
-              <p className="text-[#444746] text-sm md:text-base">
-                Contacts that have been in Trash more than 30 days will be
-                deleted forever
-              </p>
-              <button
-                onClick={() => emptyTrash()}
-                className="text-[#115bd0] font-medium md:px-4 md:py-2 hover:bg-[#d0d8e0] rounded-full w-fit cursor-pointer disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:opacity-50"
-                disabled={contactData.length === 0}
-              >
-                Empty Trash now
-              </button>
-            </div>
-          </div>
-          <div className="mb-6 mt-3">
-            <h1 className="text-2xl pl-2 font-medium">Trash </h1>
-          </div>
-          <TrashTable contactData={contactData} />
+          {contactData.length === 0 ? (
+            <EmptyData type="trash" onCreateContact={() => navigate('/new')} />
+          ) : (
+            <>
+              <div className="mt-1">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-start  justify-between gap-2 bg-[#e1e3e1] p-4 rounded-md w-full">
+                  <p className="text-[#444746] text-sm md:text-base">
+                    Contacts that have been in Trash more than 30 days will be
+                    deleted forever
+                  </p>
+                  <button
+                    onClick={() => emptyTrash()}
+                    className="text-[#115bd0] font-medium md:px-4 md:py-2 hover:bg-[#d0d8e0] rounded-full w-fit cursor-pointer disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:opacity-50"
+                    disabled={contactData.length === 0}
+                  >
+                    Empty Trash now
+                  </button>
+                </div>
+              </div>
+              <div className="mb-6 mt-3">
+                <h1 className="text-2xl pl-2 font-medium">Trash </h1>
+              </div>
+              <TrashTable contactData={contactData} />
+            </>
+          )}
         </>
       )}
     </div>
