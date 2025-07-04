@@ -1,19 +1,42 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { TTrashContact } from '../interfaces/contacts.interface';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import ContactServices from '../services/contacts.services';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import TrashTable from '../components/layout/TrashTable';
+import { useNavigate } from 'react-router-dom';
+import EmptyData from '../components/ui/EmptyData';
 
-const { processGetAllTrashes } = ContactServices;
+const { processGetAllTrashes, processEmptyTrash } = ContactServices;
 
 const Trash: FC = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data, isPending } = useQuery({
     queryKey: ['trash'],
     queryFn: async () => await processGetAllTrashes(),
   });
+  const { isPending: isEmptyTrashPending, mutate: emptyTrash } = useMutation({
+    mutationFn: async () => await processEmptyTrash(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      toast.dismiss();
+      toast.success('Trash emptied');
+    },
+    onError: (error) => {
+      toast.dismiss();
+      toast.error(error.message);
+    },
+  });
   const contactData: TTrashContact[] = data?.data || [];
+  useEffect(() => {
+    if (!isEmptyTrashPending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isEmptyTrashPending]);
+  if (contactData.length === 0)
+    return <EmptyData type="trash" onCreateContact={() => navigate('/new')} />;
   return (
     <div className="max-w-full">
       <ToastContainer position="top-center" />
@@ -36,7 +59,11 @@ const Trash: FC = () => {
                 Contacts that have been in Trash more than 30 days will be
                 deleted forever
               </p>
-              <button className="text-[#115bd0] font-medium md:px-4 md:py-2 hover:bg-[#d0d8e0] rounded-full w-fit">
+              <button
+                onClick={() => emptyTrash()}
+                className="text-[#115bd0] font-medium md:px-4 md:py-2 hover:bg-[#d0d8e0] rounded-full w-fit cursor-pointer disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:opacity-50"
+                disabled={contactData.length === 0}
+              >
                 Empty Trash now
               </button>
             </div>

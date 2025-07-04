@@ -19,6 +19,9 @@ const {
   bulkDelete,
   singleDelete,
   singleContactRecover,
+  bulkContactRecover,
+  emptyTrash,
+  singleTrash,
 } = ContactApi;
 
 const ContactServices = {
@@ -130,6 +133,33 @@ const ContactServices = {
     } catch (error) {
       if (error instanceof Error) throw error;
       throw new Error('Unknown Error Occurred In Single Recover Service');
+    }
+  },
+  processBulkContactRecover: async (payload: IBulkTrashPayload) => {
+    try {
+      const response = await bulkContactRecover(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Bulk Recover Service');
+    }
+  },
+  processEmptyTrash: async () => {
+    try {
+      const response = await emptyTrash();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Bulk Recover Service');
+    }
+  },
+  processSingleTrash: async (payload: { id: string }) => {
+    try {
+      const response = await singleTrash(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) throw error;
+      throw new Error('Unknown Error Occurred In Single Trash Service');
     }
   },
 };

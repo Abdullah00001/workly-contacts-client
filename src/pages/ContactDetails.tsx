@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   FaArrowLeft,
   FaEdit,
@@ -23,8 +23,11 @@ import { ClipLoader } from 'react-spinners';
 import { IFavoritePayload } from '../interfaces/contacts.interface';
 import { toast, ToastContainer } from 'react-toastify';
 
-const { processGetSingleContact, processChangeFavoriteStatus } =
-  ContactServices;
+const {
+  processGetSingleContact,
+  processChangeFavoriteStatus,
+  processSingleTrash,
+} = ContactServices;
 const { formatDate } = DateUtils;
 
 const ContactDetails: FC = () => {
@@ -55,6 +58,25 @@ const ContactDetails: FC = () => {
         );
     },
     onError: (error) => {
+      toast.dismiss();
+      toast.error(error.message);
+    },
+  });
+  const { mutate: singleTrash, isPending: isSingleTrashPending } = useMutation({
+    mutationFn: async () => await processSingleTrash({ id: id as string }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['contact', id] });
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      toast.dismiss();
+      toast.success('Contact move to trash');
+      setTimeout(() => {
+        navigate(`/trash`);
+      }, 2000);
+    },
+    onError: (error) => {
+      toast.dismiss();
       toast.error(error.message);
     },
   });
@@ -81,6 +103,11 @@ const ContactDetails: FC = () => {
   const handleIsDelete = () => {
     setIsDelete(!isDelete);
   };
+  useEffect(() => {
+    if (!isSingleTrashPending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isSingleTrashPending]);
   if (isPending) {
     return (
       <div className="flex justify-center  items-center min-h-screen">
@@ -267,7 +294,12 @@ const ContactDetails: FC = () => {
               </div>
             </>
           </div>
-          {isDelete && <SingleDeleteModal handleIsDelete={handleIsDelete} />}
+          {isDelete && (
+            <SingleDeleteModal
+              handleIsDelete={handleIsDelete}
+              singleTrash={singleTrash}
+            />
+          )}
         </section>
       ) : (
         <EditContact

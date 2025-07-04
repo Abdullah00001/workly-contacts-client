@@ -1,25 +1,30 @@
 import { FC, useState, useRef, useEffect } from 'react';
-import {
-  FaChevronDown,
-  FaMinusSquare,
-  FaEllipsisV,
-} from 'react-icons/fa';
+import { FaChevronDown, FaMinusSquare, FaEllipsisV } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TTrashContact } from '../../interfaces/contacts.interface';
 import MultiDeleteModal from '../ui/modal/MultiDeleteModal';
 import TrashTableBodyRow from '../ui/table/TrashTableBodyRow';
+import ContactServices from '../../services/contacts.services';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 interface TrashTableProps {
   contactData: TTrashContact[];
 }
 
+const { processBulkContactRecover } = ContactServices;
+
 const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
+  const queryClient = useQueryClient();
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [isDropdown, setIsDropdown] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isTabletMenuOpen, setIsTabletMenuOpen] = useState<boolean>(false);
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [contacts, setContacts] = useState<TTrashContact[] | []>([]);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const tabletMenuRef = useRef<HTMLDivElement>(null);
   const handleSelectAll = () => {
     setSelectedContacts(contacts.map(({ _id }) => _id as string));
     setIsDropdown(false);
@@ -47,14 +52,40 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+  const { isPending: isBulkContactRecoverPending, mutate: bulkContactRecover } =
+    useMutation({
+      mutationFn: async () =>
+        await processBulkContactRecover({ contactIds: selectedContacts }),
+      onSuccess: () => {
+        toast.dismiss();
+        setSelectedContacts([]);
+        queryClient.invalidateQueries({ queryKey: ['trash'] });
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        toast.success('Contacts recovered');
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+
+  const handleBulkRecoverOnMobileTablet = () => {
+    bulkContactRecover();
+  };
+  useEffect(() => {
+    if (!isBulkContactRecoverPending) return;
+    toast.dismiss();
+    toast.info('Working...');
+  }, [isBulkContactRecoverPending]);
   useEffect(() => {
     setContacts(contactData);
   }, [contactData]);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
         setIsMobileMenuOpen(false);
       }
     }
@@ -64,6 +95,21 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
     };
   }, []);
 
+  // Handle clicks outside tablet menu
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        tabletMenuRef.current &&
+        !tabletMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsTabletMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   return (
     <div className="w-full overflow-y-scroll relative">
       <table className="w-full">
@@ -113,7 +159,7 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
                   </div>
 
                   <div
-                    ref={menuRef}
+                    ref={mobileMenuRef}
                     className="block pr-3 md:hidden cursor-pointer"
                   >
                     <button
@@ -133,7 +179,7 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
                       >
                         <button
                           onClick={() => {
-                            // recover logic here
+                            handleBulkRecoverOnMobileTablet();
                             setIsMobileMenuOpen(false);
                           }}
                           className="w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -157,29 +203,29 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
               <th className="text-[16px] font-semibold text-left py-4 hidden md:table-cell">
                 <div className="flex justify-end items-center">
                   <div
-                    ref={menuRef}
+                    ref={tabletMenuRef}
                     className="hidden md:block pr-3 lg:hidden cursor-pointer"
                   >
                     <button
                       aria-haspopup="menu"
-                      aria-expanded={isMobileMenuOpen}
-                      aria-controls="mobile-actions-menu"
-                      onClick={() => setIsMobileMenuOpen(true)}
+                      aria-expanded={isTabletMenuOpen}
+                      aria-controls="tablet-actions-menu"
+                      onClick={() => setIsTabletMenuOpen(true)}
                     >
                       <FaEllipsisV size={18} />
                     </button>
 
-                    {isMobileMenuOpen && (
+                    {isTabletMenuOpen && (
                       <div
-                        id="mobile-actions-menu"
+                        id="tablet-actions-menu"
                         role="menu"
                         aria-labelledby="mobile-actions-trigger"
                         className="absolute mobile-menu z-50 w-40 bg-white shadow-md rounded-md border"
                       >
                         <button
                           onClick={() => {
-                            // recover logic here
-                            setIsMobileMenuOpen(false);
+                            handleBulkRecoverOnMobileTablet();
+                            setIsTabletMenuOpen(false);
                           }}
                           className="w-full text-left px-4 py-2 hover:bg-gray-100"
                         >
@@ -188,7 +234,7 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
                         <button
                           onClick={() => {
                             handleDelete();
-                            setIsMobileMenuOpen(false);
+                            setIsTabletMenuOpen(false);
                           }}
                           className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                         >
@@ -204,7 +250,12 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
                   <button className="cursor-pointer" onClick={handleDelete}>
                     Delete forever
                   </button>
-                  <button className="pr-3 cursor-pointer">Recover</button>
+                  <button
+                    onClick={() => bulkContactRecover()}
+                    className="pr-3 cursor-pointer"
+                  >
+                    Recover
+                  </button>
                 </div>
               </th>
             </tr>

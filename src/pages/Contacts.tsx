@@ -5,15 +5,22 @@ import ContactServices from '../services/contacts.services';
 import { useQuery } from '@tanstack/react-query';
 import { ClipLoader } from 'react-spinners';
 import { ToastContainer } from 'react-toastify';
+import EmptyData from '../components/ui/EmptyData';
+import { useNavigate } from 'react-router-dom';
 
 const { processGetAllContacts } = ContactServices;
 
 const Contacts: FC = () => {
+  const navigate = useNavigate();
   const { data, isPending } = useQuery({
     queryKey: ['contacts'],
     queryFn: async () => await processGetAllContacts(),
   });
   const contactData: TContacts[] = data?.data || [];
+  if (contactData.length === 0)
+    return (
+      <EmptyData type="contacts" onCreateContact={() => navigate('/new')} />
+    );
   return (
     <div className="max-w-full">
       <ToastContainer position="top-center" />

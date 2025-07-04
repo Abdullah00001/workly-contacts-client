@@ -32,6 +32,9 @@ const ContactApi = {
   getAllContacts: () => {
     return axiosClient.get(`${BASE_URL}/contacts`);
   },
+  singleTrash: ({ id }: { id: string }) => {
+    return axiosClient.patch(`${BASE_URL}/trash/${id}`);
+  },
   bulkTrash: (payload: IBulkTrashPayload) => {
     return axiosClient.patch(`${BASE_URL}/trash`, payload);
   },
@@ -49,6 +52,12 @@ const ContactApi = {
   },
   singleContactRecover: ({ id }: { id: string }) => {
     return axiosClient.patch(`${BASE_URL}/contacts/recover/${id}`);
+  },
+  bulkContactRecover: (payload: IBulkTrashPayload) => {
+    return axiosClient.patch(`${BASE_URL}/contacts/recover`, payload);
+  },
+  emptyTrash: () => {
+    return axiosClient.delete(`${BASE_URL}/contacts/empty`);
   },
 };
 

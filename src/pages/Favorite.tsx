@@ -5,15 +5,22 @@ import ContactServices from '../services/contacts.services';
 import { useQuery } from '@tanstack/react-query';
 import { ClipLoader } from 'react-spinners';
 import { ToastContainer } from 'react-toastify';
+import EmptyData from '../components/ui/EmptyData';
+import { useNavigate } from 'react-router-dom';
 
 const { processGetAllFavorites } = ContactServices;
 
 const Favorite: FC = () => {
+  const navigate = useNavigate();
   const { data, isPending } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => await processGetAllFavorites(),
   });
   const contactData: TContacts[] = data?.data || [];
+  if (contactData.length === 0)
+    return (
+      <EmptyData type="favorites" onCreateContact={() => navigate('/new')} />
+    );
   return (
     <div className="max-w-full">
       <ToastContainer position="top-center" />
