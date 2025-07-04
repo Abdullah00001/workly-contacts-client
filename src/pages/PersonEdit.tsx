@@ -26,6 +26,7 @@ import {
 } from '../interfaces/contacts.interface';
 import { contactSchema } from '../schemas/contacts.schemas';
 import { UserRound } from 'lucide-react';
+import DiscardModal from '../components/ui/modal/DiscardModal';
 
 const {
   processPatchEditContact,
@@ -40,6 +41,9 @@ const PersonEdit: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<Boolean>(false);
+  const [originalData, setOriginalData] = useState<TContacts | null>(null);
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
   const [payload, setPayload] = useState<TContacts>({
     name: '',
     avatar: {
@@ -73,6 +77,59 @@ const PersonEdit: FC = () => {
     createdAt: '',
     updatedAt: '',
   });
+  const checkForChanges = (currentPayload: TContacts, original: TContacts) => {
+    if (!original) return false;
+
+    // Check basic fields
+    if (
+      currentPayload.firstName !== original.firstName ||
+      currentPayload.lastName !== original.lastName ||
+      currentPayload.email !== original.email ||
+      currentPayload.phone !== original.phone
+    ) {
+      return true;
+    }
+
+    // Check worksAt fields
+    if (
+      currentPayload.worksAt?.companyName !== original.worksAt?.companyName ||
+      currentPayload.worksAt?.jobTitle !== original.worksAt?.jobTitle
+    ) {
+      return true;
+    }
+
+    // Check location fields
+    if (
+      currentPayload.location?.country !== original.location?.country ||
+      currentPayload.location?.city !== original.location?.city ||
+      currentPayload.location?.postCode !== original.location?.postCode ||
+      currentPayload.location?.streetAddress !==
+        original.location?.streetAddress
+    ) {
+      return true;
+    }
+
+    // Check birthday fields
+    if (
+      currentPayload.birthday?.day !== original.birthday?.day ||
+      currentPayload.birthday?.month !== original.birthday?.month ||
+      currentPayload.birthday?.year !== original.birthday?.year
+    ) {
+      return true;
+    }
+
+    // Check if new image is uploaded
+    if (newImage) {
+      return true;
+    }
+
+    // Check if avatar URL was removed
+    if (currentPayload.avatar?.url !== original.avatar?.url) {
+      return true;
+    }
+
+    return false;
+  };
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['contact', id],
     queryFn: async () => {
@@ -182,10 +239,6 @@ const PersonEdit: FC = () => {
       ...prev,
       birthday: { ...prev.birthday, [name]: updatedValue },
     }));
-  };
-  const handleReturn = () => {
-    const returnPath = location?.state?.from || '/';
-    navigate(returnPath);
   };
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -299,10 +352,29 @@ const PersonEdit: FC = () => {
     patchEditContact({ id: _id as string, payload: updatedPayload });
     return;
   };
+  const handleResetState = () => {
+    removeImage();
+    const returnPath = location?.state?.from || '/';
+    navigate(returnPath);
+  };
+  const handleBackClick = () => {
+    if (hasChanges) {
+      setIsDiscardModalOpen(true);
+    } else {
+      handleResetState();
+    }
+  };
   useEffect(() => {
     if (isPending && !data) return;
     setPayload(data?.data);
+    setOriginalData(data?.data);
   }, [data?.data]);
+  useEffect(() => {
+    if (originalData && payload) {
+      const changes = checkForChanges(payload, originalData);
+      setHasChanges(changes);
+    }
+  }, [payload, originalData, newImage]);
   if (isPending) {
     return (
       <div className="flex justify-center  items-center min-h-screen">
@@ -333,7 +405,7 @@ const PersonEdit: FC = () => {
       <ToastContainer position="top-center" />
       <div className="w-full lg:w-ful  xl:w-[950px] xl:p-4 ">
         <div className="flex justify-between items-center">
-          <div onClick={handleReturn} className="p-2 cursor-pointer">
+          <div onClick={handleBackClick} className="p-2 cursor-pointer">
             <FaArrowLeft size={20} className=" text-[#444746] " />
           </div>
           <div className="flex items-center justify-end space-x-1">
@@ -699,6 +771,12 @@ const PersonEdit: FC = () => {
           </form>
         </div>
       </div>
+      {isDiscardModalOpen && (
+        <DiscardModal
+          handleResetState={handleResetState}
+          setIsDiscardModalOpen={setIsDiscardModalOpen}
+        />
+      )}
     </section>
   );
 };
