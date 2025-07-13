@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, ArrowLeft } from 'lucide-react';
+import { Menu, ArrowLeft, Users } from 'lucide-react';
 import {
   AiOutlineContacts,
   AiOutlineStar,
@@ -80,7 +80,19 @@ const Hamburger: FC = () => {
               {/* Drawer Header */}
               <div className="flex items-center justify-between mb-4">
                 <Link to={'/'}>
-                  <h1 className="text-lg font-bold">Amar Contacts</h1>
+                  <div className="flex items-center space-x-2 cursor-pointer group transition-all duration-300 hover:scale-105">
+                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-1.5 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
+                      <Users className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
+                        Amar Contact
+                      </h1>
+                      <p className="text-xs text-gray-500 -mt-0.5 truncate">
+                        Contact Management
+                      </p>
+                    </div>
+                  </div>
                 </Link>
                 <button onClick={() => setIsOpen(false)}>
                   <ArrowLeft className="w-6 h-6" />

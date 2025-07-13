@@ -7,24 +7,18 @@ import { ClipLoader } from 'react-spinners';
 const ProtectedRoute: FC<IChildrenProps> = ({ children }) => {
   const [isChecking, setIsChecking] = useState<boolean>(true);
   const navigate = useNavigate();
-  const { user,authChecked } = useAuthContext();
+  const { user, authChecked } = useAuthContext();
 
   useEffect(() => {
     if (!authChecked) return;
     const checkAuthentication = async () => {
       // Add small delay to show loading state
       await new Promise((resolve) => setTimeout(resolve, 100));
-
-      if (!user) {
-        navigate('/login', { replace: true });
-        return;
-      }
-
       setIsChecking(false);
     };
 
     checkAuthentication();
-  }, [user, navigate,authChecked]);
+  }, [user, navigate, authChecked]);
 
   // Show loading spinner while checking authentication
   if (isChecking) {

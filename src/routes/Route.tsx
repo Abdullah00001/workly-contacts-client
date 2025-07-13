@@ -1,14 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Main from '../layouts/Main';
 import Contacts from '../pages/Contacts';
 import Trash from '../pages/Trash';
 import Favorite from '../pages/Favorite';
 import CreateContact from '../pages/CreateContact';
 import ContactDetails from '../pages/ContactDetails';
 import Profile from '../pages/Profile';
-import AvatarDropDownProvider from '../providers/AvatarDropDownProvider';
-import Login from '../pages/Login';
-import Signup from '../pages/Signup';
 import OtpVerification from '../pages/OtpVerification';
 import ProtectedRoute from '../components/Protected/ProtectedRoute';
 import ProtectedVerifyPage from '../components/Protected/ProtectedVerifyPage';
@@ -22,23 +18,39 @@ import RecoverStep1Guard from '../components/Protected/RecoverStep1Guard';
 import RecoverStep2Guard from '../components/Protected/RecoverStep2Guard';
 import RecoverStep3Guard from '../components/Protected/RecoverStep3Guard';
 import PersonEdit from '../pages/PersonEdit';
+import PrivacyPolicy from '../pages/PrivacyPolicy';
+import TermsOfService from '../pages/TermsOfService';
+import HelpCenter from '../pages/HelpCenter';
+import ContactUs from '../pages/ContactUs';
+import withPublicLayout from '../utils/withPublicLayout';
+import RootRedirectHandler from '../components/Protected/RootRedirectHandler';
+import SignupRouteWrapper from '../components/Protected/SignupRouteWrapper';
+import LoginRouteWrapper from '../components/Protected/LoginRouteWrapper';
 
 const Route = createBrowserRouter([
   {
+    path: '/privacy',
+    element: withPublicLayout(<PrivacyPolicy />),
+  },
+  {
+    path: '/terms',
+    element: withPublicLayout(<TermsOfService />),
+  },
+  {
+    path: '/help',
+    element: withPublicLayout(<HelpCenter />),
+  },
+  {
+    path: '/contact',
+    element: withPublicLayout(<ContactUs />),
+  },
+  {
     path: '/login',
-    element: (
-      <PublicRoute>
-        <Login />
-      </PublicRoute>
-    ),
+    element: <LoginRouteWrapper />,
   },
   {
     path: '/signup',
-    element: (
-      <PublicRoute>
-        <Signup />
-      </PublicRoute>
-    ),
+    element: <SignupRouteWrapper />,
   },
   {
     path: '/verify',
@@ -92,9 +104,7 @@ const Route = createBrowserRouter([
     path: '/',
     element: (
       <ProtectedRoute>
-        <AvatarDropDownProvider>
-          <Main />
-        </AvatarDropDownProvider>
+        <RootRedirectHandler />
       </ProtectedRoute>
     ),
     children: [
