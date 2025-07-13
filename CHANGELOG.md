@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.3.0-beta] - 2025-07-13
+
+### 🚧 Beta Release Notes
+
+This beta release introduces new features and enhancements that improve user experience and add foundational functionality for upcoming stable releases.
+
+---
+
+### ✨ Features
+
+- **[Feature 1 Title]**
+
+  - Description of feature 1 with key highlights and backend/frontend impact
+
+- **[Feature 2 Title]**
+  - Description of feature 2 including improvements and fixes
+
+---
+
+### 💄 UI Improvements
+
+- Updates to [specific UI components or pages] to improve responsiveness and accessibility
+- General styling enhancements and bug fixes
+
+---
+
+### ⚙️ Developer Notes
+
+- Features are tested locally but may require further QA before stable release
+- No known breaking changes; backward compatible with previous stable version
+
+---
+
+🔖 Tag: `v1.3.0-beta`  
+📅 Date: **2025-07-13**
+
 ## [v1.2.0-beta] - 2025-07-05
 
 ### 🚧 Beta Release Notes
