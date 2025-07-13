@@ -18,7 +18,7 @@ const LogoutModal: FC<ILogoutModalProps> = ({ handleIsLogout }) => {
       setUser(false);
       handleIsLogout();
       setTimeout(() => {
-        navigate('/login');
+        navigate('/');
       }, 2000);
     } catch (error) {
       handleIsLogout();
