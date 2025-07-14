@@ -1,9 +1,10 @@
 // components/ui/SearchResultRow.tsx
 import { FC, useEffect } from 'react';
 import { ISearchResult } from '../../interfaces/contacts.interface';
-
+import { useNavigate } from 'react-router-dom';
 
 const SearchResultRow: FC<ISearchResult> = ({ _id, avatar, email, name }) => {
+  const navigate = useNavigate();
   const avatarUrl = avatar?.url
     ? avatar?.url
     : `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`;
@@ -11,7 +12,10 @@ const SearchResultRow: FC<ISearchResult> = ({ _id, avatar, email, name }) => {
     console.log(name);
   }, [_id]);
   return (
-    <div className="flex items-center gap-4 p-3 hover:bg-muted/50 transition rounded-md cursor-pointer">
+    <div
+      onClick={() => navigate(`/person/${_id}`)}
+      className="flex items-center gap-4 p-3 hover:bg-muted/50 transition rounded-md cursor-pointer"
+    >
       <img
         src={avatarUrl}
         alt={name}
