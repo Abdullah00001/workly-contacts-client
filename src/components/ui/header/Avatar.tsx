@@ -9,7 +9,7 @@ interface User {
 
 const Avatar: FC = () => {
   const user: User = {
-    name: 'Jane Doe',
+    name: 'Abdullah Bin Omar Chowdhury',
     avatarUrl:
       'https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXZhdGFyfGVufDB8fDB8fHww',
   };
@@ -22,7 +22,7 @@ const Avatar: FC = () => {
     setIsDropdownOpen(false);
     navigate('/me', { state: { from: location.pathname } });
   };
-  
+
   // Toggle dropdown visibility
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
   const { setIsFeedBackClicked, setIsLogoutClicked } = useAvatarDropDown();
@@ -51,8 +51,8 @@ const Avatar: FC = () => {
         />
       </div>
       {isDropdownOpen && (
-        <div className="absolute z-10 right-0 mt-2 w-48 bg-white shadow-lg rounded-md p-3">
-          <div className="pb-2 border-b border-gray-200">
+        <div className="absolute z-10 right-0 mt-2 w-[300px] bg-gray-200 shadow-lg rounded-md p-3">
+          <div className="pb-2 border-b border-white">
             <h1 className="font-bold text-gray-800">{user.name}</h1>
           </div>
           <ul className="text-sm font-bold mt-2">

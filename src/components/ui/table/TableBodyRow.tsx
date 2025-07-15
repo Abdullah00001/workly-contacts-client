@@ -53,15 +53,11 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       if (data.data.isFavorite === false) {
         setIsFavorite(data.data.isFavorite);
-        toast.success(
-          `Removed ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
-        );
+        toast.success(`Removed ${data?.data?.name} to favorites`);
       }
       if (data.data.isFavorite === true) {
         setIsFavorite(data.data.isFavorite);
-        toast.success(
-          `Added ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
-        );
+        toast.success(`Added ${data?.data?.name} to favorites`);
       }
     },
     onError: (error) => {
@@ -197,7 +193,8 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
       </td>
       <td className="hidden pr-4 py-2  lg:table-cell transition-all duration-300 ease-in-out">
         <div className="flex justify-between items-center">
-          <span>{phone}</span>
+          <span className="lg:hidden xl:block">{phone}</span>
+          <div></div>
           {isHover && (
             <div className="flex items-center space-x-2">
               <span

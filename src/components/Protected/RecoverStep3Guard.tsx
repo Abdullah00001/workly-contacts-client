@@ -16,8 +16,7 @@ const RecoverStep3Guard: FC<IChildrenProps> = ({ children }) => {
       setIsChecking(true);
       setHasPermission(false);
       try {
-        const data = await processCheckR_stp3();
-        console.log(data);
+        await processCheckR_stp3();
         setHasPermission(true);
       } catch (error) {
         console.error(error);

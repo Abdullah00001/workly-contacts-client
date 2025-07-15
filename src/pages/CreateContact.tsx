@@ -211,7 +211,6 @@ const CreateContact: FC = () => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    console.log(name, value);
     const updatedValue =
       name === 'day' || name === 'year'
         ? value === ''

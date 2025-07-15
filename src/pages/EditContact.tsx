@@ -56,8 +56,6 @@ const EditContact: FC<IEditContactMainProps> = ({
       year: null,
     },
     email: '',
-    firstName: '',
-    lastName: '',
     location: {
       city: null,
       country: null,
@@ -166,7 +164,6 @@ const EditContact: FC<IEditContactMainProps> = ({
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    console.log(name, value);
     const updatedValue =
       name === 'day' || name === 'year'
         ? value === ''
@@ -246,23 +243,13 @@ const EditContact: FC<IEditContactMainProps> = ({
       return;
     }
     if (newImage) {
-      const {
-        avatar,
-        birthday,
-        email,
-        firstName,
-        lastName,
-        location,
-        phone,
-        worksAt,
-        _id,
-      } = payload;
+      const { avatar, birthday, email, name, location, phone, worksAt, _id } =
+        payload;
       const updatedPayload = new FormData();
       if (avatar) updatedPayload.append('avatar', JSON.stringify(avatar));
       if (birthday) updatedPayload.append('birthday', JSON.stringify(birthday));
       if (email) updatedPayload.append('email', email);
-      if (firstName) updatedPayload.append('firstName', firstName);
-      if (lastName) updatedPayload.append('lastName', lastName);
+      if (name) updatedPayload.append('lastName', name);
       if (location) updatedPayload.append('location', JSON.stringify(location));
       if (phone) updatedPayload.append('phone', phone);
       if (worksAt) updatedPayload.append('worksAt', JSON.stringify(worksAt));
@@ -270,23 +257,13 @@ const EditContact: FC<IEditContactMainProps> = ({
       putEditContact({ id: _id as string, payload: updatedPayload });
       return;
     }
-    const {
-      avatar,
-      birthday,
-      email,
-      firstName,
-      lastName,
-      location,
-      phone,
-      worksAt,
-      _id,
-    } = payload;
+    const { avatar, birthday, email, name, location, phone, worksAt, _id } =
+      payload;
     const updatedPayload: IUpdateOneContactPayload = {
       avatar,
       birthday: birthday as IBirthDate,
       email,
-      firstName,
-      lastName,
+      name,
       location: location as ILocation,
       phone,
       worksAt: worksAt as IWorksAt,
@@ -424,36 +401,18 @@ const EditContact: FC<IEditContactMainProps> = ({
                 <div className="w-full lg:w-[520px]">
                   <input
                     onChange={handleChangeBasicField}
-                    value={payload?.firstName}
+                    value={payload?.name}
                     placeholder="First Name"
                     type="text"
                     className={`${
-                      fieldErrors.email && 'border-red-500'
+                      fieldErrors.name && 'border-red-500'
                     } px-3 w-full py-2 border border-gray-500 rounded-lg`}
-                    name="firstName"
-                    id="firstName"
+                    name="name"
+                    id="name"
                   />
-                  {fieldErrors.firstName && (
+                  {fieldErrors.name && (
                     <p className="text-red-500 text-sm mt-1">
-                      {fieldErrors.firstName}
-                    </p>
-                  )}
-                </div>
-                <div className="w-full lg:w-[520px]">
-                  <input
-                    onChange={handleChangeBasicField}
-                    value={payload?.lastName}
-                    placeholder="Last Name"
-                    type="text"
-                    className={`${
-                      fieldErrors.email && 'border-red-500'
-                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
-                    name="lastName"
-                    id="lastName"
-                  />
-                  {fieldErrors.lastName && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {fieldErrors.lastName}
+                      {fieldErrors.name}
                     </p>
                   )}
                 </div>
