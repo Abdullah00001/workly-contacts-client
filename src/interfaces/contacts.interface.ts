@@ -166,4 +166,5 @@ export interface ISearchResult {
   name: string;
   email: TEmail;
   avatar: TImage;
+  onResultClick: () => void;
 }

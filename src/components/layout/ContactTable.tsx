@@ -130,7 +130,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
               <th className="text-[16px] font-semibold text-left py-4 hidden md:table-cell">
                 Email
               </th>
-              <th className="text-[16px] font-semibold text-left py-4 hidden lg:table-cell">
+              <th className="text-[16px] font-semibold text-left py-4 hidden lg:hidden xl:table-cell">
                 Phone
               </th>
             </tr>

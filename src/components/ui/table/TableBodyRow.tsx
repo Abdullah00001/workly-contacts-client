@@ -197,7 +197,8 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
       </td>
       <td className="hidden pr-4 py-2  lg:table-cell transition-all duration-300 ease-in-out">
         <div className="flex justify-between items-center">
-          <span>{phone}</span>
+          <span className="lg:hidden xl:block">{phone}</span>
+          <div></div>
           {isHover && (
             <div className="flex items-center space-x-2">
               <span

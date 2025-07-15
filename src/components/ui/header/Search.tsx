@@ -1,5 +1,4 @@
 import { FC, useState, useEffect, useRef, ChangeEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Search as SearchIcon, X } from 'lucide-react';
 import ContactServices from '../../../services/contacts.services';
 import { useMutation } from '@tanstack/react-query';
@@ -16,6 +15,7 @@ const Search: FC = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [searchedData, setSearchedData] = useState<ISearchResult[] | []>([]);
+  const [showResults, setShowResults] = useState<boolean>(false);
   const { mutate, data, isPending } = useMutation({
     mutationFn: async (payload: string) => await processSearchContact(payload),
     onError: (error: any) => {
@@ -29,6 +29,11 @@ const Search: FC = () => {
     const { value } = e.target;
     setSearchText(value);
     mutate(value);
+  };
+  const handleSearchResultClick = () => {
+    setSearchText('');
+    setShowResults(false);
+    setIsOpen(false);
   };
   // Detect tablet devices based on screen width
   useEffect(() => {
@@ -44,29 +49,39 @@ const Search: FC = () => {
     window.addEventListener('resize', checkIfTablet);
     return () => window.removeEventListener('resize', checkIfTablet);
   }, []);
-
-  // Close search bar when clicking outside (only for mobile)
+  // out side click search result hide functionality
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         searchRef.current &&
         !searchRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        // Hide search results on all devices
+        setShowResults(false);
+
+        // Only close the search bar on mobile devices
+        if (!isTablet) {
+          setIsOpen(false);
+        }
       }
     };
 
-    if (isOpen && !isTablet) {
-      document.addEventListener('mousedown', handleClickOutside);
-      inputRef.current?.focus(); // Auto-focus when opening
+    // Add event listener for all devices when search is open or results are shown
+    if (isOpen || showResults) {
+      document.addEventListener('click', handleClickOutside);
+
+      // Auto-focus when opening on mobile
+      if (isOpen && !isTablet) {
+        inputRef.current?.focus();
+      }
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
-  }, [isOpen, isTablet]);
+  }, [isOpen, isTablet, showResults]);
 
   // Focus on input when tablet mode is active
   useEffect(() => {
@@ -79,11 +94,10 @@ const Search: FC = () => {
       setSearchedData([]);
       return;
     }
+    setShowResults(true);
     setSearchedData(data?.data);
   }, [data, isPending]);
-  useEffect(() => {
-    console.log(searchedData);
-  }, [searchedData]);
+  useEffect(() => {}, [searchedData]);
 
   // For tablet devices, always show the full search bar
   if (isTablet) {
@@ -106,7 +120,10 @@ const Search: FC = () => {
           </div>
           {searchText && (
             <button
-              onClick={() => setSearchText('')}
+              onClick={() => {
+                setSearchText('');
+                setShowResults(false);
+              }}
               className="p-2"
               aria-label="Clear search"
             >
@@ -115,10 +132,11 @@ const Search: FC = () => {
           )}
         </div>
         {/* Search Results */}
-        {searchText && searchedData.length > 0 && (
+        {showResults && searchText && searchedData.length > 0 && (
           <div className="absolute top-full left-0 w-full max-h-[50vh] overflow-y-auto bg-white border border-t-0 border-gray-300 shadow-md rounded-b-lg z-10">
             {searchedData.map(({ _id, avatar, email, name }) => (
               <SearchResultRow
+                onResultClick={handleSearchResultClick}
                 key={_id}
                 _id={_id}
                 avatar={avatar}
@@ -134,54 +152,39 @@ const Search: FC = () => {
 
   // For mobile: collapsible search
   return (
-    <div className="relative flex flex-col items-center">
-      <AnimatePresence>
-        {isOpen ? (
-          <motion.div
-            ref={searchRef}
-            initial={{ width: 40, opacity: 0 }}
-            animate={{ width: '12rem', opacity: 1 }}
-            exit={{ width: 40, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="flex items-center bg-white shadow-md rounded-lg border border-gray-300 overflow-hidden"
-          >
-            <div className="relative flex-grow flex items-center">
-              <input
-                ref={inputRef}
-                type="text"
-                value={searchText}
-                onChange={handleChange}
-                placeholder="Search..."
-                className="w-full border-none outline-none px-3 py-1 text-lg pr-8"
-              />
-            </div>
-            <button
-              onClick={() => {
-                setSearchText(''), setIsOpen(false);
-              }}
-              className="p-2"
-              aria-label="Close search"
-            >
-              <X className="w-5 h-5 text-gray-600" />
-            </button>
-          </motion.div>
-        ) : (
-          <motion.button
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsOpen(true)}
+    <div className="relative w-full" ref={searchRef}>
+      <div className="flex items-center bg-white shadow-md rounded-lg border border-gray-300 w-full">
+        <div className="flex-grow flex items-center w-full">
+          <SearchIcon className="ml-3 w-5 h-5 text-gray-500" />
+          <input
+            ref={inputRef}
+            type="text"
+            value={searchText}
+            onChange={handleChange}
+            placeholder="Search..."
+            className="w-full border-none outline-none px-3 py-2 text-lg"
+          />
+        </div>
+        {searchText && (
+          <button
+            onClick={() => {
+              setSearchText('');
+              setIsOpen(false);
+              setShowResults(false);
+            }}
             className="p-2"
-            aria-label="Open search"
+            aria-label="Clear search"
           >
-            <SearchIcon className="w-6 h-6 text-gray-700" />
-          </motion.button>
+            <X className="w-5 h-5 text-gray-600" />
+          </button>
         )}
-      </AnimatePresence>
-      {searchText && searchedData.length > 0 && (
-        <div className="absolute top-full left-0 mt-2 w-full max-h-[60vh] overflow-y-auto bg-white border border-gray-300 shadow-md rounded-lg z-10">
+      </div>
+      {/* Search Results */}
+      {searchText && searchedData.length > 0 && showResults && (
+        <div className="absolute top-full left-0 w-full max-h-[50vh] overflow-y-auto bg-white border border-t-0 border-gray-300 shadow-md rounded-b-lg z-10">
           {searchedData.map(({ _id, avatar, email, name }) => (
             <SearchResultRow
+              onResultClick={handleSearchResultClick}
               key={_id}
               _id={_id}
               avatar={avatar}
