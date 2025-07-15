@@ -11,7 +11,6 @@ const SearchResultRow: FC<ISearchResult> = ({
 }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    console.log('hello');
     navigate(`/person/${_id}`);
     onResultClick();
   };

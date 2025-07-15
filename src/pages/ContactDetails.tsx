@@ -48,13 +48,9 @@ const ContactDetails: FC = () => {
       queryClient.invalidateQueries({ queryKey: ['contact', id] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       if (data.data.isFavorite === false)
-        toast.success(
-          `Removed ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
-        );
+        toast.success(`Removed ${data?.data?.name} to favorites`);
       if (data.data.isFavorite === true)
-        toast.success(
-          `Added ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
-        );
+        toast.success(`Added ${data?.data?.name} to favorites`);
     },
     onError: (error) => {
       toast.dismiss();
@@ -174,7 +170,7 @@ const ContactDetails: FC = () => {
                 />
               ) : (
                 <img
-                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${data.data?.firstName}`}
+                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${data.data?.name}`}
                   alt="Avatar"
                   className="w-full rounded-full"
                 />
@@ -182,7 +178,7 @@ const ContactDetails: FC = () => {
             </div>
             <div>
               <h1 className="text-center font-normal text-wrap text-2xl lg:text-[28px]">
-                {data?.data?.firstName} {data?.data?.lastName}
+                {data?.data?.name}
               </h1>
               <h4 className="text-[16px] text-gray-800">
                 {data?.data?.worksAt?.jobTitle &&

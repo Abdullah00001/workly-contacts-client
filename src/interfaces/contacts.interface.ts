@@ -103,8 +103,8 @@ export type TContacts = {
   createdAt?: Date | string;
   updatedAt?: Date | string;
   avatar: TImage;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   name: string;
   email: string;
   phone: string;
@@ -135,8 +135,7 @@ export interface IEditContactMainProps {
 export interface IUpdateOneContactPayload {
   avatarImage?: string;
   avatar?: TImage;
-  firstName?: string;
-  lastName?: string;
+  name?: string;
   email?: string;
   phone?: string;
   worksAt?: IWorksAt;

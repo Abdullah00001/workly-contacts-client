@@ -6,7 +6,6 @@ const ScrollToTop: FC = () => {
 
   useEffect(() => {
     // Scroll to the top when the pathname changes
-    console.log('🔄 Scroll triggered for path:', pathname);
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, [pathname]);
 

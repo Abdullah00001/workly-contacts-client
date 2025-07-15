@@ -53,15 +53,11 @@ const TableBodyRow: FC<ITableBodyRowProps> = ({
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       if (data.data.isFavorite === false) {
         setIsFavorite(data.data.isFavorite);
-        toast.success(
-          `Removed ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
-        );
+        toast.success(`Removed ${data?.data?.name} to favorites`);
       }
       if (data.data.isFavorite === true) {
         setIsFavorite(data.data.isFavorite);
-        toast.success(
-          `Added ${data?.data?.firstName} ${data?.data?.lastName} to favorites`
-        );
+        toast.success(`Added ${data?.data?.name} to favorites`);
       }
     },
     onError: (error) => {
