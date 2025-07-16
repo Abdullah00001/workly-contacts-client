@@ -1,10 +1,8 @@
-import { UserRound } from 'lucide-react';
+import { Camera, Edit, Trash2, UserRound, X } from 'lucide-react';
 import { FC, useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import {
-  MdCameraAlt,
-  MdEdit,
   MdLocationOn,
   MdOutlineCake,
   MdOutlineMail,
@@ -33,6 +31,7 @@ const CreateContact: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
   const [payload, setPayload] = useState<TCreateContact>({
     avatar: {
       publicId: null,
@@ -79,7 +78,47 @@ const CreateContact: FC = () => {
       );
     },
   });
+  const { mutate: createContact, isPending: isCreateContactPending } =
+    useMutation({
+      mutationFn: async (payload: ICreateContactPayload) =>
+        await processCreateContact(payload),
+      onSuccess: (data) => {
+        toast.dismiss();
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        toast.success('Contact Created');
+        setTimeout(() => {
+          navigate(`/person/${data.data._id}`);
+        }, 2000);
+      },
+      onError: (error: any) => {
+        console.error('Contact Creation failed:', error);
+        toast.dismiss();
+        toast.error(
+          error?.response?.data?.message ||
+            'Failed to create contact. Please try again.'
+        );
+      },
+    });
+  const { mutate: deleteImage, isPending: isDeleting } = useMutation({
+    mutationFn: async (payload: string) => await processImageDelete(payload),
+    onSuccess: () => {
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, publicId: null, url: null },
+      }));
+      setShowModal(false);
+      toast.success('Image delete successfully!');
+    },
+    onError: (error: any) => {
+      console.error('Image delete failed:', error);
+      toast.error(
+        error?.response?.data?.message ||
+          'Failed to delete image. Please try again.'
+      );
+    },
+  });
   const handleResetState = () => {
+    if (payload.avatar?.publicId) deleteImage(payload.avatar?.publicId);
     setPayload((prev) => ({
       ...prev,
       avatar: {
@@ -137,44 +176,6 @@ const CreateContact: FC = () => {
       navigate(returnPath);
     }
   };
-  const { mutate: createContact, isPending: isCreateContactPending } =
-    useMutation({
-      mutationFn: async (payload: ICreateContactPayload) =>
-        await processCreateContact(payload),
-      onSuccess: (data) => {
-        toast.dismiss();
-        queryClient.invalidateQueries({ queryKey: ['contacts'] });
-        toast.success('Contact Created');
-        setTimeout(() => {
-          navigate(`/person/${data.data._id}`);
-        }, 2000);
-      },
-      onError: (error: any) => {
-        console.error('Contact Creation failed:', error);
-        toast.dismiss();
-        toast.error(
-          error?.response?.data?.message ||
-            'Failed to create contact. Please try again.'
-        );
-      },
-    });
-  const { mutate: deleteImage, isPending: isDeleteing } = useMutation({
-    mutationFn: async (payload: string) => await processImageDelete(payload),
-    onSuccess: () => {
-      setPayload((prev) => ({
-        ...prev,
-        avatar: { ...prev.avatar, publicId: null, url: null },
-      }));
-      toast.success('Image delete successfully!');
-    },
-    onError: (error: any) => {
-      console.error('Image delete failed:', error);
-      toast.error(
-        error?.response?.data?.message ||
-          'Failed to delete image. Please try again.'
-      );
-    },
-  });
   const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPayload((prev) => ({ ...prev, [name]: value }));
@@ -225,6 +226,9 @@ const CreateContact: FC = () => {
     }));
   };
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleEdit = () => {
+    fileInputRef.current?.click();
+  };
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -240,19 +244,20 @@ const CreateContact: FC = () => {
       toast.error('Image size should be less than 5MB.');
       return;
     }
-
-    const payload = new FormData();
-    payload.append('image', file);
-    uploadImage(payload);
+    const imagePayload = new FormData();
+    imagePayload.append('image', file);
+    if (payload.avatar?.publicId)
+      imagePayload.append('publicId', payload.avatar?.publicId);
+    uploadImage(imagePayload);
   };
 
   const handleImageClick = () => {
-    if (isUploading || isDeleteing) return;
-    fileInputRef.current?.click();
+    if (isUploading || isDeleting) return;
+    payload.avatar.url ? setShowModal(true) : fileInputRef.current?.click();
   };
 
   const removeImage = () => {
-    if (isUploading || isDeleteing) return;
+    if (isUploading || isDeleting) return;
     deleteImage(payload.avatar?.publicId as string);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -296,78 +301,54 @@ const CreateContact: FC = () => {
             </button>
           </div>
         </div>
-        <div className="flex justify-center lg:justify-start items-center mt-12 space-y-6 ">
-          <div className="relative w-[100px] bg-blue-200 rounded-full h-[100px] lg:w-[162px] lg:h-[162px]">
+        <div className="flex justify-center lg:justify-start items-center mt-12 space-y-6">
+          <div className="relative w-[142px] bg-blue-200 rounded-full h-[142px] lg:w-[162px] lg:h-[162px]">
             {payload.avatar.url ? (
-              <div className="relative group w-full h-full">
+              <div className="relative w-full h-full">
                 <img
                   src={payload.avatar.url}
                   alt="Avatar"
                   className="w-full h-full rounded-full object-cover"
                 />
-                {/* Overlay with edit/remove options */}
-                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={handleImageClick}
-                      disabled={isUploading || isDeleteing}
-                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Change photo"
-                    >
-                      <MdEdit size={16} className="text-gray-700" />
-                    </button>
-                    <button
-                      onClick={removeImage}
-                      disabled={isUploading || isDeleteing}
-                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Remove photo"
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className="text-red-600"
-                      >
-                        <path
-                          d="M6 6l12 12M6 18L18 6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
+
+                {/* Edit Icon - Always visible on all devices */}
+                <button
+                  onClick={handleImageClick}
+                  disabled={isUploading || isDeleting}
+                  className="absolute left-[113px] top-[90px] lg:left-[130px] lg:top-[110px] w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Edit photo"
+                >
+                  <Edit size={16} />
+                </button>
+
                 {/* Loading overlay */}
-                {(isUploading || isDeleteing) && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                    <ClipLoader color="#ffffff" size={30} />
+                {(isUploading || isDeleting) && (
+                  <div className="absolute inset-0 bg-opacity-50 rounded-full flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
                   </div>
                 )}
               </div>
             ) : (
               <div
                 onClick={handleImageClick}
-                className={`flex justify-center items-center h-full cursor-pointer hover:bg-blue-300 transition-colors rounded-full relative group ${
-                  isUploading || isDeleteing
+                className={`flex justify-center items-center h-full cursor-pointer hover:bg-blue-300 transition-colors rounded-full relative ${
+                  isUploading || isDeleting
                     ? 'opacity-50 cursor-not-allowed'
                     : ''
                 }`}
               >
                 <div className="relative">
-                  {isUploading || isDeleteing ? (
+                  {isUploading || isDeleting ? (
                     <div className="flex items-center justify-center">
-                      <ClipLoader color="#2563eb" size={40} />
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
                     </div>
                   ) : (
                     <>
                       <UserRound size={90} className="text-blue-600" />
-                      {/* Camera overlay icon */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="bg-blue-600 rounded-full p-2">
-                          <MdCameraAlt size={20} className="text-white" />
-                        </div>
+
+                      {/* Camera overlay icon - Always visible on all devices */}
+                      <div className="absolute left-[90px] top-[60px] lg:left-[95px] lg:top-[70px] w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                        <Camera size={16} className="text-white" />
                       </div>
                     </>
                   )}
@@ -383,7 +364,7 @@ const CreateContact: FC = () => {
               accept="image/*"
               onChange={handleImageUpload}
               className="hidden"
-              disabled={isUploading || isDeleteing}
+              disabled={isUploading || isDeleting}
             />
           </div>
         </div>
@@ -592,16 +573,6 @@ const CreateContact: FC = () => {
                   />
                 </div>
                 <div className="w-full lg:w-[520px]">
-                  {/* <input
-                    onChange={handleChangeBirthday}
-                    placeholder="Month"
-                    type="text"
-                    className={`${
-                      fieldErrors['birthday'] && 'border-red-500'
-                    } px-3 w-full py-2 border border-gray-500 rounded-lg`}
-                    name="month"
-                    id="month"
-                  /> */}
                   <select
                     onChange={handleChangeBirthday}
                     name="month"
@@ -648,6 +619,66 @@ const CreateContact: FC = () => {
           handleResetState={handleResetState}
           setIsDiscardModalOpen={setIsDiscardModalOpen}
         />
+      )}
+      {showModal && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-gray-200 rounded-lg max-w-md w-full mx-4">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-lg font-semibold">Edit</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {/* Image Preview */}
+              <div className="flex justify-center mb-6">
+                <img
+                  src={payload.avatar.url as string}
+                  alt="Avatar Preview"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
+                />
+                {(isUploading || isDeleting) && (
+                  <div className="absolute inset-0 bg-opacity-50 rounded-full flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleEdit}
+                  disabled={isUploading || isDeleting}
+                  className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  <Edit size={16} />
+                  <span>Edit</span>
+                </button>
+
+                <button
+                  onClick={removeImage}
+                  disabled={isUploading || isDeleting}
+                  className="flex-1 bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  {isDeleting ? (
+                    <ClipLoader />
+                  ) : (
+                    <>
+                      <Trash2 size={16} />
+                      <span>Delete</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );
