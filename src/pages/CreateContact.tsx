@@ -3,8 +3,6 @@ import { FC, useState, useRef, ChangeEvent, FormEvent, useEffect } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import {
-  MdCameraAlt,
-  MdEdit,
   MdLocationOn,
   MdOutlineCake,
   MdOutlineMail,
@@ -627,7 +625,7 @@ const CreateContact: FC = () => {
           <div className="bg-gray-200 rounded-lg max-w-md w-full mx-4">
             {/* Modal Header */}
             <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-lg font-semibold">Profile Photo</h2>
+              <h2 className="text-lg font-semibold">Edit</h2>
               <button
                 onClick={() => setShowModal(false)}
                 className="p-1 hover:bg-gray-100 rounded-full transition-colors"
