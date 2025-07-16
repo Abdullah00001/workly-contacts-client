@@ -6,8 +6,6 @@ import { ClipLoader } from 'react-spinners';
 import { FaArrowLeft, FaExclamationTriangle } from 'react-icons/fa';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import {
-  MdCameraAlt,
-  MdEdit,
   MdLocationOn,
   MdOutlineCake,
   MdOutlineMail,
@@ -25,7 +23,7 @@ import {
   TContacts,
 } from '../interfaces/contacts.interface';
 import { contactSchema } from '../schemas/contacts.schemas';
-import { UserRound } from 'lucide-react';
+import { Camera, Edit, Trash2, UserRound, X } from 'lucide-react';
 import DiscardModal from '../components/ui/modal/DiscardModal';
 
 const {
@@ -44,6 +42,7 @@ const PersonEdit: FC = () => {
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<boolean>(false);
   const [originalData, setOriginalData] = useState<TContacts | null>(null);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
   const [payload, setPayload] = useState<TContacts>({
     name: '',
     avatar: {
@@ -75,6 +74,9 @@ const PersonEdit: FC = () => {
     createdAt: '',
     updatedAt: '',
   });
+  const handleEdit = () => {
+    fileInputRef.current?.click();
+  };
   const checkForChanges = (currentPayload: TContacts, original: TContacts) => {
     if (!original) return false;
 
@@ -134,58 +136,56 @@ const PersonEdit: FC = () => {
     },
     enabled: !!id,
   });
-  const { mutate: putEditContact, isPending: isPutEditContactPending } =
-    useMutation({
-      mutationFn: async ({ id, payload }: IEditContact) =>
-        await processPutEditContact({ id, payload }),
-      onSuccess: (data) => {
-        toast.dismiss();
-        const response = data?.data;
-        setPayload((prev) => ({ ...prev, response }));
-        queryClient.invalidateQueries({ queryKey: ['contacts'] });
-        queryClient.invalidateQueries({
-          queryKey: ['contacts', response?._id],
-        });
-        toast.success('Contact Updated');
-        setTimeout(() => {
-          navigate(`/person/${response?._id}`);
-        }, 2000);
-      },
-      onError: (error: any) => {
-        console.error('Contact update failed:', error);
-        toast.dismiss();
-        toast.error(
-          error?.response?.data?.message ||
-            'Failed to update contact. Please try again.'
-        );
-      },
-    });
-  const { mutate: patchEditContact, isPending: isPatchEditContactPending } =
-    useMutation({
-      mutationFn: async ({ id, payload }: IEditContact) =>
-        await processPatchEditContact({ id, payload }),
-      onSuccess: (data) => {
-        toast.dismiss();
-        const response = data?.data;
-        setPayload((prev) => ({ ...prev, response }));
-        queryClient.invalidateQueries({ queryKey: ['contacts'] });
-        queryClient.invalidateQueries({
-          queryKey: ['contacts', response?._id],
-        });
-        toast.success('Contact Updated');
-        setTimeout(() => {
-          navigate(`/person/${response?._id}`);
-        }, 2000);
-      },
-      onError: (error: any) => {
-        console.error('Contact update failed:', error);
-        toast.dismiss();
-        toast.error(
-          error?.response?.data?.message ||
-            'Failed to update contact. Please try again.'
-        );
-      },
-    });
+  const { mutate: putEditContact } = useMutation({
+    mutationFn: async ({ id, payload }: IEditContact) =>
+      await processPutEditContact({ id, payload }),
+    onSuccess: (data) => {
+      toast.dismiss();
+      const response = data?.data;
+      setPayload((prev) => ({ ...prev, response }));
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({
+        queryKey: ['contacts', response?._id],
+      });
+      toast.success('Contact Updated');
+      setTimeout(() => {
+        navigate(`/person/${response?._id}`);
+      }, 2000);
+    },
+    onError: (error: any) => {
+      console.error('Contact update failed:', error);
+      toast.dismiss();
+      toast.error(
+        error?.response?.data?.message ||
+          'Failed to update contact. Please try again.'
+      );
+    },
+  });
+  const { mutate: patchEditContact } = useMutation({
+    mutationFn: async ({ id, payload }: IEditContact) =>
+      await processPatchEditContact({ id, payload }),
+    onSuccess: (data) => {
+      toast.dismiss();
+      const response = data?.data;
+      setPayload((prev) => ({ ...prev, response }));
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({
+        queryKey: ['contacts', response?._id],
+      });
+      toast.success('Contact Updated');
+      setTimeout(() => {
+        navigate(`/person/${response?._id}`);
+      }, 2000);
+    },
+    onError: (error: any) => {
+      console.error('Contact update failed:', error);
+      toast.dismiss();
+      toast.error(
+        error?.response?.data?.message ||
+          'Failed to update contact. Please try again.'
+      );
+    },
+  });
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -246,6 +246,7 @@ const PersonEdit: FC = () => {
         ...prev,
         avatar: { ...prev.avatar, url: null },
       }));
+      setShowModal(false);
     } else {
       setNewImage(null);
     }
@@ -328,6 +329,9 @@ const PersonEdit: FC = () => {
     patchEditContact({ id: _id as string, payload: updatedPayload });
     return;
   };
+  const handleEditImage = () => {
+    setShowModal(true);
+  };
   const handleResetState = () => {
     removeImage();
     const returnPath = location?.state?.from || '/';
@@ -393,85 +397,39 @@ const PersonEdit: FC = () => {
             </button>
           </div>
         </div>
-        <div className="flex justify-center lg:justify-start items-center mt-12 space-y-6 ">
-          <div className="relative w-[100px] bg-blue-200 rounded-full h-[100px] lg:w-[162px] lg:h-[162px]">
+        <div className="flex justify-center lg:justify-start items-center mt-12 space-y-6">
+          <div className="relative w-[142px] bg-blue-200 rounded-full h-[142px] lg:w-[162px] lg:h-[162px]">
             {payload.avatar.url ? (
-              <div className="relative group w-full h-full">
+              <div className="relative w-full h-full">
                 <img
                   src={payload.avatar.url}
                   alt="Avatar"
                   className="w-full h-full rounded-full object-cover"
                 />
-                {/* Overlay with edit/remove options */}
-                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={handleImageClick}
-                      disabled={
-                        isPutEditContactPending || isPatchEditContactPending
-                      }
-                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Change photo"
-                    >
-                      <MdEdit size={16} className="text-gray-700" />
-                    </button>
-                    <button
-                      onClick={removeImage}
-                      disabled={
-                        isPutEditContactPending || isPatchEditContactPending
-                      }
-                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Remove photo"
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className="text-red-600"
-                      >
-                        <path
-                          d="M6 6l12 12M6 18L18 6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                {/* Loading overlay */}
-                {(isPutEditContactPending || isPatchEditContactPending) && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                    <ClipLoader color="#ffffff" size={30} />
-                  </div>
-                )}
+
+                {/* Edit Icon - Always visible on all devices */}
+                <button
+                  onClick={handleEditImage}
+                  className="absolute left-[113px] top-[90px] lg:left-[130px] lg:top-[110px] w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Edit photo"
+                >
+                  <Edit size={16} />
+                </button>
               </div>
             ) : (
               <div
                 onClick={handleImageClick}
-                className={`flex justify-center items-center h-full cursor-pointer hover:bg-blue-300 transition-colors rounded-full relative group ${
-                  isPutEditContactPending || isPatchEditContactPending
-                    ? 'opacity-50 cursor-not-allowed'
-                    : ''
-                }`}
+                className={`flex justify-center items-center h-full cursor-pointer hover:bg-blue-300 transition-colors rounded-full relative`}
               >
                 <div className="relative">
-                  {isPutEditContactPending || isPatchEditContactPending ? (
-                    <div className="flex items-center justify-center">
-                      <ClipLoader color="#2563eb" size={40} />
+                  <>
+                    <UserRound size={90} className="text-blue-600" />
+
+                    {/* Camera overlay icon - Always visible on all devices */}
+                    <div className="absolute left-[90px] top-[60px] lg:left-[95px] lg:top-[70px] w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                      <Camera size={16} className="text-white" />
                     </div>
-                  ) : (
-                    <>
-                      <UserRound size={90} className="text-blue-600" />
-                      {/* Camera overlay icon */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="bg-blue-600 rounded-full p-2">
-                          <MdCameraAlt size={20} className="text-white" />
-                        </div>
-                      </div>
-                    </>
-                  )}
+                  </>
                 </div>
               </div>
             )}
@@ -484,7 +442,6 @@ const PersonEdit: FC = () => {
               accept="image/*"
               onChange={handleImageUpload}
               className="hidden"
-              disabled={isPutEditContactPending || isPatchEditContactPending}
             />
           </div>
         </div>
@@ -734,6 +691,55 @@ const PersonEdit: FC = () => {
           handleResetState={handleResetState}
           setIsDiscardModalOpen={setIsDiscardModalOpen}
         />
+      )}
+      {showModal && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-gray-200 rounded-lg max-w-md w-full mx-4">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-lg font-semibold">Edit</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {/* Image Preview */}
+              <div className="flex justify-center mb-6">
+                <img
+                  src={payload.avatar.url as string}
+                  alt="Avatar Preview"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleEdit}
+                  className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  <Edit size={16} />
+                  <span>Edit</span>
+                </button>
+
+                <button
+                  onClick={removeImage}
+                  className="flex-1 bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  <>
+                    <Trash2 size={16} />
+                    <span>Delete</span>
+                  </>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );
