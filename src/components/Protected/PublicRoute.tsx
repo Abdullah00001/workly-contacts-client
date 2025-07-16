@@ -35,7 +35,14 @@ const PublicRoute: FC<IChildrenProps> = ({ children }) => {
     };
 
     checkRoute();
-  }, [user, email, isLoading, navigate, authChecked]); // Remove location.pathname to prevent navigation loops
+  }, [
+    user,
+    email,
+    isLoading,
+    navigate,
+    authChecked,
+    location.pathname,
+  ]); // Remove location.pathname to prevent navigation loops
 
   // Show loading spinner while checking route permissions or email is loading
   if (isChecking || isLoading) {

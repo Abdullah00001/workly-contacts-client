@@ -22,6 +22,7 @@ import { ClipLoader } from 'react-spinners';
 import { contactSchema } from '../schemas/contacts.schemas';
 import ContactServices from '../services/contacts.services';
 import DiscardModal from '../components/ui/modal/DiscardModal';
+import { AxiosError } from 'axios';
 
 const { processImageUpload, processImageDelete } = ImageServices;
 const { processCreateContact } = ContactServices;
@@ -70,10 +71,10 @@ const CreateContact: FC = () => {
       }));
       toast.success('Image uploaded successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       console.error('Image upload failed:', error);
       toast.error(
-        error?.response?.data?.message ||
+        (error?.response?.data as { message?: string })?.message ||
           'Failed to upload image. Please try again.'
       );
     },
@@ -90,11 +91,11 @@ const CreateContact: FC = () => {
           navigate(`/person/${data.data._id}`);
         }, 2000);
       },
-      onError: (error: any) => {
+      onError: (error: AxiosError) => {
         console.error('Contact Creation failed:', error);
         toast.dismiss();
         toast.error(
-          error?.response?.data?.message ||
+          (error?.response?.data as { message?: string })?.message ||
             'Failed to create contact. Please try again.'
         );
       },
@@ -109,10 +110,10 @@ const CreateContact: FC = () => {
       setShowModal(false);
       toast.success('Image delete successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       console.error('Image delete failed:', error);
       toast.error(
-        error?.response?.data?.message ||
+        (error?.response?.data as { message?: string })?.message ||
           'Failed to delete image. Please try again.'
       );
     },
@@ -253,7 +254,11 @@ const CreateContact: FC = () => {
 
   const handleImageClick = () => {
     if (isUploading || isDeleting) return;
-    payload.avatar.url ? setShowModal(true) : fileInputRef.current?.click();
+    if (payload.avatar.url) {
+      setShowModal(true);
+      return;
+    }
+    fileInputRef.current?.click();
   };
 
   const removeImage = () => {

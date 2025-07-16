@@ -7,6 +7,7 @@ import FeedbackServices from '../../services/feedback.services';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
+import { AxiosError } from 'axios';
 
 const { processSendFeedback } = FeedbackServices;
 
@@ -21,10 +22,10 @@ const FeedbackModal: FC<IFeedbackModalProps> = ({
     onSuccess: () => {
       setIsFeedbackSuccess(true);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       toast.dismiss();
       toast.error(
-        error?.response?.data?.message ||
+        (error?.response?.data as { message?: string })?.message ||
           'Failed send feedback. Please try again.'
       );
     },

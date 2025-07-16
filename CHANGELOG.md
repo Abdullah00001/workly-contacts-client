@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.4.0] - 2025-07-16
+
+### 🛠️ Fixes & Improvements
+
+- **Create Contact:**
+
+  - Fixed image uploading UI glitches and discard modal behavior for smoother user experience.
+  - Updated the edit image modal text for better clarity and removed unnecessary code.
+
+- **Edit Contact:**
+  - Improved the UI for a more user-friendly design.
+  - Updated functionality to align with the new UI flow and enhance usability.
+
+---
+
+### 💄 UI Improvements
+
+- Refined modal interactions and layouts in contact creation and editing forms.
+- Enhanced overall responsiveness and consistency across contact-related components.
+
+---
+
+### ⚙️ Developer Notes
+
+- Changes tested locally; no known breaking changes introduced.
+- Focused on improving UX and functionality alignment in contact management features.
+
+---
+
+🔖 Tag: `v1.4.0`  
+📅 Date: **2025-07-16**
+
 ## [v1.3.0-beta] - 2025-07-13
 
 ### 🚧 Beta Release Notes

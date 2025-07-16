@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { ISearchResult } from '../../../interfaces/contacts.interface';
 import SearchResultRow from '../SearchResultRow';
+import { AxiosError } from 'axios';
 
 const { processSearchContact } = ContactServices;
 
@@ -18,9 +19,9 @@ const Search: FC = () => {
   const [showResults, setShowResults] = useState<boolean>(false);
   const { mutate, data, isPending } = useMutation({
     mutationFn: async (payload: string) => await processSearchContact(payload),
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       toast.error(
-        error?.response?.data?.message ||
+        (error?.response?.data as { message?: string })?.message ||
           'Search query failed. Please try again.'
       );
     },

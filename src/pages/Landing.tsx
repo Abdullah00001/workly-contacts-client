@@ -25,7 +25,7 @@ import BackToTopButton from '../components/ui/button/BackToTopButton';
 const Landing: FC = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openFAQ, setOpenFAQ] = useState(null);
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [showDemoModal, setShowDemoModal] = useState(false);
   const handleLogoClick = () => {
     navigate('/');
@@ -169,7 +169,7 @@ const Landing: FC = () => {
     },
   ];
 
-  const toggleFAQ = (index: any) => {
+  const toggleFAQ = (index: number | null) => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
 

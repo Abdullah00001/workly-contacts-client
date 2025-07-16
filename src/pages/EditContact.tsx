@@ -27,6 +27,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import { contactSchema } from '../schemas/contacts.schemas';
 import ContactServices from '../services/contacts.services';
+import { AxiosError } from 'axios';
 
 const { processPatchEditContact, processPutEditContact } = ContactServices;
 
@@ -93,11 +94,11 @@ const EditContact: FC<IEditContactMainProps> = ({
           setIsEdit(false);
         }, 2000);
       },
-      onError: (error: any) => {
+      onError: (error: AxiosError) => {
         console.error('Contact update failed:', error);
         toast.dismiss();
         toast.error(
-          error?.response?.data?.message ||
+          (error?.response?.data as { message?: string })?.message ||
             'Failed to update contact. Please try again.'
         );
       },
@@ -119,11 +120,11 @@ const EditContact: FC<IEditContactMainProps> = ({
           setIsEdit(false);
         }, 2000);
       },
-      onError: (error: any) => {
+      onError: (error: AxiosError) => {
         console.error('Contact update failed:', error);
         toast.dismiss();
         toast.error(
-          error?.response?.data?.message ||
+          (error?.response?.data as { message?: string })?.message ||
             'Failed to update contact. Please try again.'
         );
       },

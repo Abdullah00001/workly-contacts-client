@@ -25,6 +25,7 @@ import {
 import { contactSchema } from '../schemas/contacts.schemas';
 import { Camera, Edit, Trash2, UserRound, X } from 'lucide-react';
 import DiscardModal from '../components/ui/modal/DiscardModal';
+import { AxiosError } from 'axios';
 
 const {
   processPatchEditContact,
@@ -152,11 +153,11 @@ const PersonEdit: FC = () => {
         navigate(`/person/${response?._id}`);
       }, 2000);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       console.error('Contact update failed:', error);
       toast.dismiss();
       toast.error(
-        error?.response?.data?.message ||
+        (error?.response?.data as { message?: string })?.message ||
           'Failed to update contact. Please try again.'
       );
     },
@@ -177,11 +178,11 @@ const PersonEdit: FC = () => {
         navigate(`/person/${response?._id}`);
       }, 2000);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       console.error('Contact update failed:', error);
       toast.dismiss();
       toast.error(
-        error?.response?.data?.message ||
+        (error?.response?.data as { message?: string })?.message ||
           'Failed to update contact. Please try again.'
       );
     },
@@ -348,7 +349,7 @@ const PersonEdit: FC = () => {
     if (isPending && !data) return;
     setPayload(data?.data);
     setOriginalData(data?.data);
-  }, [data?.data]);
+  }, [data?.data, isPending]);
   useEffect(() => {
     if (originalData && payload) {
       const changes = checkForChanges(payload, originalData);

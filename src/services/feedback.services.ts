@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import FeedbackApis from '../apis/feedback.apis';
 import { IFeedback } from '../interfaces/feedback.interface';
 
@@ -9,7 +10,7 @@ const FeedbackServices = {
       const response = await sendFeedback(payload);
       return response.data;
     } catch (error) {
-      if (error instanceof Error) throw error;
+      if (error instanceof AxiosError) throw error;
       throw new Error('Unknown Error Occurred In Send Feedback Service');
     }
   },
