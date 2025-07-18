@@ -12,7 +12,7 @@ import {
   MdPersonOutline,
   MdPhone,
 } from 'react-icons/md';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import {
   IBirthDate,
   IEditContact,
@@ -38,7 +38,6 @@ const PersonEdit: FC = () => {
   const [newImage, setNewImage] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<boolean>(false);
   const [originalData, setOriginalData] = useState<TContacts | null>(null);
