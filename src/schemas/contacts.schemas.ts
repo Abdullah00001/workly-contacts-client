@@ -85,3 +85,50 @@ export const contactSchema = z
       path: ['birthday'],
     }
   );
+
+export const contactEditSchema = z
+  .object({
+    avatar: ImageSchema.optional(),
+    name: z.string().min(1, 'First name is required'),
+    email: z.string().email('Invalid email'),
+    phone: z.string().min(1, 'Phone number is required'),
+    worksAt: WorksAtSchema,
+    location: LocationSchema,
+    birthday: BirthDateSchema,
+  })
+  .refine(
+    (data) => {
+      const { companyName, jobTitle } = data.worksAt;
+      const anyFilled = companyName || jobTitle;
+      const allFilled = companyName && jobTitle;
+      return !anyFilled || allFilled;
+    },
+    {
+      message: 'If one worksAt field is filled, all must be filled.',
+      path: ['worksAt'],
+    }
+  )
+  .refine(
+    (data) => {
+      const { country, city, postCode, streetAddress } = data.location;
+      const anyFilled = country || city || postCode || streetAddress;
+      const allFilled = country && city && postCode && streetAddress;
+      return !anyFilled || allFilled;
+    },
+    {
+      message: 'If one location field is filled, all must be filled.',
+      path: ['location'],
+    }
+  )
+  .refine(
+    (data) => {
+      const { day, month, year } = data.birthday;
+      const anyFilled = day || month || year;
+      const allFilled = day && month && year;
+      return !anyFilled || allFilled;
+    },
+    {
+      message: 'If one birthday field is filled, all must be filled.',
+      path: ['birthday'],
+    }
+  );

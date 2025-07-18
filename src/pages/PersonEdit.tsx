@@ -22,7 +22,7 @@ import {
   Month,
   TContacts,
 } from '../interfaces/contacts.interface';
-import { contactSchema } from '../schemas/contacts.schemas';
+import { contactEditSchema } from '../schemas/contacts.schemas';
 import { Camera, Edit, Trash2, UserRound, X } from 'lucide-react';
 import DiscardModal from '../components/ui/modal/DiscardModal';
 import { AxiosError } from 'axios';
@@ -289,7 +289,8 @@ const PersonEdit: FC = () => {
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
     setFieldErrors({});
-    const result = contactSchema.safeParse(payload);
+    console.log('save button clicked');
+    const result = contactEditSchema.safeParse(payload);
     if (!result.success) {
       const fieldErrors: { [key: string]: string } = {};
       result.error.errors.forEach((err) => {
@@ -316,6 +317,7 @@ const PersonEdit: FC = () => {
       putEditContact({ id: _id as string, payload: updatedPayload });
       return;
     }
+    console.log('without image');
     const { avatar, birthday, email, name, location, phone, worksAt, _id } =
       payload;
     const updatedPayload: IUpdateOneContactPayload = {
