@@ -12,7 +12,7 @@ import {
   MdPersonOutline,
   MdPhone,
 } from 'react-icons/md';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import {
   IBirthDate,
   IEditContact,
@@ -22,7 +22,7 @@ import {
   Month,
   TContacts,
 } from '../interfaces/contacts.interface';
-import { contactSchema } from '../schemas/contacts.schemas';
+import { contactEditSchema } from '../schemas/contacts.schemas';
 import { Camera, Edit, Trash2, UserRound, X } from 'lucide-react';
 import DiscardModal from '../components/ui/modal/DiscardModal';
 import { AxiosError } from 'axios';
@@ -38,11 +38,11 @@ const PersonEdit: FC = () => {
   const [newImage, setNewImage] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<boolean>(false);
   const [originalData, setOriginalData] = useState<TContacts | null>(null);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
+  const toastIdRef = useRef<number | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [payload, setPayload] = useState<TContacts>({
     name: '',
@@ -137,56 +137,58 @@ const PersonEdit: FC = () => {
     },
     enabled: !!id,
   });
-  const { mutate: putEditContact } = useMutation({
-    mutationFn: async ({ id, payload }: IEditContact) =>
-      await processPutEditContact({ id, payload }),
-    onSuccess: (data) => {
-      toast.dismiss();
-      const response = data?.data;
-      setPayload((prev) => ({ ...prev, response }));
-      queryClient.invalidateQueries({ queryKey: ['contacts'] });
-      queryClient.invalidateQueries({
-        queryKey: ['contacts', response?._id],
-      });
-      toast.success('Contact Updated');
-      setTimeout(() => {
-        navigate(`/person/${response?._id}`);
-      }, 2000);
-    },
-    onError: (error: AxiosError) => {
-      console.error('Contact update failed:', error);
-      toast.dismiss();
-      toast.error(
-        (error?.response?.data as { message?: string })?.message ||
-          'Failed to update contact. Please try again.'
-      );
-    },
-  });
-  const { mutate: patchEditContact } = useMutation({
-    mutationFn: async ({ id, payload }: IEditContact) =>
-      await processPatchEditContact({ id, payload }),
-    onSuccess: (data) => {
-      toast.dismiss();
-      const response = data?.data;
-      setPayload((prev) => ({ ...prev, response }));
-      queryClient.invalidateQueries({ queryKey: ['contacts'] });
-      queryClient.invalidateQueries({
-        queryKey: ['contacts', response?._id],
-      });
-      toast.success('Contact Updated');
-      setTimeout(() => {
-        navigate(`/person/${response?._id}`);
-      }, 2000);
-    },
-    onError: (error: AxiosError) => {
-      console.error('Contact update failed:', error);
-      toast.dismiss();
-      toast.error(
-        (error?.response?.data as { message?: string })?.message ||
-          'Failed to update contact. Please try again.'
-      );
-    },
-  });
+  const { mutate: putEditContact, isPending: isPutMutationPending } =
+    useMutation({
+      mutationFn: async ({ id, payload }: IEditContact) =>
+        await processPutEditContact({ id, payload }),
+      onSuccess: (data) => {
+        toast.dismiss();
+        const response = data?.data;
+        setPayload((prev) => ({ ...prev, response }));
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        queryClient.invalidateQueries({
+          queryKey: ['contacts', response?._id],
+        });
+        toast.success('Contact Updated');
+        setTimeout(() => {
+          navigate(`/person/${response?._id}`);
+        }, 2000);
+      },
+      onError: (error: AxiosError) => {
+        console.error('Contact update failed:', error);
+        toast.dismiss();
+        toast.error(
+          (error?.response?.data as { message?: string })?.message ||
+            'Failed to update contact. Please try again.'
+        );
+      },
+    });
+  const { mutate: patchEditContact, isPending: isPatchMutationPending } =
+    useMutation({
+      mutationFn: async ({ id, payload }: IEditContact) =>
+        await processPatchEditContact({ id, payload }),
+      onSuccess: (data) => {
+        toast.dismiss();
+        const response = data?.data;
+        setPayload((prev) => ({ ...prev, response }));
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        queryClient.invalidateQueries({
+          queryKey: ['contacts', response?._id],
+        });
+        toast.success('Contact Updated');
+        setTimeout(() => {
+          navigate(`/person/${response?._id}`);
+        }, 2000);
+      },
+      onError: (error: AxiosError) => {
+        console.error('Contact update failed:', error);
+        toast.dismiss();
+        toast.error(
+          (error?.response?.data as { message?: string })?.message ||
+            'Failed to update contact. Please try again.'
+        );
+      },
+    });
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -289,7 +291,11 @@ const PersonEdit: FC = () => {
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
     setFieldErrors({});
-    const result = contactSchema.safeParse(payload);
+    if (!checkForChanges(payload, originalData as TContacts)) {
+      navigate(`/person/${originalData?._id}`);
+      return;
+    }
+    const result = contactEditSchema.safeParse(payload);
     if (!result.success) {
       const fieldErrors: { [key: string]: string } = {};
       result.error.errors.forEach((err) => {
@@ -335,8 +341,7 @@ const PersonEdit: FC = () => {
   };
   const handleResetState = () => {
     removeImage();
-    const returnPath = location?.state?.from || '/';
-    navigate(returnPath);
+    navigate(-1);
   };
   const handleBackClick = () => {
     if (hasChanges) {
@@ -356,6 +361,20 @@ const PersonEdit: FC = () => {
       setHasChanges(changes);
     }
   }, [payload, originalData, newImage]);
+  useEffect(() => {
+    const isPending = isPatchMutationPending || isPutMutationPending;
+
+    if (isPending) {
+      if (!toastIdRef.current) {
+        toastIdRef.current = toast.loading('Working...') as number;
+      }
+    } else {
+      if (toastIdRef.current) {
+        toast.dismiss(toastIdRef.current);
+        toastIdRef.current = null;
+      }
+    }
+  }, [isPatchMutationPending, isPutMutationPending]);
   if (isPending) {
     return (
       <div className="flex justify-center  items-center min-h-screen">
