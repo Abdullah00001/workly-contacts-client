@@ -30,7 +30,7 @@ FROM nginx:stable-alpine AS production
 
 # Copy build output to nginx's html directory
 COPY --from=builder /app/dist /usr/share/nginx/html
-
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Optional: Replace the default nginx config with your own
 # (Uncomment and provide `nginx.conf` if needed)
 # COPY nginx.conf /etc/nginx/nginx.conf
