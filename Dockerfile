@@ -13,6 +13,15 @@ RUN npm ci
 # Copy all source files
 COPY . .
 
+# Accept build args from Render
+ARG VITE_API_BASE_URL
+ARG VITE_OTP_LENGTH
+ARG VITE_VU_E_SECRET
+
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_OTP_LENGTH=$VITE_OTP_LENGTH
+ENV VITE_VU_E_SECRET=$VITE_VU_E_SECRET
+
 # Build the app
 RUN npm run build
 
