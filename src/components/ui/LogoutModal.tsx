@@ -2,24 +2,18 @@ import { FC } from 'react';
 import AuthServices from '../../services/auth.services';
 import { toast } from 'react-toastify';
 import useAuthContext from '../../hooks/useAuthContext';
-import { useNavigate } from 'react-router-dom';
-
 interface ILogoutModalProps {
   handleIsLogout: () => void;
 }
 const { processLogout } = AuthServices;
 const LogoutModal: FC<ILogoutModalProps> = ({ handleIsLogout }) => {
-  const navigate = useNavigate();
   const { setUser } = useAuthContext();
   const handleLogout = async () => {
     try {
       await processLogout();
-      toast.success('Logout Successful');
       setUser(false);
       handleIsLogout();
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
+      window.location.href = '/';
     } catch (error) {
       handleIsLogout();
       if (error instanceof Error) {
