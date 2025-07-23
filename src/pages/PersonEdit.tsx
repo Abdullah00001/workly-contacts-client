@@ -364,6 +364,7 @@ const PersonEdit: FC = () => {
   useEffect(() => {
     const isPending = isPatchMutationPending || isPutMutationPending;
 
+    
     if (isPending) {
       if (!toastIdRef.current) {
         toastIdRef.current = toast.loading('Working...') as number;
