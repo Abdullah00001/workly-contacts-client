@@ -13,6 +13,7 @@ const AccountCenterLayout: FC = () => {
         description="account center page for per user"
       />
       <ToastContainer position="top-center" />
+      {/* Laptop And Desktop Device Layout */}
       <div className="hidden lg:block fixed inset-0 text-white w-screen h-screen overflow-hidden  bg-[#152127]">
         <div className="w-[1068px] lg:px-5  mx-auto h-screen">
           <div className="flex h-full">
@@ -25,6 +26,7 @@ const AccountCenterLayout: FC = () => {
           </div>
         </div>
       </div>
+      {/* Tablet And Mobile Device Layout */}
       <div className="block lg:hidden text-white bg-[#152127]">
         <nav>
           <AccountCenterNavbar />
