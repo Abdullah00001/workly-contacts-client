@@ -41,8 +41,15 @@
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
-  .mobile-menu{
+  .mobile-menu {
     top: 43px;
     right: 25px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .accountcenter-laptop-padding-x {
+    padding-right: 20px;
+    padding-left: 20px;
   }
 }

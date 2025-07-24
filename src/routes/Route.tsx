@@ -27,6 +27,7 @@ import SignupRouteWrapper from '../components/Protected/SignupRouteWrapper';
 import LoginRouteWrapper from '../components/Protected/LoginRouteWrapper';
 import PersonalInfo from '../pages/PersonalInfo';
 import AccountsCenterProtectedRoute from '../components/Protected/AccountsCenterProtectedRoute';
+import SecurityAndPassword from '../pages/SecurityAndPassword';
 
 const Route = createBrowserRouter([
   {
@@ -112,6 +113,10 @@ const Route = createBrowserRouter([
       {
         index: true,
         element: <PersonalInfo />,
+      },
+      {
+        path: 'security',
+        element: <SecurityAndPassword />,
       },
     ],
   },
