@@ -20,7 +20,7 @@ const Avatar: FC = () => {
   const navigate = useNavigate();
   const handleNavigateProfilePage = () => {
     setIsDropdownOpen(false);
-    navigate('/me', { state: { from: location.pathname } });
+    navigate('/accountscenter', { state: { from: location.pathname } });
   };
 
   // Toggle dropdown visibility
@@ -60,7 +60,7 @@ const Avatar: FC = () => {
               onClick={handleNavigateProfilePage}
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
             >
-              Profile
+              Accounts Center
             </li>
             <li
               onClick={() => {

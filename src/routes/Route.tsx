@@ -4,7 +4,6 @@ import Trash from '../pages/Trash';
 import Favorite from '../pages/Favorite';
 import CreateContact from '../pages/CreateContact';
 import ContactDetails from '../pages/ContactDetails';
-import Profile from '../pages/Profile';
 import OtpVerification from '../pages/OtpVerification';
 import ProtectedRoute from '../components/Protected/ProtectedRoute';
 import ProtectedVerifyPage from '../components/Protected/ProtectedVerifyPage';
@@ -26,6 +25,9 @@ import withPublicLayout from '../utils/withPublicLayout';
 import RootRedirectHandler from '../components/Protected/RootRedirectHandler';
 import SignupRouteWrapper from '../components/Protected/SignupRouteWrapper';
 import LoginRouteWrapper from '../components/Protected/LoginRouteWrapper';
+import PersonalInfo from '../pages/PersonalInfo';
+import AccountsCenterProtectedRoute from '../components/Protected/AccountsCenterProtectedRoute';
+import SecurityAndPassword from '../pages/SecurityAndPassword';
 
 const Route = createBrowserRouter([
   {
@@ -101,6 +103,24 @@ const Route = createBrowserRouter([
     ],
   },
   {
+    path: '/accountscenter',
+    element: (
+      <ProtectedRoute>
+        <AccountsCenterProtectedRoute />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <PersonalInfo />,
+      },
+      {
+        path: 'security',
+        element: <SecurityAndPassword />,
+      },
+    ],
+  },
+  {
     path: '/',
     element: (
       <ProtectedRoute>
@@ -111,10 +131,6 @@ const Route = createBrowserRouter([
       {
         index: true,
         element: <Contacts />,
-      },
-      {
-        path: 'me',
-        element: <Profile />,
       },
       {
         path: 'favorite',
