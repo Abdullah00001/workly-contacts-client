@@ -5,7 +5,7 @@ import ContactInfo from '../features/accountscenter/components/ContactInfo';
 
 const PersonalInfo: FC = () => {
   return (
-    <div className="px-4 min-h-screen">
+    <div className="px-4 min-h-screen w-full">
       <div className="mt-4 w-auto">
         <h1 className="font-semibold text-[24px] text-wrap">
           Your Profile Info In Amar Contacts <br className="hidden xs:block" />
