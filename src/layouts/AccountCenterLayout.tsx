@@ -31,7 +31,7 @@ const AccountCenterLayout: FC = () => {
         <nav>
           <AccountCenterNavbar />
         </nav>
-        <main>
+        <main className="overflow-y-auto">
           <Outlet />
         </main>
       </div>
