@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import SecurityOverview from '../features/accountscenter/components/SecurityOverview';
 import ActiveSessions from '../features/accountscenter/components/ActiveSessions';
+import RecentSecurityActivity from '../features/accountscenter/components/RecentSecurityActivity';
 
 const SecurityAndPassword: FC = () => {
   return (
@@ -16,6 +17,7 @@ const SecurityAndPassword: FC = () => {
       </div>
       <SecurityOverview />
       <ActiveSessions />
+      <RecentSecurityActivity />
     </div>
   );
 };

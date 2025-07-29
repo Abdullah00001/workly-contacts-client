@@ -25,7 +25,7 @@ const AccountCenterLayout: FC = () => {
             <aside className="w-[32%] border-r-[1px] border-gray-500 h-full pr-[32px]">
               <AccountCenterSideBar />
             </aside>
-            <main className="w-[68%] pl-[34px] h-full ">
+            <main className="w-[68%] pl-[34px] h-full overflow-y-auto scrollbar-hide">
               <div className="mt-15">
                 <Outlet />
               </div>
