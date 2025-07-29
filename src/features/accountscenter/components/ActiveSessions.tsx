@@ -27,11 +27,11 @@ const ActiveSessions: FC = () => {
           </thead>
           <tbody>
             <tr>
-              <td className='py-1 px-4'></td>
-              <td className='py-1 px-4'></td>
-              <td className='py-1 px-4'></td>
+              <td className="py-1 px-4"></td>
+              <td className="py-1 px-4"></td>
+              <td className="py-1 px-4"></td>
             </tr>
-            <tr className="bg-gray-50/4 hover:bg-gray-50/15 transition-colors">
+            <tr className="bg-gray-50/4 cursor-pointer hover:bg-gray-50/15 transition-colors">
               <td className="py-3 px-4 text-white">
                 <div className="flex items-center">
                   <span className="text-sm font-medium">Linux</span>
@@ -47,7 +47,7 @@ const ActiveSessions: FC = () => {
               </td>
               <td className="py-3 px-4 text-white text-sm">23 minutes ago</td>
               <td className="py-3 px-4">
-                <button className="bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-2 px-3 rounded transition-colors">
+                <button className="bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-2 px-3 cursor-pointer rounded transition-colors">
                   Logout
                 </button>
               </td>
