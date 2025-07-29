@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 
 const ContactInfo: FC = () => {
   return (
-    <div className="w-full  mt-4 mb-4 border border-gray-500 p-4 rounded-[8px]">
+    <div className="w-full mt-4 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Contact Info</h5>
       <div className="mt-2">
         <div className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full">

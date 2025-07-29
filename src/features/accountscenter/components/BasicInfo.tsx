@@ -3,7 +3,7 @@ import { Camera, ChevronRight } from 'lucide-react';
 
 const BasicInfo: FC = () => {
   return (
-    <div className="w-full  mt-4 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
+    <div className="w-full mt-4 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Basic Info</h5>
       <div className="flex items-center justify-between w-full mt-2">
         <div className="w-[60%] flex flex-col">
