@@ -24,6 +24,7 @@ const {
   checkR_stp1,
   checkR_stp2,
   checkR_stp3,
+  getProfile,
 } = AuthApis;
 
 const AuthServices = {
@@ -204,6 +205,18 @@ const AuthServices = {
         throw error;
       } else {
         throw new Error('Unexpected Error Occurred In Process CheckR_stp3');
+      }
+    }
+  },
+  processGetProfile: async () => {
+    try {
+      const response = await getProfile();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Unexpected Error Occurred In Process Get PRofile');
       }
     }
   },

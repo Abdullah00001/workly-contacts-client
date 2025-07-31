@@ -129,7 +129,7 @@ const ContactDetails: FC = () => {
   }
 
   return (
-    <section className="lg:h-full relative lg:overflow-y-scroll">
+    <section className="lg:h-full relative lg:overflow-y-scroll scrollbar-hide">
       <ToastContainer position="top-center" />
       <div className="w-full lg:w-full xl:w-[950px] xl:p-8">
         <>

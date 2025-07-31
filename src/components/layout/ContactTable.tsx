@@ -46,7 +46,7 @@ const ContactTable: FC<ContactTableProps> = ({ contactData }) => {
     setContacts(contactData);
   }, [contactData]);
   return (
-    <div className="w-full overflow-y-scroll relative">
+    <div className="w-full overflow-y-scroll scrollbar-hide relative">
       <table className="w-full table-fixed">
         <thead>
           {selectedContacts.length > 0 ? (

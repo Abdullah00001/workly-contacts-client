@@ -111,7 +111,7 @@ const TrashTable: FC<TrashTableProps> = ({ contactData }) => {
     };
   }, []);
   return (
-    <div className="w-full overflow-y-scroll relative">
+    <div className="w-full overflow-y-scroll scrollbar-hide relative">
       <table className="w-full">
         <thead>
           {selectedContacts.length > 0 ? (
