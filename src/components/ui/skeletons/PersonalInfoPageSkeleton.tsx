@@ -4,7 +4,7 @@ const SkeletonLine = ({ width = 'w-full' }: { width?: string }) => (
   <div className={`h-4 bg-gray-300 rounded ${width} animate-pulse`} />
 );
 
-const BasicInfoSkeleton: FC = () => {
+const PersonalInfoPageSkeleton: FC = () => {
   return (
     <div className="space-y-6 px-4 py-6">
       {/* First Card */}
@@ -55,4 +55,4 @@ const BasicInfoSkeleton: FC = () => {
   );
 };
 
-export default BasicInfoSkeleton;
+export default PersonalInfoPageSkeleton;

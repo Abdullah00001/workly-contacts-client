@@ -1,5 +1,7 @@
 import { FC, lazy, Suspense } from 'react';
-import BasicInfoSkeleton from '../components/ui/skeletons/BasicInfoSkeleton';
+import { ErrorBoundary } from 'react-error-boundary';
+import PersonalInfoPageSkeleton from '../components/ui/skeletons/PersonalInfoPageSkeleton';
+import ErrorFallback from '../components/ui/ErrorFallback';
 const BasicInfo = lazy(
   () => import('../features/accountscenter/components/BasicInfo')
 );
@@ -23,11 +25,13 @@ const PersonalInfo: FC = () => {
           information helps verify and personalize your experience.
         </p>
       </div>
-      <Suspense fallback={<BasicInfoSkeleton />}>
-        <BasicInfo />
-        <ContactInfo />
-        <AddressInfo />
-      </Suspense>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Suspense fallback={<PersonalInfoPageSkeleton />}>
+          <BasicInfo />
+          <ContactInfo />
+          <AddressInfo />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };

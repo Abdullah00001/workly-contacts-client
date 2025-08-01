@@ -1,5 +1,7 @@
 import { FC, Suspense, lazy } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import SecurityPageSkeleton from '../components/ui/skeletons/SecurityPageSkeleton';
+import ErrorFallback from '../components/ui/ErrorFallback';
 const SecurityOverview = lazy(
   () => import('../features/accountscenter/components/SecurityOverview')
 );
@@ -22,11 +24,13 @@ const SecurityAndPassword: FC = () => {
           activity to keep your account safe and under your control.
         </p>
       </div>
-      <Suspense fallback={<SecurityPageSkeleton />}>
-        <SecurityOverview />
-        <ActiveSessions />
-        <RecentSecurityActivity />
-      </Suspense>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Suspense fallback={<SecurityPageSkeleton />}>
+          <SecurityOverview />
+          <ActiveSessions />
+          <RecentSecurityActivity />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };
