@@ -1,7 +1,14 @@
-import { FC } from 'react';
-import SecurityOverview from '../features/accountscenter/components/SecurityOverview';
-import ActiveSessions from '../features/accountscenter/components/ActiveSessions';
-import RecentSecurityActivity from '../features/accountscenter/components/RecentSecurityActivity';
+import { FC, Suspense, lazy } from 'react';
+import SecurityPageSkeleton from '../components/ui/skeletons/SecurityPageSkeleton';
+const SecurityOverview = lazy(
+  () => import('../features/accountscenter/components/SecurityOverview')
+);
+const ActiveSessions = lazy(
+  () => import('../features/accountscenter/components/ActiveSessions')
+);
+const RecentSecurityActivity = lazy(
+  () => import('../features/accountscenter/components/RecentSecurityActivity')
+);
 
 const SecurityAndPassword: FC = () => {
   return (
@@ -15,9 +22,11 @@ const SecurityAndPassword: FC = () => {
           activity to keep your account safe and under your control.
         </p>
       </div>
-      <SecurityOverview />
-      <ActiveSessions />
-      <RecentSecurityActivity />
+      <Suspense fallback={<SecurityPageSkeleton />}>
+        <SecurityOverview />
+        <ActiveSessions />
+        <RecentSecurityActivity />
+      </Suspense>
     </div>
   );
 };

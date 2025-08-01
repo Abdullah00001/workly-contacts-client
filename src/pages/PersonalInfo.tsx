@@ -1,7 +1,14 @@
-import { FC } from 'react';
-import BasicInfo from '../features/accountscenter/components/BasicInfo';
-import AddressInfo from '../features/accountscenter/components/AddressInfo';
-import ContactInfo from '../features/accountscenter/components/ContactInfo';
+import { FC, lazy, Suspense } from 'react';
+import BasicInfoSkeleton from '../components/ui/skeletons/BasicInfoSkeleton';
+const BasicInfo = lazy(
+  () => import('../features/accountscenter/components/BasicInfo')
+);
+const AddressInfo = lazy(
+  () => import('../features/accountscenter/components/AddressInfo')
+);
+const ContactInfo = lazy(
+  () => import('../features/accountscenter/components/ContactInfo')
+);
 
 const PersonalInfo: FC = () => {
   return (
@@ -16,9 +23,11 @@ const PersonalInfo: FC = () => {
           information helps verify and personalize your experience.
         </p>
       </div>
-      <BasicInfo />
-      <ContactInfo/>
-      <AddressInfo />
+      <Suspense fallback={<BasicInfoSkeleton />}>
+        <BasicInfo />
+        <ContactInfo />
+        <AddressInfo />
+      </Suspense>
     </div>
   );
 };
