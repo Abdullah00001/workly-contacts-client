@@ -25,6 +25,7 @@ const {
   checkR_stp2,
   checkR_stp3,
   getProfile,
+  getFullProfile,
 } = AuthApis;
 
 const AuthServices = {
@@ -216,7 +217,21 @@ const AuthServices = {
       if (error instanceof Error) {
         throw error;
       } else {
-        throw new Error('Unexpected Error Occurred In Process Get PRofile');
+        throw new Error('Unexpected Error Occurred In Process Get Profile');
+      }
+    }
+  },
+  processGetFullProfile: async () => {
+    try {
+      const response = await getFullProfile();
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(
+          'Unexpected Error Occurred In Process Get Full Profile'
+        );
       }
     }
   },

@@ -1,3 +1,5 @@
+import { TImage } from "./contacts.interface";
+
 export interface IFindUser {
   email: string;
 }
@@ -7,7 +9,7 @@ export interface IFoundUser {
   email: string;
   isVerified: boolean;
   name: string;
-  avatar: string | null;
+  avatar: TImage;
 }
 
 export interface IVerifyRecoverOtpPayload {

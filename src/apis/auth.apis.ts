@@ -55,6 +55,9 @@ const AuthApis = {
     return axiosClient.post('/auth/recover/check/stp3');
   },
   getProfile: () => {
+    return axiosClient.get('/me?fields=name,avatar');
+  },
+  getFullProfile: () => {
     return axiosClient.get('/me');
   },
 };
