@@ -14,7 +14,7 @@ const FoundAndSentOtp: FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [foundUser, setFoundUser] = useState<IFoundUser>({
-    avatar: null,
+    avatar: { publicId: null, url: null },
     email: '',
     isVerified: false,
     name: '',
@@ -78,8 +78,8 @@ const FoundAndSentOtp: FC = () => {
                 <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
                   <img
                     src={
-                      foundUser.avatar
-                        ? foundUser.avatar
+                      foundUser.avatar.url
+                        ? foundUser.avatar.url
                         : `https://api.dicebear.com/7.x/initials/svg?seed=${foundUser.name}`
                     }
                     alt="Avatar"

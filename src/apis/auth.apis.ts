@@ -54,6 +54,12 @@ const AuthApis = {
   checkR_stp3: () => {
     return axiosClient.post('/auth/recover/check/stp3');
   },
+  getProfile: () => {
+    return axiosClient.get('/me?fields=name,avatar');
+  },
+  getFullProfile: () => {
+    return axiosClient.get('/me');
+  },
 };
 
 export default AuthApis;
