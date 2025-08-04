@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import { TImage } from './contacts.interface';
 
 export type TGetProfileData = {
@@ -15,6 +16,15 @@ export type TBasicInfoPageProps = {
   avatar: TImage;
   gender: string | null;
   dateOfBirth: string | null;
+  setShowImageModal: Dispatch<SetStateAction<true | false>>;
+  showImageModal: boolean;
+};
+
+export type TProfileImageModal = {
+  setShowImageModal: Dispatch<SetStateAction<true | false>>;
+  showImageModal: boolean;
+  avatar: TImage;
+  name: string;
 };
 
 export type TContactsInfoPageProps = {
@@ -27,4 +37,6 @@ export type TAddressInfoPageProps = {
   home: string | null;
 };
 
-
+export interface IRemoveProfileAvatarPayload {
+  publicId: string;
+}

@@ -1,13 +1,72 @@
-import { FC } from 'react';
-import { Camera, ChevronRight } from 'lucide-react';
+import { FC, useRef } from 'react';
+import { Camera, Edit, ChevronRight } from 'lucide-react';
 import { TBasicInfoPageProps } from '../../../interfaces/accountcenter.interface';
+import ProfileImageModal from '../../../components/ui/modal/ProfileImageModal';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError, AxiosResponse } from 'axios';
+import AuthServices from '../../../services/auth.services';
+import { toast } from 'react-toastify';
+
+const { processUploadProfileAvatar } = AuthServices;
 
 const BasicInfo: FC<TBasicInfoPageProps> = ({
   avatar,
   gender,
   name,
   dateOfBirth,
+  setShowImageModal,
+  showImageModal,
 }) => {
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { mutate: uploadAvatar, isPending: isAvatarUploadPending } =
+    useMutation({
+      mutationFn: async (payload: FormData) =>
+        await processUploadProfileAvatar(payload),
+      onSuccess: (data) => {
+        toast.dismiss();
+        const response = data?.data;
+        queryClient.setQueryData(
+          ['personal_info'],
+          (oldData: AxiosResponse) => {
+            if (!oldData) return oldData;
+            return {
+              ...oldData,
+              data: {
+                ...oldData?.data,
+                data: {
+                  ...oldData?.data?.data,
+                  avatar: response,
+                },
+              },
+            };
+          }
+        );
+        toast.success('Profile picture updated');
+      },
+      onError: (error: AxiosError) => {
+        console.error('Profile picture upload failed:', error);
+        toast.dismiss();
+        toast.error(
+          (error?.response?.data as { message?: string })?.message ||
+            'Failed to Upload Profile Picture. Please try again.'
+        );
+      },
+    });
+  const handleAvatarClick = () => {
+    if (!avatar?.url) {
+      fileInputRef.current?.click();
+    } else {
+      setShowImageModal(true);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] as File;
+    const payload = new FormData();
+    payload.append('avatar', file);
+    uploadAvatar(payload);
+  };
   return (
     <div className="w-full mt-4 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Basic Info</h5>
@@ -19,17 +78,38 @@ const BasicInfo: FC<TBasicInfoPageProps> = ({
           </p>
         </div>
         <div className="w-[40%] flex justify-end relative">
-          <img
-            className="w-[60px] h-[60px] rounded-full object-cover cursor-pointer"
-            src={
-              avatar?.url
-                ? avatar.url
-                : `https://api.dicebear.com/7.x/initials/svg?seed=${name}`
-            }
-          />
-          <div className="absolute bottom-0 right-0 w-5 h-5 bg-gray-600 rounded-full cursor-pointer flex items-center justify-center">
-            <Camera className="w-3 h-3 text-white" />
+          <div
+            className={'cursor-pointer relative w-[60px] h-[60px]'}
+            onClick={handleAvatarClick}
+          >
+            <img
+              className="w-full h-full rounded-full object-cover cursor-pointer"
+              src={
+                avatar?.url
+                  ? avatar.url
+                  : `https://api.dicebear.com/7.x/initials/svg?seed=${name}`
+              }
+            />
+            <div className="absolute bottom-0 right-0 w-5 h-5 bg-gray-600 rounded-full cursor-pointer flex items-center justify-center">
+              {avatar.url ? (
+                <Edit className="w-3 h-3 text-white" />
+              ) : (
+                <Camera className="w-3 h-3 text-white" />
+              )}
+            </div>
+            {isAvatarUploadPending && (
+              <div className="absolute inset-0 bg-opacity-50 rounded-full flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+              </div>
+            )}
           </div>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileChange}
+          />
         </div>
       </div>
       <hr className="mt-3 text-gray-400" />
@@ -93,6 +173,14 @@ const BasicInfo: FC<TBasicInfoPageProps> = ({
           />
         </div>
       </div>
+      {showImageModal && (
+        <ProfileImageModal
+          avatar={avatar}
+          setShowImageModal={setShowImageModal}
+          showImageModal={showImageModal}
+          name={name}
+        />
+      )}
     </div>
   );
 };

@@ -1,9 +1,10 @@
-import { FC, lazy, Suspense, useEffect } from 'react';
+import { FC, lazy, Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useQuery } from '@tanstack/react-query';
 import PersonalInfoPageSkeleton from '../components/ui/skeletons/PersonalInfoPageSkeleton';
 import ErrorFallback from '../components/ui/ErrorFallback';
 import AuthApis from '../apis/auth.apis';
+import { ToastContainer } from 'react-toastify';
 const BasicInfo = lazy(
   () => import('../features/accountscenter/components/BasicInfo')
 );
@@ -17,12 +18,14 @@ const ContactInfo = lazy(
 const { getFullProfile } = AuthApis;
 
 const PersonalInfo: FC = () => {
+  const [showImageModal, setShowImageModal] = useState<boolean>(false);
   const { data, isPending } = useQuery({
     queryKey: ['personal_info'],
     queryFn: async () => await getFullProfile(),
   });
   return (
     <div className="px-4 min-h-screen w-full">
+      <ToastContainer position="top-center" />
       <div className="mt-4 w-auto">
         <h1 className="font-semibold text-[24px] text-wrap">
           Your Profile Info In Amar Contacts <br className="hidden xs:block" />
@@ -44,6 +47,8 @@ const PersonalInfo: FC = () => {
               gender={data?.data?.data?.gender}
               name={data?.data?.data?.name}
               key={'basic_info'}
+              showImageModal={showImageModal}
+              setShowImageModal={setShowImageModal}
             />
             <ContactInfo
               email={data?.data?.data?.email}
