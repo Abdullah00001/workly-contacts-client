@@ -26,6 +26,9 @@ const {
   checkR_stp3,
   getProfile,
   getFullProfile,
+  uploadProfileAvatar,
+  removeProfileAvatar,
+  changeProfileAvatar,
 } = AuthApis;
 
 const AuthServices = {
@@ -231,6 +234,48 @@ const AuthServices = {
       } else {
         throw new Error(
           'Unexpected Error Occurred In Process Get Full Profile'
+        );
+      }
+    }
+  },
+  processUploadProfileAvatar: async (payload: FormData) => {
+    try {
+      const response = await uploadProfileAvatar(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(
+          'Unexpected Error Occurred In Process Profile Avatar Upload'
+        );
+      }
+    }
+  },
+  processChangeProfileAvatar: async (payload: FormData) => {
+    try {
+      const response = await changeProfileAvatar(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(
+          'Unexpected Error Occurred In Process Change Profile Avatar'
+        );
+      }
+    }
+  },
+  processRemoveProfileAvatar: async (payload: string) => {
+    try {
+      const response = await removeProfileAvatar(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(
+          'Unexpected Error Occurred In Process Remove Profile Avatar'
         );
       }
     }

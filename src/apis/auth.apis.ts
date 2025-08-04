@@ -60,6 +60,23 @@ const AuthApis = {
   getFullProfile: () => {
     return axiosClient.get('/me');
   },
+  uploadProfileAvatar: (payload: FormData) => {
+    return axiosClient.put('/me/avatar', payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  changeProfileAvatar: (payload: FormData) => {
+    return axiosClient.patch('/me/avatar', payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  removeProfileAvatar: (payload: string) => {
+    return axiosClient.delete(`/me/avatar/${payload}`);
+  },
 };
 
 export default AuthApis;
