@@ -6,6 +6,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import AuthServices from '../../../services/auth.services';
 import { toast } from 'react-toastify';
+import UpdateNameModal from '../../personalInfo/UpdateNameModal';
+import UpdateDateOfBirthModal from '../../personalInfo/UpdateDateOfBirthModal';
+import UpdateGenderModal from '../../personalInfo/UpdateGenderModal';
 
 const { processUploadProfileAvatar } = AuthServices;
 
@@ -16,6 +19,8 @@ const BasicInfo: FC<TBasicInfoPageProps> = ({
   dateOfBirth,
   setShowImageModal,
   showImageModal,
+  modalType,
+  setModalType,
 }) => {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -112,8 +117,11 @@ const BasicInfo: FC<TBasicInfoPageProps> = ({
           />
         </div>
       </div>
-      <hr className="mt-3 text-gray-400" />
-      <div className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full">
+      <hr className="mt-3 mb-3 lg:mb-0 text-gray-400" />
+      <div
+        onClick={() => setModalType('name')}
+        className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full"
+      >
         <div className="flex flex-col min-[620px]:w-[60%] min-[620px]:flex-row min-[620px]:justify-between min-[620px]:items-center">
           <h6 className="text-xs font-medium min-[620px]:w-[50%]">Name</h6>
           <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]  whitespace-nowrap">
@@ -128,7 +136,10 @@ const BasicInfo: FC<TBasicInfoPageProps> = ({
         </div>
       </div>
       <hr className="lg:hidden mt-3 mb-3 text-gray-400" />
-      <div className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full">
+      <div
+        onClick={() => setModalType('dob')}
+        className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full"
+      >
         <div className="flex flex-col min-[620px]:w-[60%] min-[620px]:flex-row min-[620px]:justify-between min-[620px]:items-center">
           <h6 className="text-xs font-medium min-[620px]:w-[50%]">
             Date Of Birth
@@ -151,7 +162,10 @@ const BasicInfo: FC<TBasicInfoPageProps> = ({
         </div>
       </div>
       <hr className="lg:hidden mt-3 mb-3 text-gray-400" />
-      <div className="flex lg:cursor-pointer transition-all duration-300 lg:hover:bg-gray-50/5 lg:p-2 items-center justify-between w-full">
+      <div
+        onClick={() => setModalType('gender')}
+        className="flex lg:cursor-pointer transition-all duration-300 lg:hover:bg-gray-50/5 lg:p-2 items-center justify-between w-full"
+      >
         <div className="flex flex-col min-[620px]:w-[60%] min-[620px]:flex-row min-[620px]:justify-between min-[620px]:items-center">
           <h6 className="text-xs font-medium min-[620px]:w-[50%]">Gender</h6>
           {gender ? (
@@ -180,6 +194,18 @@ const BasicInfo: FC<TBasicInfoPageProps> = ({
           showImageModal={showImageModal}
           name={name}
         />
+      )}
+      {modalType === 'name' && (
+        <UpdateNameModal setModalType={setModalType} name={name} />
+      )}
+      {modalType === 'dob' && (
+        <UpdateDateOfBirthModal
+          setModalType={setModalType}
+          dateOfBirth={dateOfBirth}
+        />
+      )}
+      {modalType === 'gender' && (
+        <UpdateGenderModal gender={gender} setModalType={setModalType} />
       )}
     </div>
   );

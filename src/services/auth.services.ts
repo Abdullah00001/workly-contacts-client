@@ -1,4 +1,5 @@
 import AuthApis from '../apis/auth.apis';
+import { IProfileUpdatePayload } from '../interfaces/accountcenter.interface';
 import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
 import {
@@ -29,6 +30,7 @@ const {
   uploadProfileAvatar,
   removeProfileAvatar,
   changeProfileAvatar,
+  updateProfile,
 } = AuthApis;
 
 const AuthServices = {
@@ -269,6 +271,20 @@ const AuthServices = {
   processRemoveProfileAvatar: async (payload: string) => {
     try {
       const response = await removeProfileAvatar(payload);
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(
+          'Unexpected Error Occurred In Process Remove Profile Avatar'
+        );
+      }
+    }
+  },
+  processUpdateProfile: async (payload: IProfileUpdatePayload) => {
+    try {
+      const response = await updateProfile(payload);
       return response.data;
     } catch (error) {
       if (error instanceof Error) {

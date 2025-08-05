@@ -5,6 +5,7 @@ import PersonalInfoPageSkeleton from '../components/ui/skeletons/PersonalInfoPag
 import ErrorFallback from '../components/ui/ErrorFallback';
 import AuthApis from '../apis/auth.apis';
 import { ToastContainer } from 'react-toastify';
+import { TModalState } from '../interfaces/accountcenter.interface';
 const BasicInfo = lazy(
   () => import('../features/accountscenter/components/BasicInfo')
 );
@@ -19,6 +20,7 @@ const { getFullProfile } = AuthApis;
 
 const PersonalInfo: FC = () => {
   const [showImageModal, setShowImageModal] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<TModalState>(null);
   const { data, isPending } = useQuery({
     queryKey: ['personal_info'],
     queryFn: async () => await getFullProfile(),
@@ -49,15 +51,21 @@ const PersonalInfo: FC = () => {
               key={'basic_info'}
               showImageModal={showImageModal}
               setShowImageModal={setShowImageModal}
+              modalType={modalType}
+              setModalType={setModalType}
             />
             <ContactInfo
               email={data?.data?.data?.email}
               phone={data?.data?.data?.phone}
+              modalType={modalType}
+              setModalType={setModalType}
               key={'contact_info'}
             />
             <AddressInfo
               home={data?.data?.data?.location?.home}
               work={data?.data?.data?.location?.work}
+              modalType={modalType}
+              setModalType={setModalType}
               key={'address_info'}
             />
           </Suspense>

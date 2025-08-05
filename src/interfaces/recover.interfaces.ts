@@ -1,4 +1,4 @@
-import { TImage } from "./contacts.interface";
+import { TImage } from './contacts.interface';
 
 export interface IFindUser {
   email: string;

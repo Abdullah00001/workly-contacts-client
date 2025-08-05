@@ -1,4 +1,5 @@
 import axiosClient from '../configs/axios.configs';
+import { IProfileUpdatePayload } from '../interfaces/accountcenter.interface';
 import { ILoginPayload } from '../interfaces/login.interfaces';
 import { IVerifyPayload } from '../interfaces/otpVerification.interfaces';
 import {
@@ -59,6 +60,9 @@ const AuthApis = {
   },
   getFullProfile: () => {
     return axiosClient.get('/me');
+  },
+  updateProfile: (payload: IProfileUpdatePayload) => {
+    return axiosClient.patch('/me', payload);
   },
   uploadProfileAvatar: (payload: FormData) => {
     return axiosClient.put('/me/avatar', payload, {

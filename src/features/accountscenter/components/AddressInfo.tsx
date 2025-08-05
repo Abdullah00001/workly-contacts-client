@@ -1,13 +1,23 @@
 import { FC } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { TAddressInfoPageProps } from '../../../interfaces/accountcenter.interface';
+import UpdateHomeAddressModal from '../../personalInfo/UpdateHomeAddressModal';
+import UpdateWorkAddressModal from '../../personalInfo/UpdateWorkAddressModal';
 
-const AddressInfo: FC<TAddressInfoPageProps> = ({ home, work }) => {
+const AddressInfo: FC<TAddressInfoPageProps> = ({
+  home,
+  work,
+  modalType,
+  setModalType,
+}) => {
   return (
     <div className="w-full mt-4 mb-10 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Addresses</h5>
       <div className="mt-2">
-        <div className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full">
+        <div
+          onClick={() => setModalType('home')}
+          className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full"
+        >
           <div className="flex flex-col min-[620px]:w-[60%] min-[620px]:flex-row min-[620px]:justify-between min-[620px]:items-center">
             <h6 className="text-xs font-medium min-[620px]:w-[50%]">Home</h6>
             {home ? (
@@ -28,7 +38,10 @@ const AddressInfo: FC<TAddressInfoPageProps> = ({ home, work }) => {
           </div>
         </div>
         <hr className="lg:hidden mt-3 mb-3 text-gray-400" />
-        <div className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 items-center justify-between w-full">
+        <div
+          onClick={() => setModalType('work')}
+          className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 items-center justify-between w-full"
+        >
           <div className="flex flex-col min-[620px]:w-[60%] min-[620px]:flex-row min-[620px]:justify-between min-[620px]:items-center">
             <h6 className="text-xs font-medium min-[620px]:w-[50%]">Work</h6>
             {work ? (
@@ -49,6 +62,20 @@ const AddressInfo: FC<TAddressInfoPageProps> = ({ home, work }) => {
           </div>
         </div>
       </div>
+      {modalType === 'home' && (
+        <UpdateHomeAddressModal
+          work={work}
+          home={home}
+          setModalType={setModalType}
+        />
+      )}
+      {modalType === 'work' && (
+        <UpdateWorkAddressModal
+          work={work}
+          home={home}
+          setModalType={setModalType}
+        />
+      )}
     </div>
   );
 };
