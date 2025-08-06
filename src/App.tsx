@@ -8,6 +8,7 @@ import AuthProviders from './providers/AuthProviders';
 
 const queryClient = new QueryClient();
 
+
 const App: FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
