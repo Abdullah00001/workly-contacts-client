@@ -17,6 +17,7 @@ const App: FC = () => {
       </AuthProviders>
     </QueryClientProvider>
   );
+  
 };
 
 export default App;
