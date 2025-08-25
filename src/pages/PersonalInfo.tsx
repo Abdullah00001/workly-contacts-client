@@ -30,11 +30,12 @@ const PersonalInfo: FC = () => {
       <ToastContainer position="top-center" />
       <div className="mt-4 w-auto">
         <h1 className="font-semibold text-[24px] text-wrap">
-          Your Profile Info In Amar Contacts <br className="hidden xs:block" />
+          Your Profile Info In Workly Contacts{' '}
+          <br className="hidden xs:block" />
           For Your Identity
         </h1>
         <p className="text-[16px]  text-wrap mt-1 font-normal text-gray-300">
-          Manage and update your personal details in Amar Contacts. This
+          Manage and update your personal details in Workly Contacts. This
           information helps verify and personalize your experience.
         </p>
       </div>

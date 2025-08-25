@@ -86,7 +86,7 @@ const Hamburger: FC = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
-                        Amar Contact
+                        Workly Contacts
                       </h1>
                       <p className="text-xs text-gray-500 -mt-0.5 truncate">
                         Contact Management

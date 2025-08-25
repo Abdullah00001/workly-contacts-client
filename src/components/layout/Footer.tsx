@@ -15,7 +15,7 @@ const Footer: FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  Amar Contact
+                  Workly Contacts
                 </h3>
               </div>
             </div>
@@ -170,7 +170,7 @@ const Footer: FC = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <p className="text-gray-400 text-sm">
-              © 2025 Amar Contact. All rights reserved.
+              © 2025 Workly Contacts. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
               <span className="text-gray-400 text-xs">

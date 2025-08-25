@@ -12,7 +12,7 @@ const Logo: FC = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Amar Contact
+              Workly Contacts
             </h1>
             <p className="text-sm text-gray-500 -mt-1">Contact Management</p>
           </div>

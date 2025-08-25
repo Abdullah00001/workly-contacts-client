@@ -45,8 +45,9 @@ const TermsOfService: FC = () => {
 
           <div className="prose prose-lg max-w-none">
             <p className="text-lg mb-6 text-gray-700 leading-relaxed">
-              Welcome to <strong className="text-blue-600">Amar Contact</strong>
-              . These Terms of Service ("Terms") govern your use of our website,
+              Welcome to{' '}
+              <strong className="text-blue-600">Workly Contacts</strong>. These
+              Terms of Service ("Terms") govern your use of our website,
               applications, and services ("Service"). By accessing or using Amar
               Contact, you agree to be bound by these Terms.
             </p>
@@ -68,7 +69,7 @@ const TermsOfService: FC = () => {
                 </h2>
                 <div className="bg-gray-50 rounded-lg p-6">
                   <p className="text-gray-700 mb-4">
-                    By using Amar Contact, you confirm that you:
+                    By using Workly Contacts, you confirm that you:
                   </p>
                   <ul className="space-y-3">
                     <li className="flex items-start space-x-3">
@@ -98,8 +99,8 @@ const TermsOfService: FC = () => {
                 </h2>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                   <p className="text-gray-700 mb-4">
-                    <strong className="text-blue-600">Amar Contact</strong> is a
-                    contact management platform that allows users to:
+                    <strong className="text-blue-600">Workly Contacts</strong>{' '}
+                    is a contact management platform that allows users to:
                   </p>
                   <ul className="space-y-3">
                     <li className="flex items-start space-x-3">
@@ -217,7 +218,7 @@ const TermsOfService: FC = () => {
                   <ul className="space-y-3">
                     <li className="flex items-start space-x-3">
                       <span className="w-2 h-2 bg-red-600 rounded-full mt-2 flex-shrink-0"></span>
-                      <div>Use Amar Contact to spam or harass others</div>
+                      <div>Use Workly Contacts to spam or harass others</div>
                     </li>
                     <li className="flex items-start space-x-3">
                       <span className="w-2 h-2 bg-red-600 rounded-full mt-2 flex-shrink-0"></span>
@@ -251,10 +252,10 @@ const TermsOfService: FC = () => {
                 </h2>
                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
                   <p className="text-gray-700 mb-4">
-                    All content, design, and source code of Amar Contact (except
-                    user-generated content) is owned by the developers of the
-                    platform. You may not reproduce or redistribute any part of
-                    the Service without permission.
+                    All content, design, and source code of Workly Contacts
+                    (except user-generated content) is owned by the developers
+                    of the platform. You may not reproduce or redistribute any
+                    part of the Service without permission.
                   </p>
                   <p className="text-gray-600 text-sm">
                     If the project is open-source, usage is governed by its
@@ -322,9 +323,10 @@ const TermsOfService: FC = () => {
                 </h2>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
                   <p className="text-gray-700">
-                    Amar Contact is provided "as is" and "as available" without
-                    warranties of any kind, either express or implied. We do not
-                    guarantee the platform will always be error-free or secure.
+                    Workly Contacts is provided "as is" and "as available"
+                    without warranties of any kind, either express or implied.
+                    We do not guarantee the platform will always be error-free
+                    or secure.
                   </p>
                 </div>
               </section>
@@ -391,12 +393,12 @@ const TermsOfService: FC = () => {
                       <span>
                         Website:{' '}
                         <a
-                          href="https://amar-contacts.vercel.app"
+                          href="https://contacts.workly.ink"
                           className="text-blue-600 hover:underline font-medium"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          https://amar-contacts.vercel.app
+                          https://contacts.workly.ink
                         </a>
                       </span>
                     </div>

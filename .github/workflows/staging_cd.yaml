@@ -30,8 +30,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            abdullah00001/amar-contacts-client:${{ steps.tag.outputs.TAG }}
-            abdullah00001/amar-contacts-client:staging-latest
+            abdullah00001/workly-contacts-client:${{ steps.tag.outputs.TAG }}
+            abdullah00001/workly-contacts-client:staging-latest
           build-args: |
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
             VITE_OTP_LENGTH=${{ secrets.VITE_OTP_LENGTH }}
