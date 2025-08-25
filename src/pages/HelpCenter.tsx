@@ -44,7 +44,7 @@ const HelpCenter: FC = () => {
         {
           question: 'How do I create an account?',
           answer:
-            "Visit amar-contacts.vercel.app and click Sign Up. You'll need to provide a name, email, and password.",
+            "Visit contacts.workly.ink and click Sign Up. You'll need to provide a name, email, and password.",
         },
         {
           question: 'What if I forget my password?',
@@ -136,7 +136,7 @@ const HelpCenter: FC = () => {
         {
           question: 'What is the Merge Duplicates feature?',
           answer:
-            'Amar Contact automatically detects potential duplicates based on similar names, emails, or phone numbers.',
+            'Workly Contacts automatically detects potential duplicates based on similar names, emails, or phone numbers.',
         },
         {
           question: 'How does the merge work?',
@@ -154,7 +154,7 @@ const HelpCenter: FC = () => {
         {
           question: 'How do I import contacts from another app or file?',
           answer:
-            'Go to the Import section, upload a CSV file, match your CSV columns to Amar Contact fields, then review and confirm import.',
+            'Go to the Import section, upload a CSV file, match your CSV columns to Workly Contacts fields, then review and confirm import.',
         },
         {
           question: 'How do I export my contacts?',
@@ -196,7 +196,7 @@ const HelpCenter: FC = () => {
       color: 'gray',
       items: [
         {
-          question: 'Will Amar Contact support chat?',
+          question: 'Will Workly Contacts support chat?',
           answer:
             'Yes. In version 2, we plan to add real-time chat with other users (via Socket.io), sharing of contact entries within messages, and a private, secure messaging system.',
         },
@@ -230,12 +230,12 @@ const HelpCenter: FC = () => {
         {
           question: 'Is it mobile-friendly?',
           answer:
-            'Yes! Amar Contact is fully responsive and works beautifully on phones, tablets, and desktops.',
+            'Yes! Workly Contacts is fully responsive and works beautifully on phones, tablets, and desktops.',
         },
         {
           question: 'Is it free? Will there be a paid plan?',
           answer:
-            'Amar Contact is currently free with no ads. We may add premium features in the future, but core features will remain free.',
+            'Workly Contacts is currently free with no ads. We may add premium features in the future, but core features will remain free.',
         },
         {
           question: 'Is it open-source?',
@@ -243,7 +243,7 @@ const HelpCenter: FC = () => {
             'Yes. Source code may be available on GitHub. Contributions and feedback are welcome.',
         },
         {
-          question: 'Is Amar Contact reliable?',
+          question: 'Is Workly Contacts reliable?',
           answer:
             "We've written unit tests for core functionality. Integration and E2E testing are in the pipeline to ensure better stability over time.",
         },
@@ -311,7 +311,7 @@ const HelpCenter: FC = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Help Center</h1>
               <p className="text-gray-600 mt-1">
-                Everything you need to know about Amar Contact
+                Everything you need to know about Workly Contacts
               </p>
             </div>
           </div>
@@ -321,10 +321,10 @@ const HelpCenter: FC = () => {
             <p className="text-lg text-gray-700 leading-relaxed">
               Welcome to the{' '}
               <strong className="text-blue-600">
-                Amar Contact Help Center
+                Workly Contacts Help Center
               </strong>
               ! Below you'll find detailed explanations of every feature
-              available in Amar Contact to help you get the most out of your
+              available in Workly Contacts to help you get the most out of your
               experience.
             </p>
             <p className="text-gray-600 mt-3">
@@ -422,12 +422,12 @@ const HelpCenter: FC = () => {
                   <span>
                     Website:{' '}
                     <a
-                      href="https://amar-contacts.vercel.app"
+                      href="https://contacts.workly.ink"
                       className="text-blue-600 hover:underline font-medium"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      https://amar-contacts.vercel.app
+                      https://contacts.workly.ink
                     </a>
                   </span>
                 </div>

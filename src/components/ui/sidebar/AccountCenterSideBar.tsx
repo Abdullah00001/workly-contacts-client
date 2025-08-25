@@ -14,7 +14,7 @@ const AccountCenterSideBar: FC = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Amar Contact
+                Workly Contacts
               </h1>
               <p className="text-sm text-gray-500 -mt-1">Contact Management</p>
             </div>
@@ -22,7 +22,7 @@ const AccountCenterSideBar: FC = () => {
         </div>
         <h2 className="font-bold text-[22px] mt-2">Account Center</h2>
         <h5 className="text-wrap mt-2 font-normal">
-          Manage your personal info and account security to make Amar Contacts
+          Manage your personal info and account security to make Workly Contacts
           safer and more personalized for you.
         </h5>
       </div>

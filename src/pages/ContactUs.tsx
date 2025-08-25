@@ -104,7 +104,7 @@ const ContactUs: FC = () => {
 
               <p className="text-lg text-gray-700 leading-relaxed">
                 Have questions about{' '}
-                <strong className="text-blue-600">Amar Contact</strong>? Need
+                <strong className="text-blue-600">Workly Contacts</strong>? Need
                 help with your account? Found a bug or have a feature request?
                 We're here to help! Reach out to us using any of the methods
                 below.

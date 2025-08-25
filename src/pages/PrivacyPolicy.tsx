@@ -44,10 +44,11 @@ const PrivacyPolicy: FC = () => {
 
           <div className="prose prose-lg max-w-none">
             <p className="text-lg mb-6 text-gray-700 leading-relaxed">
-              Welcome to <strong className="text-blue-600">Amar Contact</strong>
-              . This Privacy Policy explains how we collect, use, disclose, and
+              Welcome to{' '}
+              <strong className="text-blue-600">Workly Contacts</strong>. This
+              Privacy Policy explains how we collect, use, disclose, and
               safeguard your information when you use our platform. By accessing
-              or using Amar Contact, you agree to the terms of this Privacy
+              or using Workly Contacts, you agree to the terms of this Privacy
               Policy.
             </p>
 
@@ -199,10 +200,11 @@ const PrivacyPolicy: FC = () => {
                   Third-Party Services
                 </h2>
                 <p className="text-gray-700 bg-gray-50 rounded-lg p-6">
-                  Amar Contact may integrate third-party tools such as analytics
-                  providers (e.g., Google Analytics), image upload/CDN services,
-                  or optional login/authentication providers. These services may
-                  collect data in accordance with their own privacy policies.
+                  Workly Contacts may integrate third-party tools such as
+                  analytics providers (e.g., Google Analytics), image upload/CDN
+                  services, or optional login/authentication providers. These
+                  services may collect data in accordance with their own privacy
+                  policies.
                 </p>
               </section>
 
@@ -320,7 +322,7 @@ const PrivacyPolicy: FC = () => {
                 </h2>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
                   <p className="text-gray-700">
-                    Amar Contact is not intended for children under 13. We do
+                    Workly Contacts is not intended for children under 13. We do
                     not knowingly collect personal data from children. If we
                     discover such data has been submitted, we will delete it
                     promptly.
@@ -372,10 +374,10 @@ const PrivacyPolicy: FC = () => {
                       <span>
                         Website:{' '}
                         <a
-                          href="https://amar-contacts.vercel.app"
+                          href="https://contacts.workly.ink"
                           className="text-blue-600 hover:underline font-medium"
                         >
-                          amar-contacts.vercel.app
+                          contacts.workly.ink
                         </a>
                       </span>
                     </div>

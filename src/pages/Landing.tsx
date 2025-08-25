@@ -138,9 +138,9 @@ const Landing: FC = () => {
 
   const faqs = [
     {
-      question: 'Is Amar Contact free to use?',
+      question: 'Is Workly Contacts free to use?',
       answer:
-        'Yes! Amar Contact is completely free forever with no subscription walls or hidden costs. We believe contact management should be accessible to everyone.',
+        'Yes! Workly Contacts is completely free forever with no subscription walls or hidden costs. We believe contact management should be accessible to everyone.',
     },
     {
       question: 'Can I import my existing contacts?',
@@ -160,7 +160,7 @@ const Landing: FC = () => {
     {
       question: 'Does it work on mobile devices?',
       answer:
-        'Yes! Amar Contact is fully responsive and works seamlessly on desktop, tablet, and mobile devices.',
+        'Yes! Workly Contacts is fully responsive and works seamlessly on desktop, tablet, and mobile devices.',
     },
     {
       question: 'What about duplicate contacts?',
@@ -189,7 +189,7 @@ const Landing: FC = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Amar Contact
+                  Workly Contacts
                 </h1>
                 <p className="text-sm text-gray-500 -mt-1">
                   Contact Management
@@ -335,7 +335,7 @@ const Landing: FC = () => {
                 How It Works
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Get started with Amar Contact in just a few simple steps and
+                Get started with Workly Contacts in just a few simple steps and
                 transform how you manage your contacts.
               </p>
             </div>
@@ -369,7 +369,7 @@ const Landing: FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                  Why Choose Amar Contact?
+                  Why Choose Workly Contacts?
                 </h2>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
@@ -466,7 +466,7 @@ const Landing: FC = () => {
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               Join thousands of users who have simplified their contact
-              management with Amar Contact. Start organizing your contacts
+              management with Workly Contacts. Start organizing your contacts
               today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -495,7 +495,7 @@ const Landing: FC = () => {
                 Frequently Asked Questions
               </h2>
               <p className="text-xl text-gray-600">
-                Everything you need to know about Amar Contact
+                Everything you need to know about Workly Contacts
               </p>
             </div>
 

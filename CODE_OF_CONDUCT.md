@@ -2,7 +2,7 @@
 
 ## 💬 Our Pledge
 
-We as contributors and maintainers of **Amar Contact** pledge to make participation in our project and community a respectful, inclusive, and harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+We as contributors and maintainers of **Workly Contacts** pledge to make participation in our project and community a respectful, inclusive, and harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 We are committed to fostering a friendly and safe environment for collaboration and contribution.
 
