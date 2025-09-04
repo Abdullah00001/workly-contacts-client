@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
@@ -24,6 +25,11 @@ const MobileMenu: FC = () => {
       <SheetContent side="right" className="w-[300px] sm:w-[400px]">
         <VisuallyHidden>
           <SheetTitle>Navigation Menu</SheetTitle>
+        </VisuallyHidden>
+        <VisuallyHidden>
+          <SheetDescription>
+            Mobile navigation menu with login and signup options
+          </SheetDescription>
         </VisuallyHidden>
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
