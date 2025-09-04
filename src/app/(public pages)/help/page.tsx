@@ -311,7 +311,7 @@ export default function Help() {
               <strong className="text-blue-600">
                 Workly Contact Help Center
               </strong>
-              ! Below you'll find detailed explanations of every feature
+              ! Below you{`'`}ll find detailed explanations of every feature
               available in Workly Contact to help you get the most out of your
               experience.
             </p>
@@ -383,7 +383,7 @@ export default function Help() {
                 <span>Need More Help?</span>
               </h2>
               <p className="text-gray-700 mb-4 text-sm sm:text-base">
-                If your question isn't answered here, contact us:
+                If your question isn{`'`}t answered here, contact us:
               </p>
               <div className="space-y-3">
                 <div className="flex items-start sm:items-center space-x-3">
@@ -414,7 +414,7 @@ export default function Help() {
                 </div>
               </div>
               <p className="text-gray-600 mt-4 text-sm sm:text-base">
-                We'll get back to you as soon as possible.
+                We{`'`}ll get back to you as soon as possible.
               </p>
             </div>
           </div>
