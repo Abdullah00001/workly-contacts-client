@@ -12,7 +12,7 @@ const Header: FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href={'/'}>
-            <div className="flex items-center space-x-3 cursor-pointer group transition-all duration-300 hover:scale-105">
+            <div className="flex items-center space-x-3 cursor-pointer group">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
                 <Users className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
               </div>

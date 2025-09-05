@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import {
   ArrowLeft,
   HelpCircle,
@@ -16,13 +16,46 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-// Generate metadata for SEO
 export const metadata: Metadata = {
-  title: 'Help Center - Workly Contact',
+  title: 'Help Center',
   description:
-    'Everything you need to know about Workly Contact. Find answers to common questions about account management, contacts, search, labels, and more.',
-  keywords: ['help', 'support', 'contact management', 'faq', 'documentation'],
+    'Find answers and get support for all your Workly Contacts questions. Learn how to manage contacts, troubleshoot issues, and make the most of Workly Contacts features.',
+  keywords: [
+    'Workly Contacts help',
+    'contact management support',
+    'CRM help center',
+    'FAQ Workly Contacts',
+    'troubleshoot contacts app',
+    'contact management guide',
+  ],
+  openGraph: {
+    title: 'Help Center | Workly Contacts',
+    description:
+      'Visit the Workly Contacts Help Center for FAQs, guides, and support on managing your contacts efficiently and securely.',
+    url: 'https://contacts.workly.ink/help',
+    siteName: 'Workly Contacts',
+    type: 'website',
+    images: [
+      {
+        url: 'https://contacts.workly.ink/og-help.png',
+        width: 1200,
+        height: 630,
+        alt: 'Workly Contacts Help Center',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Help Center | Workly Contacts',
+    description:
+      'Get help with Workly Contacts features, troubleshooting, and managing your contacts effectively.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
+
 export default function Help() {
   const helpSections = [
     {

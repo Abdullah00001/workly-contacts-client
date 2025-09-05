@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     'Workly Contacts team',
   ],
   openGraph: {
-    title: 'Contact Us | Workly Contacts',
+    title: 'Contact Us',
     description:
       'Have questions or need support? Contact the Workly Contacts team for assistance and inquiries.',
     url: 'https://contacts.workly.ink/contact',

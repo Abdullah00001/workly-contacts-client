@@ -1,9 +1,9 @@
 import { ArrowLeft, Phone, Shield, Users } from 'lucide-react';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Workly Contacts',
+  title: 'Privacy Policy ',
   description:
     'Read the Workly Contacts Privacy Policy. Learn how we collect, use, protect, and handle your personal and contact data securely.',
   keywords: [
