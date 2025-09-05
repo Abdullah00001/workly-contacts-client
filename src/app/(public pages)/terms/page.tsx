@@ -77,9 +77,9 @@ export default function page() {
             <p className="text-lg mb-6 text-gray-700 leading-relaxed">
               Welcome to{' '}
               <strong className="text-blue-600">Workly Contacts</strong>. These
-              Terms of Service ("Terms") govern your use of our website,
-              applications, and services ("Service"). By accessing or using Amar
-              Contact, you agree to be bound by these Terms.
+              Terms of Service govern your use of our website, applications, and
+              services. By accessing or using Amar Contact, you agree to be
+              bound by these Terms.
             </p>
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
@@ -353,7 +353,8 @@ export default function page() {
                 </h2>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
                   <p className="text-gray-700">
-                    Workly Contacts is provided "as is" and "as available"
+                    Workly Contacts is provided {`"as is"`} and{' '}
+                    {`"as available"`}
                     without warranties of any kind, either express or implied.
                     We do not guarantee the platform will always be error-free
                     or secure.

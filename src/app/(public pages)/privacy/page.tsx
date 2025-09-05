@@ -161,8 +161,8 @@ export default function privacy() {
                     <li className="flex items-start space-x-3">
                       <span className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></span>
                       <div>
-                        To improve our platform's functionality, performance,
-                        and user experience.
+                        To improve our platform{`'`}s functionality,
+                        performance, and user experience.
                       </div>
                     </li>
                     <li className="flex items-start space-x-3">
@@ -348,7 +348,7 @@ export default function privacy() {
                   <span className="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
                     10
                   </span>
-                  Children's Privacy
+                  Children{`'`}s Privacy
                 </h2>
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
                   <p className="text-gray-700">
@@ -369,8 +369,8 @@ export default function privacy() {
                 </h2>
                 <p className="text-gray-700 bg-gray-50 rounded-lg p-6">
                   We may update this Privacy Policy from time to time to reflect
-                  changes in technology, law, or features. We'll notify users of
-                  material changes via the platform or email.
+                  changes in technology, law, or features. We{`'`}ll notify
+                  users of material changes via the platform or email.
                 </p>
               </section>
 

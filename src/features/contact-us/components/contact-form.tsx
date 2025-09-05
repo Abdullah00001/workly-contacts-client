@@ -168,7 +168,7 @@ export function ContactForm() {
             <Alert className="bg-green-50 border-green-200 text-green-800">
               <CheckCircle className="h-4 w-4 text-green-600" />
               <AlertDescription className="font-medium">
-                Message sent successfully! We'll get back to you soon.
+                Message sent successfully! We{`'`}ll get back to you soon.
               </AlertDescription>
             </Alert>
           )}

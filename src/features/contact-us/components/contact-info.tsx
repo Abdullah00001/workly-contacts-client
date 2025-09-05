@@ -16,7 +16,7 @@ export function ContactInfo() {
                 Get in Touch
               </CardTitle>
               <p className="text-muted-foreground">
-                We'd love to hear from you
+                We{`'`}d love to hear from you
               </p>
             </div>
           </div>
