@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
 
 const LoginForm: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -75,7 +76,7 @@ const LoginForm: FC = () => {
             className="p-0 h-auto text-sm hover:text-opacity-80 cursor-pointer"
             style={{ color: '#3F3FF3' }}
           >
-            Forgot Your Password?
+            <Link href={'/auth/recover'}>Forgot Your Password?</Link>
           </Button>
         </div>
       </div>

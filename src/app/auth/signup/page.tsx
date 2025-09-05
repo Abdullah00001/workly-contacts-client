@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Sign Up | Workly Contacts',
+  title: 'Sign Up',
   description:
     'Create your Workly Contacts account to organize, manage, and sync your contacts efficiently. Start for free and stay connected.',
   keywords: [

@@ -17,7 +17,7 @@ import {
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Help Center | Workly Contacts',
+  title: 'Help Center',
   description:
     'Find answers and get support for all your Workly Contacts questions. Learn how to manage contacts, troubleshoot issues, and make the most of Workly Contacts features.',
   keywords: [

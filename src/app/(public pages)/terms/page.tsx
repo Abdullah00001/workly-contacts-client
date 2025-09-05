@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | Workly Contacts',
+  title: 'Terms of Service ',
   description:
     'Review the Workly Contacts Terms of Service. Learn about account usage, data handling, acceptable use, user responsibilities, and your rights when using our contact management platform.',
   keywords: [
