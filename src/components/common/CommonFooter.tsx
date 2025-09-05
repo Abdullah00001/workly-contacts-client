@@ -15,7 +15,7 @@ const CommonFooter: FC = () => {
               </div>
               <div>
                 <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  Workly Contact
+                  Workly Contacts
                 </h3>
               </div>
             </div>
