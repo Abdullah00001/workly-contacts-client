@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Workly Contacts | Smart Contact Management',
+  title: 'Workly Contacts',
   description:
     'Organize, manage, and sync your contacts with Workly Contacts. Enjoy smart search, duplicate detection, and easy import/export for seamless contact management.',
   keywords: [

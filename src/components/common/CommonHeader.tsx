@@ -15,7 +15,7 @@ const CommonHeader: FC = () => {
               </div>
               <div>
                 <h1 className="text-sm sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Workly Contact
+                  Workly Contacts
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-500 -mt-1">
                   Contact Management
