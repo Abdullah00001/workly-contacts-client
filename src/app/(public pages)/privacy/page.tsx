@@ -2,6 +2,41 @@ import { ArrowLeft, Phone, Shield, Users } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Workly Contacts',
+  description:
+    'Read the Workly Contacts Privacy Policy. Learn how we collect, use, protect, and handle your personal and contact data securely.',
+  keywords: [
+    'Workly Contacts privacy',
+    'data protection',
+    'contact management security',
+    'user data policy',
+    'privacy policy',
+    'account security',
+    'data retention',
+    'cookies',
+    'user rights',
+  ],
+  openGraph: {
+    title: 'Privacy Policy | Workly Contacts',
+    description:
+      'Learn how Workly Contacts protects your data and respects your privacy. Full details on data collection, usage, and user rights.',
+    url: 'https://contacts.workly.ink/privacy',
+    siteName: 'Workly Contacts',
+    type: 'article',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Privacy Policy | Workly Contacts',
+    description:
+      'Understand how Workly Contacts protects your data and ensures your privacy while using our platform.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
 export default function privacy() {
   return (
     <main>
