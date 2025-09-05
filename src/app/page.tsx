@@ -10,6 +10,40 @@ import HowItsWork from '@/features/home/components/HowItsWork';
 import WhyChooseUs from '@/features/home/components/WhyChooseUs';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Workly Contacts | Smart Contact Management',
+  description:
+    'Organize, manage, and sync your contacts with Workly Contacts. Enjoy smart search, duplicate detection, and easy import/export for seamless contact management.',
+  keywords: [
+    'Workly Contacts',
+    'contact management app',
+    'CRM for individuals',
+    'smart contacts',
+    'contact organizer',
+    'import export contacts',
+    'duplicate detection',
+  ],
+  openGraph: {
+    title: 'Workly Contacts | Smart Contact Management',
+    description:
+      'Keep your contacts organized and accessible with Workly Contacts — intuitive contact management with advanced features for individuals and teams.',
+    url: 'https://contacts.workly.ink/',
+    siteName: 'Workly Contacts',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Workly Contacts | Smart Contact Management',
+    description:
+      'The easiest way to organize, manage, and sync your contacts online. Workly Contacts makes contact management simple and secure.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function Home() {
   return (
