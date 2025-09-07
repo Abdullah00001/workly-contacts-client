@@ -4,10 +4,12 @@ import {
   AiOutlineStar,
   AiOutlineDelete,
 } from 'react-icons/ai';
+import { MdMergeType } from 'react-icons/md';
+import { BiImport } from 'react-icons/bi';
 
 export const navItems: TNavItem[] = [
   {
-    path: '/',
+    path: '/dashboard',
     pathName: 'Contacts',
     icon: AiOutlineContacts,
   },
@@ -15,6 +17,16 @@ export const navItems: TNavItem[] = [
     path: '/favorite',
     pathName: 'Favorite',
     icon: AiOutlineStar,
+  },
+  {
+    path: '/suggestion',
+    pathName: 'Merge & Fix',
+    icon: MdMergeType,
+  },
+  {
+    path: null,
+    pathName: 'Import',
+    icon: BiImport,
   },
   {
     path: '/trash',

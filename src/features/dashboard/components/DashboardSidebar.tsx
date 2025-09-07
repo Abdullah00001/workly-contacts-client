@@ -1,6 +1,7 @@
 'use client';
 import { useSidebarStore } from '@/stores/sidebar-store';
 import { FC } from 'react';
+import DashboardSidebarContent from '@/features/dashboard/components/DashboardSidebarContent';
 
 const DashboardSidebar: FC = () => {
   const { isOpen } = useSidebarStore();
@@ -8,7 +9,6 @@ const DashboardSidebar: FC = () => {
     <aside
       className={`hidden lg:block
             lg:relative lg:transition-all lg:duration-300 overflow-hidden
-            lg:bg-red-300
             ${isOpen ? 'lg:w-[22%] xl:w-[16%]' : 'lg:w-0'}
           `}
     >
@@ -19,14 +19,7 @@ const DashboardSidebar: FC = () => {
               ${isOpen ? 'translate-x-0' : '-translate-x-full'}
             `}
       >
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {Array.from({ length: 24 }).map((_, index) => (
-            <div
-              key={index}
-              className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
-            />
-          ))}
-        </div>
+        <DashboardSidebarContent />
       </div>
     </aside>
   );
