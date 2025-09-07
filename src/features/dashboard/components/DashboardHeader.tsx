@@ -12,7 +12,7 @@ const DashboardHeader: FC = () => {
   const { toggle } = useSidebarStore();
 
   return (
-    <section>
+    <header>
       {/* Mobile And Tablet */}
       <div className="w-full p-2 md:px-4 md:py-2">
         <div className="block md:hidden">
@@ -60,7 +60,7 @@ const DashboardHeader: FC = () => {
           </div>
         </div>
       </div>
-    </section>
+    </header>
   );
 };
 
