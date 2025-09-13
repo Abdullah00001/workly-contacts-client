@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  Send,
-  LogOut,
-  User,
-} from 'lucide-react';
+import { Send, LogOut, User } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -18,7 +14,7 @@ import {
 export default function NavUser() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="cursor-pointer">
+      <DropdownMenuTrigger className="cursor-pointer focus:outline-none focus:ring-0 focus-visible:ring-0">
         <Avatar>
           <AvatarFallback className="bg-primary text-primary-foreground">
             MW
@@ -26,7 +22,7 @@ export default function NavUser() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mt-2 w-72 mr-4 md:mr-7 ">
-        <DropdownMenuItem className="py-3 hover:bg-transparent">
+        <DropdownMenuItem className="py-3 cursor-pointer hover:!bg-gray-100 hover:!text-primary">
           <Avatar>
             <AvatarFallback className="bg-primary text-primary-foreground">
               MW
@@ -40,13 +36,13 @@ export default function NavUser() {
           </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:!bg-gray-100 hover:!text-primary">
           <User className="mr-1" /> Accounts Center
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:!bg-gray-100 hover:!text-primary">
           <Send className="mr-1" /> Feedback
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer hover:!bg-gray-100 hover:!text-primary">
           <LogOut className="mr-1" /> Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -12,19 +12,41 @@ const DashboardContent: FC<TLayout> = ({ children }) => {
   const isCreateContactPage = pathName.startsWith('/new');
   const isProfilePage = pathName.startsWith('/me');
   return (
-    <main
-      className={`w-full 
-            bg-yellow-400 transition-all duration-300
-            ${isOpen ? 'lg:w-[78%] xl:w-[84%]' : 'lg:w-full'}
-          `}
-    >
-      {children}
-      {!isContactDetailsPage && !isCreateContactPage && !isProfilePage && (
-        <div className="fixed block lg:hidden bottom-14 right-4 md:left-[90%] md:top-[85%]">
-          <CreateContactSmallButton />
+    <>
+      {/* Mobile */}
+      <main className="block md:hidden w-full flex-1">
+        <div className="bg-[#ffffff] w-full h-[calc(100%-14px)] rounded-2xl overflow-auto">
+          {children}
         </div>
-      )}
-    </main>
+        {!isContactDetailsPage && !isCreateContactPage && !isProfilePage && (
+          <div className="fixed block lg:hidden bottom-14 right-4">
+            <CreateContactSmallButton />
+          </div>
+        )}
+      </main>
+      {/* Tablet */}
+      <main className="hidden md:block lg:hidden md:w-full md:flex-1">
+        <div className="bg-[#ffffff] w-full h-[calc(100%-48px)] rounded-2xl overflow-auto">
+          {children}
+        </div>
+        {!isContactDetailsPage && !isCreateContactPage && !isProfilePage && (
+          <div className="fixed block lg:hidden bottom-14 right-4 md:left-[90%] md:top-[85%]">
+            <CreateContactSmallButton />
+          </div>
+        )}
+      </main>
+      {/* Desktop */}
+      <main
+        className={`hidden md:hidden lg:block 
+             transition-all duration-300
+            ${isOpen ? 'w-[calc(100%-285px)]' : 'w-full ml-4'}
+          `}
+      >
+        <div className="w-[calc(100%-16px)] h-[calc(100%-24px)] bg-[#ffffff] rounded-2xl overflow-auto">
+          {children}
+        </div>
+      </main>
+    </>
   );
 };
 

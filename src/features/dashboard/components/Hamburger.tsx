@@ -54,29 +54,23 @@ const Hamburger: FC = () => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.3 }}
-              className="fixed top-0 left-0 h-full w-[70%] md:w-[40%] sm:w-[70%] bg-white shadow-lg p-4 z-50"
+              className="fixed top-0 left-0 h-full w-[250px] md:w-[300px]  bg-white shadow-lg p-4 z-50"
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside drawer
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between mb-4">
-                <Link href={'/'}>
-                  <div className="flex items-center space-x-2 cursor-pointer group transition-all duration-300 hover:scale-105">
-                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-1.5 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
-                      <Users className="w-5 h-5 text-white" />
+                <Link href={'/dashboard'}>
+                  <div className="flex items-center space-x-3 cursor-pointer ">
+                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
+                      <Users className="w-6 h-6 text-white" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
-                        Workly Contacts
+                    <div>
+                      <h1 className="text-[22px] font-normal bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                        Contacts
                       </h1>
-                      <p className="text-xs text-gray-500 -mt-0.5 truncate">
-                        Contact Management
-                      </p>
                     </div>
                   </div>
                 </Link>
-                <button onClick={() => setIsOpen(false)}>
-                  <ArrowLeft className="w-6 h-6" />
-                </button>
               </div>
 
               {/* Drawer Navigation */}
@@ -84,7 +78,7 @@ const Hamburger: FC = () => {
                 {navItems.map((item) => {
                   const isActive = pathname === item.path;
                   const Icon = item.icon;
-                  return (
+                  return item.path ? (
                     <li key={item.path}>
                       <Link
                         href={item.path}
@@ -97,6 +91,19 @@ const Hamburger: FC = () => {
                         <Icon className="w-5 h-5" />
                         {item.pathName}
                       </Link>
+                    </li>
+                  ) : (
+                    <li key={item.path}>
+                      <button
+                        className={`flex items-center gap-2 p-2 font-medium ${
+                          isActive
+                            ? 'bg-blue-500 font-bold rounded-[8px] text-white'
+                            : 'hover:bg-gray-200'
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                        {item.pathName}
+                      </button>
                     </li>
                   );
                 })}

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { ContactInfo } from '@/features/contact-us/components/contact-info';
 import { ContactForm } from '@/features/contact-us/components/contact-form';
+import Breadcrumb from '@/components/common/Breadcrumb';
 
 export const metadata: Metadata = {
   title: 'Contact Us | Workly Contacts',
@@ -41,19 +42,7 @@ export default function page() {
   return (
     <main>
       {/* Breadcrumb */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
-          <Link
-            href="/"
-            className="flex items-center space-x-1 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
-          </Link>
-          <span className="text-gray-400">/</span>
-          <span className="text-gray-800 font-medium">Contact Us</span>
-        </div>
-      </div>
+      <Breadcrumb/>
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-12">

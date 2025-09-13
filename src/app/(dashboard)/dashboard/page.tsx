@@ -5,7 +5,7 @@ export default function page() {
         {Array.from({ length: 24 }).map((_, index) => (
           <div
             key={index}
-            className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
+            className="bg-amber-100 aspect-video h-12 w-full rounded-lg"
           />
         ))}
       </div>

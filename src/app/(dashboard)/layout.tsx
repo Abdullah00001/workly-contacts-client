@@ -5,13 +5,11 @@ import TLayout from '@/types/layout.types';
 
 export default function DashboardLayout({ children }: TLayout) {
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-white">
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-[#f7fafc]">
       <DashboardHeader />
-      <div className="mt-5 h-[calc(100vh-5rem)]">
-        <div className="flex h-[calc(100vh-5rem)]">
-          <DashboardSidebar />
-          <DashboardContent>{children}</DashboardContent>
-        </div>
+      <div className="mt-1 md:mt-3  w-full h-[calc(100%-64px)] flex">
+        <DashboardSidebar />
+        <DashboardContent>{children}</DashboardContent>
       </div>
     </div>
   );
