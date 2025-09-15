@@ -1,36 +1,59 @@
 import { TNavItem } from '@/types/const.type';
-import {
-  AiOutlineContacts,
-  AiOutlineStar,
-  AiOutlineDelete,
-} from 'react-icons/ai';
-import { MdMergeType } from 'react-icons/md';
-import { BiImport } from 'react-icons/bi';
 
 export const navItems: TNavItem[] = [
   {
     path: '/dashboard',
     pathName: 'Contacts',
-    icon: AiOutlineContacts,
+    icon: {
+      name:'person',
+      variant:'filled',
+      className:"text-[#444746]",
+      type:'icons',
+      size:24
+    }
   },
   {
     path: '/favorite',
     pathName: 'Favorite',
-    icon: AiOutlineStar,
+    icon: {
+      name:'star',
+      variant:'filled',
+      className:"text-[#444746]",
+      type:'icons',
+      size:24
+    }
   },
   {
     path: '/suggestion',
     pathName: 'Merge & Fix',
-    icon: MdMergeType,
+    icon: {
+      name:'handyman',
+      variant:'outlined',
+      className:"text-[#444746]",
+      type:'icons',
+      size:24
+    },
   },
   {
     path: null,
     pathName: 'Import',
-    icon: BiImport,
+    icon: {
+      name:'download',
+      variant:'outlined',
+      className:"text-[#444746]",
+      type:'symbols',
+      size:24
+    },
   },
   {
     path: '/trash',
     pathName: 'Trash',
-    icon: AiOutlineDelete,
+    icon: {
+      name:'delete',
+      variant:'outlined',
+      className:"text-[#444746]",
+      type:'symbols',
+      size:24
+    },
   },
 ];

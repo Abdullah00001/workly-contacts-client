@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import { IconType } from 'react-icons/lib';
+import { TIconProps } from "@/components/common/Icon";
+
 
 export type TNavItem ={
   path: string|null;
   pathName: string;
-  icon: IconType;
+  icon: TIconProps;
 }

@@ -1,7 +1,6 @@
 import Breadcrumb from '@/components/common/Breadcrumb';
-import { ArrowLeft, Phone, Shield, Users } from 'lucide-react';
+import {  Phone, Shield, Users } from 'lucide-react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy ',

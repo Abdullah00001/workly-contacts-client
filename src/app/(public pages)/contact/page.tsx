@@ -1,5 +1,3 @@
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
 import { Metadata } from 'next';
 import { ContactInfo } from '@/features/contact-us/components/contact-info';
 import { ContactForm } from '@/features/contact-us/components/contact-form';

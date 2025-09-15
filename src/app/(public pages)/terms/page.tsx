@@ -1,7 +1,6 @@
 import Breadcrumb from '@/components/common/Breadcrumb';
-import { ArrowLeft, FileText, Globe, Mail } from 'lucide-react';
+import { FileText, Globe, Mail } from 'lucide-react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Terms of Service ',
@@ -43,7 +42,7 @@ export default function page() {
   return (
     <main>
       {/* Breadcrumb */}
-      <Breadcrumb/>
+      <Breadcrumb />
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 pb-12">
         <div className="bg-white rounded-xl shadow-lg p-8 text-gray-800">

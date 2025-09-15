@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import {
-  ArrowLeft,
   HelpCircle,
   Users,
   Search,
@@ -14,7 +13,6 @@ import {
   Mail,
   ExternalLink,
 } from 'lucide-react';
-import Link from 'next/link';
 import Breadcrumb from '@/components/common/Breadcrumb';
 
 export const metadata: Metadata = {
