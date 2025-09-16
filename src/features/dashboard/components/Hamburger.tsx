@@ -7,9 +7,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Icon from '@/components/common/Icon';
 import DashboardSidebarLabel from './DashboardSidebarLabel';
+import { useHamburgerStore } from '@/stores/hamburger-store';
 
 const Hamburger: FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { isHamburgerOpen, setHamburgerOpen } = useHamburgerStore();
   const drawerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   // Close on outside click
@@ -19,11 +20,11 @@ const Hamburger: FC = () => {
         drawerRef.current &&
         !drawerRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        setHamburgerOpen(false);
       }
     };
 
-    if (isOpen) {
+    if (isHamburgerOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -32,23 +33,23 @@ const Hamburger: FC = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isHamburgerOpen]);
 
   return (
     <div className="relative">
       {/* Navbar */}
       <nav className="p-2 flex items-center justify-between">
-        <button onClick={() => setIsOpen(true)}>
+        <button onClick={() => setHamburgerOpen(true)}>
           <Menu className="w-6 h-6" />
         </button>
       </nav>
 
       {/* Drawer with AnimatePresence for smooth exit animation */}
       <AnimatePresence>
-        {isOpen && (
+        {isHamburgerOpen && (
           <div
             className="fixed inset-0 bg-black/50 z-50"
-            onClick={() => setIsOpen(false)}
+            onClick={() => setHamburgerOpen(false)}
           >
             <motion.div
               ref={drawerRef}

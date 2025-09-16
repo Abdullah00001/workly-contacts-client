@@ -1,6 +1,7 @@
 import DashboardContent from '@/features/dashboard/components/DashboardContent';
 import DashboardHeader from '@/features/dashboard/components/DashboardHeader';
 import DashboardSidebar from '@/features/dashboard/components/DashboardSidebar';
+import ModalHolders from '@/features/dashboard/components/ModalHolders';
 import TLayout from '@/types/layout.types';
 
 export default function DashboardLayout({ children }: TLayout) {
@@ -11,6 +12,7 @@ export default function DashboardLayout({ children }: TLayout) {
         <DashboardSidebar />
         <DashboardContent>{children}</DashboardContent>
       </div>
+      <ModalHolders />
     </div>
   );
 }

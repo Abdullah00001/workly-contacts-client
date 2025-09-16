@@ -10,8 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useLogoutModalStore } from '@/stores/logout-modal-store';
+import { useFeedbackModalStore } from '@/stores/feedback-modal-store';
 
 export default function NavUser() {
+  const { toggleLogoutModal } = useLogoutModalStore();
+  const { toggleFeedbackModal } = useFeedbackModalStore();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="cursor-pointer focus:outline-none focus:ring-0 focus-visible:ring-0">
@@ -39,10 +43,16 @@ export default function NavUser() {
         <DropdownMenuItem className="cursor-pointer hover:!bg-gray-100 hover:!text-primary">
           <User className="mr-1" /> Accounts Center
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:!bg-gray-100 hover:!text-primary">
+        <DropdownMenuItem
+          onClick={() => toggleFeedbackModal()}
+          className="cursor-pointer hover:!bg-gray-100 hover:!text-primary"
+        >
           <Send className="mr-1" /> Feedback
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer hover:!bg-gray-100 hover:!text-primary">
+        <DropdownMenuItem
+          onClick={() => toggleLogoutModal()}
+          className="cursor-pointer hover:!bg-gray-100 hover:!text-primary"
+        >
           <LogOut className="mr-1" /> Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>

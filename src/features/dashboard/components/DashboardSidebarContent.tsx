@@ -3,6 +3,9 @@ import CreateContactButton from '@/features/dashboard/components/CreateContactBu
 import DashboardSidebarNavigation from '@/features/dashboard/components/DashboardSidebarNavigation';
 import DashboardSidebarLabel from './DashboardSidebarLabel';
 
+/**
+ * This Component Is For Dashboard Sidebar Content Layout.That How Will The Contents Will Be View In Ui.
+ **/
 const DashboardSidebarContent: FC = () => {
   return (
     <div className="h-full w-full px-4 flex flex-col">

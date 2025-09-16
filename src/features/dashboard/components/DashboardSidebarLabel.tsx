@@ -1,5 +1,6 @@
 'use client';
 import Icon from '@/components/common/Icon';
+import { useLabelModalStore } from '@/stores/label-modal-store';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -7,6 +8,7 @@ import type { FC } from 'react';
 
 const DashboardSidebarLabel: FC = () => {
   const pathname = usePathname();
+  const { toggleCreateLabelModal } = useLabelModalStore();
   const labels = [
     {
       objectId: '650f6a9d8c7a5b1234567890',
@@ -92,9 +94,12 @@ const DashboardSidebarLabel: FC = () => {
         <div className="text-[#444746] font-bold text-sm font-google-sans-text">
           Label
         </div>
-        <div className="flex justify-center items-center w-[48px] h-[48px] hover:rounded-full hover:bg-[#E8EEF0] hover:cursor-pointer">
+        <button
+          onClick={() => toggleCreateLabelModal()}
+          className="flex justify-center items-center w-[48px] h-[48px] hover:rounded-full hover:bg-[#E8EEF0] hover:cursor-pointer"
+        >
           <Plus size={24} className="text-[#444746]" />
-        </div>
+        </button>
       </div>
       <div className="flex flex-col w-full">
         {labels.map(({ name, objectId }) => {
