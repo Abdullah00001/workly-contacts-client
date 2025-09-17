@@ -1,21 +1,26 @@
 import { create } from 'zustand';
 
-export type TLabelModalStore = {
-  isCreateLabelModalOpen: boolean;
-  toggleCreateLabelModal: () => void;
-  setCreateLabelModalOpen: (open: boolean) => void;
-  isRenameLabelModalOpen: boolean;
-  toggleRenameLabelModal: () => void;
-  setRenameLabelModalOpen: (open: boolean) => void;
+export type TImportExportModalStore = {
+  isImportModalOpen: boolean;
+  toggleImportModal: () => void;
+  setImportModalOpen: (open: boolean) => void;
+  isExportModalOpen: boolean;
+  toggleExportModal: () => void;
+  setExportModalOpen: (open: boolean) => void;
 };
 
-export const useLabelModalStore = create<TLabelModalStore>((set) => ({
-  isCreateLabelModalOpen: false,
-  setCreateLabelModalOpen: (open) => set({ isCreateLabelModalOpen: open }),
-  toggleCreateLabelModal: () =>
-    set((state) => ({ isCreateLabelModalOpen: !state.isCreateLabelModalOpen })),
-  isRenameLabelModalOpen: false,
-  setRenameLabelModalOpen: (open) => set({ isRenameLabelModalOpen: open }),
-  toggleRenameLabelModal: () =>
-    set((state) => ({ isRenameLabelModalOpen: !state.isRenameLabelModalOpen })),
-}));
+/**
+ * This Hooks For Provide Import Export Feature Related Global States
+ **/
+export const useImportExportModalStore = create<TImportExportModalStore>(
+  (set) => ({
+    isImportModalOpen: false,
+    setImportModalOpen: (open) => set({ isImportModalOpen: open }),
+    toggleImportModal: () =>
+      set((state) => ({ isImportModalOpen: !state.isImportModalOpen })),
+    isExportModalOpen: false,
+    setExportModalOpen: (open) => set({ isExportModalOpen: open }),
+    toggleExportModal: () =>
+      set((state) => ({ isExportModalOpen: !state.isExportModalOpen })),
+  })
+);

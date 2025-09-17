@@ -8,11 +8,13 @@ import { usePathname } from 'next/navigation';
 import Icon from '@/components/common/Icon';
 import DashboardSidebarLabel from './DashboardSidebarLabel';
 import { useHamburgerStore } from '@/stores/hamburger-store';
+import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 
 const Hamburger: FC = () => {
   const { isHamburgerOpen, setHamburgerOpen } = useHamburgerStore();
   const drawerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const { toggleImportModal } = useImportExportModalStore();
   // Close on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -104,8 +106,15 @@ const Hamburger: FC = () => {
                           </Link>
                         </li>
                       ) : (
-                        <li key={item.path}>
+                        <li key={item.pathName}>
                           <button
+                            onClick={() => {
+                              (item.pathName === 'Import' &&
+                                toggleImportModal()) ||
+                                (() => {
+                                  return;
+                                });
+                            }}
                             className={`flex items-center gap-2 px-4 py-3 rounded-full font-bold font-google-sans-text ${
                               isActive
                                 ? 'bg-[#c2e7ff] rounded-[8px] text-[#001D35]'

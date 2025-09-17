@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FC } from 'react';
 import Icon from '@/components/common/Icon';
+import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 
 const DashboardSidebarNavigation: FC = () => {
   const pathname = usePathname();
+  const { toggleImportModal } = useImportExportModalStore();
   return (
     <div className="flex flex-col mt-5">
       {navItems.map((item) => {
@@ -35,7 +37,13 @@ const DashboardSidebarNavigation: FC = () => {
           </Link>
         ) : (
           <button
-            key={item.path}
+            key={item.pathName}
+            onClick={() => {
+              (item.pathName === 'Import' && toggleImportModal()) ||
+                (() => {
+                  return;
+                });
+            }}
             className={`flex items-center font-bold justify-between px-4 py-3 rounded-full text-sm cursor-pointer text-gray-700 hover:bg-gray-100`}
           >
             <div className="flex items-center gap-4">

@@ -295,9 +295,9 @@ export default function NotFound() {
           ref={descriptionRef}
           className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed"
         >
-          The page you're looking for seems to have vanished into the digital
-          void. Don't worry, even the best explorers sometimes take a wrong
-          turn.
+          The page you{`'`}re looking for seems to have vanished into the
+          digital void. Don{`'`}t worry, even the best explorers sometimes take a
+          wrong turn.
         </p>
 
         {/* Action buttons */}
@@ -317,9 +317,11 @@ export default function NotFound() {
             variant="outline"
             size="lg"
             className="group bg-transparent cursor-pointer enhanced-back-button"
-            
           >
-            <div onClick={() => router.back()} className="flex items-center gap-2">
+            <div
+              onClick={() => router.back()}
+              className="flex items-center gap-2"
+            >
               <ArrowLeft className="w-4 h-4 mr-2 transition-all duration-300 group-hover:-translate-x-2 group-hover:scale-110" />
               <span className="transition-all duration-300 group-hover:tracking-wide">
                 Go Back
