@@ -1,5 +1,5 @@
 import Breadcrumb from '@/components/common/Breadcrumb';
-import {  Phone, Shield, Users } from 'lucide-react';
+import { Phone, Shield, Users } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -41,7 +41,7 @@ export default function privacy() {
   return (
     <main>
       {/* Breadcrumb */}
-      <Breadcrumb/>
+      <Breadcrumb />
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 pb-12">
         <div className="bg-white rounded-xl shadow-lg p-8 text-gray-800">

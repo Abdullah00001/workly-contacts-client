@@ -1,6 +1,7 @@
 'use client';
 import type { FC } from 'react';
 import Icon from '@/components/common/Icon';
+import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 
 type TContacts = {
   objectId: string;
@@ -15,6 +16,7 @@ type TContactTableProps = {
 };
 
 const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
+  const { toggleExportModal } = useImportExportModalStore();
   return (
     <div className="flex flex-col gap-2">
       <div className="sticky top-0 py-2 bg-white pb-2 flex items-center justify-start gap-2 w-full border-b border-b-[#c4c7c5]">
@@ -34,7 +36,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
           Address
         </div>
         <div className="flex-1 flex items-center justify-end">
-          <div className="w-[45px] h-[45px] flex items-center justify-center hover:bg-[#f5f5f5] cursor-pointer rounded-full">
+          <button className="w-[45px] h-[45px] flex items-center justify-center hover:bg-[#f5f5f5] cursor-pointer rounded-full">
             <Icon
               name="print"
               variant="filled"
@@ -42,8 +44,11 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
               size={20}
               type="icons"
             />
-          </div>
-          <div className="w-[45px] h-[45px] flex items-center justify-center hover:bg-[#f5f5f5] cursor-pointer rounded-full">
+          </button>
+          <button
+            onClick={() => toggleExportModal()}
+            className="w-[45px] h-[45px] flex items-center justify-center hover:bg-[#f5f5f5] cursor-pointer rounded-full"
+          >
             <Icon
               name="file_upload"
               variant="outlined"
@@ -51,7 +56,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
               size={20}
               type="icons"
             />
-          </div>
+          </button>
         </div>
       </div>
       <div className="w-full pb-2">

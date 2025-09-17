@@ -15,7 +15,12 @@ const ImportModal: FC = () => {
       setSelectedFile(file);
     }
   };
-
+  const removeFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
   const openFileDialog = () => {
     fileInputRef.current?.click();
   };
@@ -56,7 +61,10 @@ const ImportModal: FC = () => {
                     className="text-[#146c2e]"
                   />
                   <span>{selectedFile.name}</span>
-                  <button className="flex justify-center items-center w-[25px] h-[25px] rounded-full hover:cursor-pointer hover:bg-[#44474614] ">
+                  <button
+                    onClick={removeFile}
+                    className="flex justify-center items-center w-[25px] h-[25px] rounded-full hover:cursor-pointer hover:bg-[#44474614] "
+                  >
                     <Icon
                       name="close"
                       size={20}

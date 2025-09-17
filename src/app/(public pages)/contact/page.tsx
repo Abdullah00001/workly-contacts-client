@@ -40,7 +40,7 @@ export default function page() {
   return (
     <main>
       {/* Breadcrumb */}
-      <Breadcrumb/>
+      <Breadcrumb />
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 pb-12">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-12">

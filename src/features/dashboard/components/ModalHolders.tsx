@@ -8,6 +8,7 @@ import { useLabelModalStore } from '@/stores/label-modal-store';
 import LabelModal from '@/features/dashboard/components/LabelModal';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 import ImportModal from '@/features/dashboard/components/ImportModal';
+import ExportModal from '@/features/dashboard/components/ExportModal';
 
 const ModalHolders: FC = () => {
   const { isLogoutModalOpen } = useLogoutModalStore();
@@ -22,6 +23,7 @@ const ModalHolders: FC = () => {
       {(isCreateLabelModalOpen && <LabelModal />) ||
         (isRenameLabelModalOpen && <LabelModal />)}
       {isImportModalOpen && <ImportModal />}
+      {isExportModalOpen && <ExportModal />}
     </>
   );
 };

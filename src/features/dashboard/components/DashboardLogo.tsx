@@ -6,7 +6,7 @@ const DashboardLogo: FC = () => {
   return (
     <div>
       {/* mobile */}
-      
+
       {/* tablet */}
       <Link href={'/dashboard'} className="hidden md:block lg:hidden">
         <div className="flex items-center space-x-3 cursor-pointer ">

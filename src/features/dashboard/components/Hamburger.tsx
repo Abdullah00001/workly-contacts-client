@@ -106,15 +106,17 @@ const Hamburger: FC = () => {
                           </Link>
                         </li>
                       ) : (
-                        <li key={item.pathName}>
+                        <li
+                          onClick={() => {
+                            (item.pathName === 'Import' &&
+                              toggleImportModal()) ||
+                              (() => {
+                                return;
+                              });
+                          }}
+                          key={item.pathName}
+                        >
                           <button
-                            onClick={() => {
-                              (item.pathName === 'Import' &&
-                                toggleImportModal()) ||
-                                (() => {
-                                  return;
-                                });
-                            }}
                             className={`flex items-center gap-2 px-4 py-3 rounded-full font-bold font-google-sans-text ${
                               isActive
                                 ? 'bg-[#c2e7ff] rounded-[8px] text-[#001D35]'

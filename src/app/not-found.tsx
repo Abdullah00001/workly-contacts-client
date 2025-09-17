@@ -296,8 +296,8 @@ export default function NotFound() {
           className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed"
         >
           The page you{`'`}re looking for seems to have vanished into the
-          digital void. Don{`'`}t worry, even the best explorers sometimes take a
-          wrong turn.
+          digital void. Don{`'`}t worry, even the best explorers sometimes take
+          a wrong turn.
         </p>
 
         {/* Action buttons */}
