@@ -1,9 +1,10 @@
 'use client';
-import type { FC } from 'react';
+import { type FC } from 'react';
 import Icon from '@/components/common/Icon';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
+import ContactTableRow from '@/components/common/ContactTableRow';
 
-type TContacts = {
+export type TContacts = {
   objectId: string;
   name: string;
   email: string | null;
@@ -68,72 +69,9 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
             Contacts
           </h1>
         </div>
-        <div className="flex flex-col gap-2 w-full mt-2">
-          {contacts.map(({ avatar, email, name, objectId, phone }) => (
-            <div
-              key={objectId}
-              className="flex rounded-sm px-2 gap-2 items-center justify-start hover:bg-[#f5f5f5] cursor-pointer"
-            >
-              <div className="flex-1 flex gap-5 items-center justify-start">
-                <div className="w-9 h-9 flex items-center justify-center">
-                  {avatar ? (
-                    <img
-                      src={avatar}
-                      alt="Avatar"
-                      className="w-9 h-9 cursor-pointer rounded-full"
-                    />
-                  ) : (
-                    <img
-                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
-                      alt="Avatar"
-                      className="w-9 h-9 cursor-pointer rounded-full"
-                    />
-                  )}
-                </div>
-                <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal">
-                  {name}
-                </div>
-              </div>
-              <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden sm:block">
-                {email}
-              </div>
-              <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden phone-field-md phone-field-lg">
-                {phone}
-              </div>
-              <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden job-field-lg"></div>
-              <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg"></div>
-              <div className="flex-1 w-[170px] hidden sm:block">
-                <div className="flex item-center justify-end">
-                  <div className="w-[45px] h-[45px] flex items-center justify-center hover:!bg-[#f5f5f5] cursor-pointer rounded-full">
-                    <Icon
-                      name="star_outline"
-                      variant="outlined"
-                      className=" text-[#444746]"
-                      type="icons"
-                      size={20}
-                    />
-                  </div>
-                  <div className="w-[45px] h-[45px] flex items-center justify-center">
-                    <Icon
-                      name="edit"
-                      variant="outlined"
-                      className=" text-[#444746]"
-                      type="icons"
-                      size={20}
-                    />
-                  </div>
-                  <div className="w-[45px] h-[45px] flex items-center justify-center">
-                    <Icon
-                      name="more_vert"
-                      variant="outlined"
-                      className=" text-[#444746]"
-                      type="icons"
-                      size={20}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="flex flex-col w-full gap-1 mt-2">
+          {contacts.map((contact) => (
+            <ContactTableRow key={contact.objectId} contact={contact} />
           ))}
         </div>
       </div>
