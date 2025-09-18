@@ -30,9 +30,15 @@ const ExportModal: FC = () => {
                 key={format}
                 className=" cursor-pointer flex items-center justify-start gap-2"
               >
-                <div className="w-[40px] flex items-center justify-center h-[40px] rounded-full hover:bg-[#1f1f1f14]">
+                <div
+                  className={`w-[40px] flex items-center justify-center h-[40px] rounded-full  ${
+                    selectedFormat === format
+                      ? 'hover:bg-blue-100'
+                      : 'hover:bg-[#1f1f1f14]'
+                  }`}
+                >
                   <input
-                    className="w-5 h-5"
+                    className="w-5 h-5 cursor-pointer"
                     type="radio"
                     name="exportFormat"
                     id={format}

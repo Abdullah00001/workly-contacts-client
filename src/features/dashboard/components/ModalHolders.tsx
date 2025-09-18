@@ -9,13 +9,15 @@ import LabelModal from '@/features/dashboard/components/LabelModal';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 import ImportModal from '@/features/dashboard/components/ImportModal';
 import ExportModal from '@/features/dashboard/components/ExportModal';
+import PrintModal from '@/features/dashboard/components/PrintModal';
 
 const ModalHolders: FC = () => {
   const { isLogoutModalOpen } = useLogoutModalStore();
   const { isFeedbackModalOpen } = useFeedbackModalStore();
   const { isCreateLabelModalOpen, isRenameLabelModalOpen } =
     useLabelModalStore();
-  const { isExportModalOpen, isImportModalOpen } = useImportExportModalStore();
+  const { isExportModalOpen, isImportModalOpen, isPrintModalOpen } =
+    useImportExportModalStore();
   return (
     <>
       {isLogoutModalOpen && <LogoutModal />}
@@ -24,6 +26,7 @@ const ModalHolders: FC = () => {
         (isRenameLabelModalOpen && <LabelModal />)}
       {isImportModalOpen && <ImportModal />}
       {isExportModalOpen && <ExportModal />}
+      {isPrintModalOpen && <PrintModal />}
     </>
   );
 };

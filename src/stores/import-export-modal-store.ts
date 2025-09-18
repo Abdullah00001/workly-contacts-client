@@ -7,6 +7,9 @@ export type TImportExportModalStore = {
   isExportModalOpen: boolean;
   toggleExportModal: () => void;
   setExportModalOpen: (open: boolean) => void;
+  isPrintModalOpen: boolean;
+  togglePrintModal: () => void;
+  setPrintModalOpen: (open: boolean) => void;
 };
 
 /**
@@ -22,5 +25,9 @@ export const useImportExportModalStore = create<TImportExportModalStore>(
     setExportModalOpen: (open) => set({ isExportModalOpen: open }),
     toggleExportModal: () =>
       set((state) => ({ isExportModalOpen: !state.isExportModalOpen })),
+    isPrintModalOpen: false,
+    setPrintModalOpen: (open) => set({ isPrintModalOpen: open }),
+    togglePrintModal: () =>
+      set((state) => ({ isPrintModalOpen: !state.isPrintModalOpen })),
   })
 );
