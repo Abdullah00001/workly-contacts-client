@@ -1,9 +1,13 @@
 'use client';
-import { useEffect, useRef, useState, type FC } from 'react';
+import { useState, type FC } from 'react';
 import { TContacts } from '@/components/common/ContactTable';
 import Icon from '@/components/common/Icon';
 import { useRouter } from 'next/navigation';
 import MoreActionModal from '@/components/common/MoreActionModal';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 type TContactTableRow = {
   contact: TContacts;
@@ -14,26 +18,7 @@ const ContactTableRow: FC<TContactTableRow> = ({ contact }) => {
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isMoreActionOpen, setIsMoreActionOpen] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsMoreActionOpen(false);
-      }
-    };
-
-    if (isMoreActionOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isMoreActionOpen]);
 
   const handleMoreActionsClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -93,7 +78,7 @@ const ContactTableRow: FC<TContactTableRow> = ({ contact }) => {
       <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg"></div>
       <div className="flex-1 w-[170px] hidden sm:block">
         <div
-          className={`flex item-center justify-end lg:invisible lg:group-hover:visible`}
+          className={`flex item-center justify-end  ${isMoreActionOpen ? 'visible' : 'lg:invisible lg:group-hover:visible'}`}
         >
           <button
             onMouseEnter={() => setIsChildHover(true)}
@@ -139,12 +124,13 @@ const ContactTableRow: FC<TContactTableRow> = ({ contact }) => {
               size={20}
             />
           </button>
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onMouseEnter={() => setIsChildHover(true)}
-              onMouseLeave={() => setIsChildHover(false)}
+          <DropdownMenu
+            open={isMoreActionOpen}
+            onOpenChange={setIsMoreActionOpen}
+          >
+            <DropdownMenuTrigger
               onClick={handleMoreActionsClick}
-              className="w-[40px] h-[40px] flex items-center justify-center hover:!bg-gray-200 cursor-pointer rounded-full"
+              className={`w-[40px] h-[40px] flex items-center justify-center hover:!bg-gray-200 cursor-pointer rounded-full`}
             >
               <Icon
                 name={'more_vert'}
@@ -153,9 +139,9 @@ const ContactTableRow: FC<TContactTableRow> = ({ contact }) => {
                 type="icons"
                 size={20}
               />
-            </button>
-            {isMoreActionOpen && <MoreActionModal />}
-          </div>
+            </DropdownMenuTrigger>
+            <MoreActionModal />
+          </DropdownMenu>
         </div>
       </div>
     </div>
