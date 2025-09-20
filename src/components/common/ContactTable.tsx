@@ -1,5 +1,5 @@
 'use client';
-import { type FC } from 'react';
+import { useState, type FC } from 'react';
 import Icon from '@/components/common/Icon';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 import ContactTableRow from '@/components/common/ContactTableRow';
@@ -18,6 +18,7 @@ type TContactTableProps = {
 
 const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
   const { toggleExportModal, togglePrintModal } = useImportExportModalStore();
+  const [selectedContacts, setSelectContact] = useState<string[]>([]);
   return (
     <div className="flex flex-col gap-2">
       <div className="sticky top-0 py-2 bg-white pb-2 flex items-center justify-start gap-2 w-full border-b border-b-[#c4c7c5]">
@@ -71,7 +72,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
         </div>
         <div className="flex flex-col w-full gap-1 mt-2">
           {contacts.map((contact) => (
-            <ContactTableRow key={contact.objectId} contact={contact} />
+            <ContactTableRow key={contact.objectId} selectedContacts={selectedContacts} setSelectContact={setSelectContact} contact={contact} />
           ))}
         </div>
       </div>

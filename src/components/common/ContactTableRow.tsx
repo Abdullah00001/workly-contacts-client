@@ -1,5 +1,12 @@
 'use client';
-import { useState, type FC } from 'react';
+import {
+  ChangeEvent,
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useState,
+  type FC,
+} from 'react';
 import { TContacts } from '@/components/common/ContactTable';
 import Icon from '@/components/common/Icon';
 import { useRouter } from 'next/navigation';
@@ -11,57 +18,94 @@ import {
 
 type TContactTableRow = {
   contact: TContacts;
+  selectedContacts: string[];
+  setSelectContact: Dispatch<SetStateAction<string[]>>;
 };
 
-const ContactTableRow: FC<TContactTableRow> = ({ contact }) => {
+const ContactTableRow: FC<TContactTableRow> = ({
+  contact,
+  selectedContacts,
+  setSelectContact,
+}) => {
   const { avatar, email, name, objectId, phone } = contact;
+  const isSelected = selectedContacts.includes(objectId);
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
+  const [isRowHover, setIsRowHover] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isMoreActionOpen, setIsMoreActionOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleMoreActionsClick = (e: React.MouseEvent) => {
+  const handleSelect = (e: ChangeEvent<HTMLInputElement> | MouseEvent) => {
+    e.stopPropagation();
+    setSelectContact((prev) =>
+      isSelected
+        ? prev.filter((contactId) => contactId !== objectId)
+        : [...prev, objectId]
+    );
+  };
+  const handleMoreActionsClick = (e: MouseEvent) => {
     e.stopPropagation();
     setIsMoreActionOpen(!isMoreActionOpen);
   };
+
+  const onRowMouseEnter = () => {
+    setIsRowHover(true);
+  };
+
+  const onRowMouseLeave = () => {
+    setIsRowHover(false);
+  };
+
+  const onChildMouseEnter = () => {
+    setIsChildHover(true);
+  };
+
+  const onChildMouseLeave = () => {
+    setIsChildHover(false);
+  };
+
   return (
     <div
+      onMouseEnter={onRowMouseEnter}
+      onMouseLeave={onRowMouseLeave}
       onClick={() => router.push(`/person/${objectId}`)}
-      className={`group flex rounded-sm px-2 py-[5px] gap-2 items-center justify-start ${isChildHover ? '' : 'hover:bg-[#0b57d014]'} cursor-pointer`}
+      className={`flex rounded-sm px-2 py-[5px] gap-2 items-center justify-start ${
+        isSelected && 'bg-[#0b57d014] hover:bg-[#0b57d009]'
+      } ${isChildHover ? '' : 'hover:bg-[#0b57d014]'} cursor-pointer`}
     >
       <div className="flex-1 flex gap-5 items-center justify-start">
         <div className="w-10 h-10">
           <div
-            onMouseEnter={() => setIsChildHover(true)}
-            onMouseLeave={() => setIsChildHover(false)}
+            onMouseEnter={onChildMouseEnter}
+            onMouseLeave={onChildMouseLeave}
             onClick={(e) => e.stopPropagation()}
-            className="w-full h-full hidden group-hover:flex items-center justify-center hover:rounded-full hover:bg-gray-200"
+            className={`w-full h-full ${
+              isRowHover || isSelected ? 'flex' : 'hidden'
+            } items-center justify-center hover:rounded-full hover:bg-gray-200`}
           >
             <input
-              onClick={(e) => e.stopPropagation()}
+              onChange={handleSelect}
+              checked={isSelected}
               type="checkbox"
               className="cursor-pointer w-4.5 h-4.5"
             />
           </div>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="group-hover:hidden flex items-center justify-center"
+            className={`${
+              isRowHover || isSelected ? 'hidden' : 'flex'
+            } items-center justify-center`}
           >
-            {avatar ? (
-              <img
-                onClick={(e) => e.stopPropagation()}
-                src={avatar}
-                alt="Avatar"
-                className="w-9 h-9 cursor-pointer rounded-full"
-              />
-            ) : (
-              <img
-                onClick={(e) => e.stopPropagation()}
-                src={`https://api.dicebear.com/7.x/initials/svg?seed=${name}`}
-                alt="Avatar"
-                className="w-9 h-9 cursor-pointer rounded-full"
-              />
-            )}
+            <img
+              onClick={(e) => e.stopPropagation()}
+              src={
+                avatar
+                  ? avatar
+                  : `https://api.dicebear.com/7.x/initials/svg?seed=${name}`
+              }
+              alt="Avatar"
+              className="w-9 h-9 cursor-pointer rounded-full"
+            />
           </div>
         </div>
         <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal">
@@ -78,11 +122,17 @@ const ContactTableRow: FC<TContactTableRow> = ({ contact }) => {
       <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg"></div>
       <div className="flex-1 w-[170px] hidden sm:block">
         <div
-          className={`flex item-center justify-end  ${isMoreActionOpen ? 'visible' : 'lg:invisible lg:group-hover:visible'}`}
+          className={`flex items-center justify-end ${
+            isMoreActionOpen
+              ? 'visible'
+              : isRowHover
+                ? 'visible'
+                : 'lg:invisible'
+          }`}
         >
           <button
-            onMouseEnter={() => setIsChildHover(true)}
-            onMouseLeave={() => setIsChildHover(false)}
+            onMouseEnter={onChildMouseEnter}
+            onMouseLeave={onChildMouseLeave}
             onClick={(e) => {
               e.stopPropagation();
               setIsFavorite((prev) => !prev);
@@ -108,11 +158,11 @@ const ContactTableRow: FC<TContactTableRow> = ({ contact }) => {
             )}
           </button>
           <button
-            onMouseEnter={() => setIsChildHover(true)}
-            onMouseLeave={() => setIsChildHover(false)}
+            onMouseEnter={onChildMouseEnter}
+            onMouseLeave={onChildMouseLeave}
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/person/${objectId}`);
+              router.push(`/person/${objectId}?edit=1`);
             }}
             className="w-[40px] h-[40px] flex items-center justify-center hover:!bg-gray-200 cursor-pointer rounded-full"
           >

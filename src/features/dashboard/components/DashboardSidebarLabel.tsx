@@ -4,11 +4,12 @@ import { useLabelModalStore } from '@/stores/label-modal-store';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { FC } from 'react';
+import { useState, type FC } from 'react';
 
 const DashboardSidebarLabel: FC = () => {
   const pathname = usePathname();
-  const { toggleCreateLabelModal } = useLabelModalStore();
+  const { toggleCreateLabelModal,toggleRenameLabelModal } = useLabelModalStore();
+  const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const labels = [
     {
       objectId: '650f6a9d8c7a5b1234567890',
@@ -105,16 +106,18 @@ const DashboardSidebarLabel: FC = () => {
         {labels.map(({ name, objectId }) => {
           const isActive = pathname === `/label/${objectId}`;
           return (
-            <Link
+            <div
               key={objectId}
-              href={`/label/${objectId}`}
-              className={`flex-1 flex items-center font-bold font-google-sans-text justify-between px-4 lg:px-4  rounded-full text-sm ${
+              className={`flex-1 cursor-pointer group flex items-center font-bold font-google-sans-text justify-between px-4 lg:px-4  rounded-full text-sm ${
                 isActive
-                  ? 'bg-blue-100 text-[#001D35]'
-                  : 'text-[#444746] hover:bg-gray-100'
+                  ? 'bg-[#c2e7ff] text-[#001D35]'
+                  : `text-[#444746] ${isChildHover ? '' : 'hover:bg-gray-100'}`
               }`}
             >
-              <div className="flex items-center gap-2">
+              <Link
+                href={`/label/${objectId}`}
+                className="flex items-center cursor-pointer gap-2"
+              >
                 <Icon
                   name="label"
                   className="text-[#444746]"
@@ -123,9 +126,18 @@ const DashboardSidebarLabel: FC = () => {
                   variant="filled"
                 />
                 <span className="overflow-hidden w-full">{name}</span>
-              </div>
+              </Link>
               <div className="flex items-center justify-end">
-                <div className="w-[44px] h-[44px] flex items-center justify-center hover:!rounded-full">
+                <button
+                  onMouseEnter={() => setIsChildHover(true)}
+                  onMouseLeave={() => setIsChildHover(false)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleRenameLabelModal();
+                  }}
+                  className="w-[44px] h-[44px] cursor-pointer hover:!bg-gray-200 flex items-center justify-center hover:!rounded-full"
+                >
                   <Icon
                     name="edit"
                     variant="outlined"
@@ -133,8 +145,16 @@ const DashboardSidebarLabel: FC = () => {
                     type="icons"
                     size={24}
                   />
-                </div>
-                <div className="w-[44px] h-[44px] flex items-center justify-center hover:rounded-full">
+                </button>
+                <button
+                  onMouseEnter={() => setIsChildHover(true)}
+                  onMouseLeave={() => setIsChildHover(false)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className="w-[44px] h-[44px] cursor-pointer flex items-center justify-center hover:!bg-gray-200 hover:rounded-full"
+                >
                   <Icon
                     name="delete"
                     variant="outlined"
@@ -142,9 +162,9 @@ const DashboardSidebarLabel: FC = () => {
                     type="symbols"
                     size={24}
                   />
-                </div>
+                </button>
               </div>
-            </Link>
+            </div>
           );
         })}
       </div>
