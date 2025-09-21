@@ -75,38 +75,50 @@ const ContactTableRow: FC<TContactTableRow> = ({
     >
       <div className="flex-1 flex gap-5 items-center justify-start">
         <div className="w-10 h-10">
-          <div
-            onMouseEnter={onChildMouseEnter}
-            onMouseLeave={onChildMouseLeave}
-            onClick={(e) => e.stopPropagation()}
-            className={`w-full h-full ${
-              isRowHover || isSelected ? 'flex' : 'hidden'
-            } items-center justify-center hover:rounded-full  ${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'}`}
-          >
-            <input
-              onChange={handleSelect}
-              checked={isSelected}
-              type="checkbox"
-              className="cursor-pointer w-4.5 h-4.5"
-            />
-          </div>
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className={`${
-              isRowHover || isSelected ? 'hidden' : 'flex'
-            } items-center justify-center`}
-          >
-            <img
+          {isSelected ? (
+            <div
+              onMouseEnter={onChildMouseEnter}
+              onMouseLeave={onChildMouseLeave}
               onClick={(e) => e.stopPropagation()}
-              src={
-                avatar
-                  ? avatar
-                  : `https://api.dicebear.com/7.x/initials/svg?seed=${name}`
-              }
-              alt="Avatar"
-              className="w-9 h-9 cursor-pointer rounded-full"
-            />
-          </div>
+              className={`w-full h-full flex items-center justify-center rounded-full hover:bg-[#0b57d030]`}
+            >
+              <input
+                onChange={handleSelect}
+                checked={isSelected}
+                type="checkbox"
+                className="cursor-pointer w-4.5 h-4.5"
+              />
+            </div>
+          ) : isRowHover ? (
+            <div
+              onMouseEnter={onChildMouseEnter}
+              onMouseLeave={onChildMouseLeave}
+              onClick={(e) => e.stopPropagation()}
+              className={`w-full h-full flex items-center justify-center rounded-full hover:bg-gray-200`}
+            >
+              <input
+                onChange={handleSelect}
+                checked={isSelected}
+                type="checkbox"
+                className="cursor-pointer w-4.5 h-4.5"
+              />
+            </div>
+          ) : (
+            <div
+              onClick={handleSelect}
+              className={`flex items-center justify-center`}
+            >
+              <img
+                src={
+                  avatar
+                    ? avatar
+                    : `https://api.dicebear.com/7.x/initials/svg?seed=${name}`
+                }
+                alt="Avatar"
+                className="w-9 h-9 cursor-pointer rounded-full"
+              />
+            </div>
+          )}
         </div>
         <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal">
           {name}
