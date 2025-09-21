@@ -70,7 +70,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
       onMouseLeave={onRowMouseLeave}
       onClick={() => router.push(`/person/${objectId}`)}
       className={`flex rounded-sm px-2 py-[5px] gap-2 items-center justify-start ${
-        isSelected && 'bg-[#0b57d014] hover:bg-[#0b57d009]'
+        isSelected && 'bg-[#d3e3fd] hover:bg-[#0b57d035]'
       } ${isChildHover ? '' : 'hover:bg-[#0b57d014]'} cursor-pointer`}
     >
       <div className="flex-1 flex gap-5 items-center justify-start">
@@ -81,7 +81,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
             onClick={(e) => e.stopPropagation()}
             className={`w-full h-full ${
               isRowHover || isSelected ? 'flex' : 'hidden'
-            } items-center justify-center hover:rounded-full hover:bg-gray-200`}
+            } items-center justify-center hover:rounded-full  ${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'}`}
           >
             <input
               onChange={handleSelect}
@@ -137,7 +137,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
               e.stopPropagation();
               setIsFavorite((prev) => !prev);
             }}
-            className="w-[40px] h-[40px] flex items-center justify-center hover:!bg-gray-200 cursor-pointer rounded-full"
+            className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
           >
             {isFavorite ? (
               <Icon
@@ -164,7 +164,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
               e.stopPropagation();
               router.push(`/person/${objectId}?edit=1`);
             }}
-            className="w-[40px] h-[40px] flex items-center justify-center hover:!bg-gray-200 cursor-pointer rounded-full"
+            className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
           >
             <Icon
               name={'edit'}
@@ -180,7 +180,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
           >
             <DropdownMenuTrigger
               onClick={handleMoreActionsClick}
-              className={`w-[40px] h-[40px] flex items-center justify-center hover:!bg-gray-200 cursor-pointer rounded-full`}
+              className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
             >
               <Icon
                 name={'more_vert'}
