@@ -11,7 +11,7 @@ export const SignupService = async (payload: TSignupPayload) => {
       const status = error?.response?.status;
       if (status === 400) {
         throw new Error('IP has been temporary blocked,Try again later.');
-      } else if (status === 429) {
+      } else if (status === 409) {
         throw new Error('Email Already Registered,Try different one.');
       } else {
         throw new Error('Maybe server running on some shit,Try again later.');
