@@ -1,0 +1,9 @@
+import { SignupSchema } from '@/lib/validation/auth-validation';
+import { z } from 'zod';
+
+export type TSignupPayload = z.infer<typeof SignupSchema>;
+export type TSignupPayloadError = {
+  name?: string;
+  email?: string;
+  password?: string;
+};
