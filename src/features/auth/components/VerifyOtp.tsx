@@ -173,7 +173,7 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
           Verify Your Account
         </h2>
         <p className="text-muted-foreground text-sm sm:text-base">
-          We've sent a 6-digit verification code to{' '}
+          We{`'`}ve sent a 6-digit verification code to{' '}
           <span className="font-medium text-foreground">{email}</span>
         </p>
       </div>
@@ -229,7 +229,7 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
         </Button>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="text-muted-foreground">Didn't receive the code?</div>
+          <div className="text-muted-foreground">Didn{`'`}t receive the code?</div>
           <div className="flex items-center space-x-3">
             {!canResend && (
               <span className="text-xs text-muted-foreground font-mono">
