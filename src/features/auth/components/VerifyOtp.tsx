@@ -2,22 +2,56 @@
 
 import type React from 'react';
 import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Mail, Shield } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import {
+  AccountVerify,
+  CheckResendOtpAvailability,
+  ResendOtp,
+} from '@/features/auth/service/auth-service';
+import { TAccountVerifyPayload } from '../types/auth-types';
 
 interface VerifyOtpProps {
-  email: string;
+  email?: string;
 }
 
-export default function VerifyOtp({ email }: VerifyOtpProps) {
+export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [otpError, setOtpError] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [timer, setTimer] = useState(60);
-  const [canResend, setCanResend] = useState(false);
+  const [otpError, setOtpError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [timer, setTimer] = useState<number>(60);
+  const [canResend, setCanResend] = useState<boolean>(false);
+  const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const { mutate: verifyAccount, isPending: isVerifying } = useMutation({
+    mutationFn: async (payload: TAccountVerifyPayload) =>
+      await AccountVerify(payload),
+    onSuccess: () => {
+      setIsSuccess(true);
+      setOtpError(false);
+      setErrorMessage('');
+      setTimeout(() => {
+        handleSuccess();
+      }, 2000);
+    },
+    onError: (error: Error) => {
+      setOtpError(true);
+      setErrorMessage(error.message);
+      setTimeout(() => {
+        otpRefs.current[0]?.focus();
+      }, 100);
+    },
+  });
+
+  const { mutate: resendOtp } = useMutation({
+    mutationFn: async () => await ResendOtp(),
+    onSuccess: (data) => {
+      const { availableAt } = data;
+    },
+    onError: (error) => {},
+  });
 
   const canProceed = otp.every((digit) => digit !== '') && !isVerifying;
 
@@ -34,7 +68,9 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
   }, [timer]);
 
   const handleOtpChange = (index: number, value: string) => {
-    // Only allow single digit
+    // Only allow digits
+    if (!/^\d*$/.test(value)) return;
+
     if (value.length > 1) {
       value = value.slice(-1);
     }
@@ -42,7 +78,12 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-    setOtpError(false);
+
+    // Clear error state when user starts typing
+    if (otpError) {
+      setOtpError(false);
+      setErrorMessage('');
+    }
 
     // Auto-focus next input
     if (value && index < 5) {
@@ -65,6 +106,12 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
         setOtp(newOtp);
         otpRefs.current[index - 1]?.focus();
       }
+
+      // Clear error state when user starts editing
+      if (otpError) {
+        setOtpError(false);
+        setErrorMessage('');
+      }
     }
   };
 
@@ -74,13 +121,21 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
       .getData('text')
       .replace(/\D/g, '')
       .slice(0, 6);
-    const newOtp = [...otp];
 
+    if (pastedData.length === 0) return;
+
+    const newOtp = [...otp];
     for (let i = 0; i < 6; i++) {
       newOtp[i] = pastedData[i] || '';
     }
 
     setOtp(newOtp);
+
+    // Clear error state when pasting
+    if (otpError) {
+      setOtpError(false);
+      setErrorMessage('');
+    }
 
     // Focus the next empty field or the last field
     const nextEmptyIndex = newOtp.findIndex((digit) => digit === '');
@@ -92,32 +147,29 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
     const otpValue = otp.join('');
     if (otpValue.length !== 6) return;
 
-    setIsVerifying(true);
+    const payload: TAccountVerifyPayload = {
+      otp: otpValue,
+    };
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Simulate OTP verification (for demo, accept any 6-digit code)
-    if (otpValue.length === 6) {
-      setIsSuccess(true);
-      setTimeout(() => {
-        handleSuccess();
-      }, 2000);
-    } else {
-      setOtpError(true);
-      setOtp(['', '', '', '', '', '']);
-      otpRefs.current[0]?.focus();
-    }
-
-    setIsVerifying(false);
+    verifyAccount(payload);
   };
 
   const handleResendCode = () => {
+    // Reset all states
     setTimer(60);
     setCanResend(false);
     setOtp(['', '', '', '', '', '']);
     setOtpError(false);
-    otpRefs.current[0]?.focus();
+    setErrorMessage('');
+
+    // Focus first input
+    setTimeout(() => {
+      otpRefs.current[0]?.focus();
+    }, 100);
+
+    // Here you would typically call a resend OTP API
+    // For now, just reset the timer
+    console.log('Resending OTP to:', email);
   };
 
   const formatTime = (seconds: number) => {
@@ -127,126 +179,177 @@ export default function VerifyOtp({ email }: VerifyOtpProps) {
   };
 
   const handleSuccess = () => {
-    // Redirect to dashboard or login
+    // Redirect to dashboard
     window.location.href = '/dashboard';
   };
 
+  useEffect(() => {
+    (async () => {
+      const { availableAt } = await CheckResendOtpAvailability();
+    })();
+  }, []);
+
   if (isSuccess) {
     return (
-      <div className="space-y-6 text-center">
-        <div className="flex justify-center">
-          <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center animate-bounce">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+      <div className="w-full max-w-sm mx-auto px-4 py-6 sm:px-6 sm:py-8">
+        <div className="text-center space-y-6 sm:space-y-8">
+          {/* Success Animation */}
+          <div className="relative flex justify-center">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full flex items-center justify-center shadow-2xl animate-bounce">
+              <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
             </div>
-            <div className="absolute inset-0 w-20 h-20 rounded-full bg-green-200 animate-ping opacity-75"></div>
+            <div className="absolute inset-0 w-20 h-20 sm:w-24 sm:h-24 bg-emerald-200 rounded-full animate-ping opacity-30"></div>
+            <div className="absolute inset-2 w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 rounded-full animate-pulse"></div>
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl text-foreground font-semibold">
-            Account Verified!
-          </h2>
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Your account has been successfully verified. Welcome to Workly
-            Contacts!
-          </p>
-        </div>
+          <div className="space-y-3 sm:space-y-4 px-2">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent leading-tight">
+              Account Verified!
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+              Your account has been successfully verified. Welcome to{' '}
+              <span className="font-semibold text-indigo-600">
+                Workly Contacts!
+              </span>
+            </p>
+          </div>
 
-        <div className="animate-fade-in-up">
-          <Button
-            className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer"
-            style={{ backgroundColor: '#3F3FF3' }}
+          <button
             onClick={handleSuccess}
+            className="w-full py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold text-sm sm:text-base rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
           >
             Continue to Dashboard
-          </Button>
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2 text-center">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl text-foreground font-semibold">
-          Verify Your Account
-        </h2>
-        <p className="text-muted-foreground text-sm sm:text-base">
-          We{`'`}ve sent a 6-digit verification code to{' '}
-          <span className="font-medium text-foreground">{email}</span>
-        </p>
-      </div>
+    <div className="w-full max-w-sm mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:max-w-md">
+      <div className="text-center space-y-6 sm:space-y-8">
+        {/* Header with Icon */}
+        <div className="space-y-4 sm:space-y-6">
+          <div className="flex justify-center">
+            <div className="p-3 sm:p-4 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl sm:rounded-2xl">
+              <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-600" />
+            </div>
+          </div>
 
-      <div className="space-y-4">
-        <div className="flex justify-center gap-2 sm:gap-3">
-          {otp.map((digit, index) => (
-            <Input
-              key={index}
-              ref={(el) => {
-                otpRefs.current[index] = el;
-              }}
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleOtpChange(index, e.target.value)}
-              onKeyDown={(e) => handleOtpKeyDown(index, e)}
-              onPaste={handleOtpPaste}
-              className={`w-10 h-12 sm:w-12 sm:h-12 text-center text-lg font-semibold border-2 rounded-lg transition-all duration-200 ${
-                otpError
-                  ? 'border-red-500 bg-red-50'
-                  : 'border-gray-200 focus:border-[#3F3FF3] focus:ring-2 focus:ring-[#3F3FF3]/20'
-              }`}
-              aria-label={`Digit ${index + 1}`}
-            />
-          ))}
+          <div className="space-y-2 sm:space-y-3 px-2">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+              Verify Your Account
+            </h2>
+            <div className="flex items-center justify-center space-x-2 text-gray-600">
+              <Mail className="w-4 h-4 flex-shrink-0" />
+              <p className="text-sm sm:text-base text-center">
+                We{`'`}ve sent a 6-digit code to your email
+              </p>
+            </div>
+            {email && (
+              <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                {email}
+              </p>
+            )}
+          </div>
         </div>
 
-        {otpError && (
-          <div className="animate-shake">
-            <p className="text-red-500 text-sm text-center font-medium">
-              Invalid verification code. Please try again.
-            </p>
+        {/* OTP Input Section */}
+        <div className="space-y-5 sm:space-y-6">
+          <div className="flex justify-center gap-2 sm:gap-3">
+            {otp.map((digit, index) => (
+              <div key={index} className="relative">
+                <input
+                  ref={(el) => {
+                    otpRefs.current[index] = el;
+                  }}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  onPaste={handleOtpPaste}
+                  onFocus={() => setFocusedIndex(index)}
+                  onBlur={() => setFocusedIndex(-1)}
+                  disabled={isVerifying}
+                  className={`w-10 h-12 sm:w-12 sm:h-14 lg:w-14 lg:h-16 text-center text-lg sm:text-xl font-bold rounded-lg sm:rounded-xl lg:rounded-2xl transition-all duration-300 outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
+                    otpError
+                      ? 'border-2 border-red-400 bg-red-50 text-red-600 animate-pulse'
+                      : focusedIndex === index
+                        ? 'border-2 border-indigo-500 bg-indigo-50 shadow-lg shadow-indigo-200 scale-105'
+                        : digit
+                          ? 'border-2 border-emerald-300 bg-emerald-50 text-emerald-700'
+                          : 'border-2 border-gray-200 bg-gray-50 hover:border-gray-300'
+                  }`}
+                  aria-label={`Digit ${index + 1}`}
+                />
+                {digit && !otpError && (
+                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-full animate-bounce"></div>
+                )}
+              </div>
+            ))}
           </div>
-        )}
 
-        <Button
-          onClick={handleVerifyOtp}
-          disabled={!canProceed}
-          className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-          style={{ backgroundColor: '#3F3FF3' }}
-        >
-          {isVerifying ? (
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              <span>Verifying...</span>
+          {/* Error Message */}
+          {otpError && errorMessage && (
+            <div className="bg-red-50 border border-red-200 rounded-lg sm:rounded-xl p-3 sm:p-4 mx-2 animate-shake">
+              <p className="text-red-600 text-sm font-medium flex items-start justify-center space-x-2 text-center">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0 mt-1.5"></span>
+                <span>{errorMessage}</span>
+              </p>
             </div>
-          ) : (
-            'Verify Code'
           )}
-        </Button>
 
-        <div className="flex items-center justify-between text-sm">
-          <div className="text-muted-foreground">Didn{`'`}t receive the code?</div>
-          <div className="flex items-center space-x-3">
-            {!canResend && (
-              <span className="text-xs text-muted-foreground font-mono">
-                {formatTime(timer)}
-              </span>
+          {/* Verify Button */}
+          <button
+            onClick={handleVerifyOtp}
+            disabled={!canProceed}
+            className={`w-full py-3 cursor-pointer sm:py-4 rounded-lg sm:rounded-xl lg:rounded-2xl font-semibold text-sm sm:text-base text-white transition-all duration-200 ${
+              canProceed && !isVerifying
+                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                : 'bg-gray-300 cursor-not-allowed'
+            }`}
+          >
+            {isVerifying ? (
+              <div className="flex items-center justify-center space-x-2 sm:space-x-3">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Verifying...</span>
+              </div>
+            ) : (
+              'Verify Code'
             )}
-            <button
-              onClick={handleResendCode}
-              disabled={!canResend}
-              className={`font-medium cursor-pointer underline-offset-4 hover:underline transition-colors duration-200 ${
-                canResend ? 'hover:opacity-80' : 'opacity-50 cursor-not-allowed'
-              }`}
-              style={{ color: canResend ? '#3F3FF3' : '#9CA3AF' }}
-              aria-label="Resend verification code"
-            >
-              Resend Code
-            </button>
+          </button>
+
+          {/* Resend Section */}
+          <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 mx-1">
+            <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 text-sm">
+              <span className="text-gray-600 text-center sm:text-left">
+                Didn{`'`}t receive the code?
+              </span>
+              <div className="flex items-center justify-center space-x-3">
+                {!canResend && (
+                  <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-200 rounded-full">
+                    <span className="text-xs font-mono text-gray-600">
+                      {formatTime(timer)}
+                    </span>
+                  </div>
+                )}
+                <button
+                  onClick={handleResendCode}
+                  disabled={!canResend || isVerifying}
+                  className={`font-semibold px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${
+                    canResend && !isVerifying
+                      ? 'text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700'
+                      : 'text-gray-400 cursor-not-allowed'
+                  }`}
+                  aria-label="Resend verification code"
+                >
+                  Resend Code
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

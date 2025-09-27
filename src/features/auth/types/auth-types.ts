@@ -7,3 +7,7 @@ export type TSignupPayloadError = {
   email?: string;
   password?: string;
 };
+
+export type TAccountVerifyPayload = {
+  otp: string;
+};

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Users } from 'lucide-react';
 import Link from 'next/link';
 import VerifyOtp from '@/features/auth/components/VerifyOtp';
+import { checkVerifyPageAccess } from '@/features/auth/lib/auth-guard';
 
 export const metadata: Metadata = {
   title: 'Verify Account | Workly Contacts',
@@ -42,8 +43,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function VerifyAccountPage() {
-  const email = 'user@example.com';
+export default async function VerifyAccountPage() {
+  await checkVerifyPageAccess();
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row font-sans">
@@ -113,7 +114,7 @@ export default function VerifyAccountPage() {
 
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center min-h-screen lg:h-auto p-4 lg:p-8 bg-white">
         <div className="w-full max-w-md space-y-6 lg:space-y-8 sm:max-w-lg sm:border sm:border-gray-200 sm:rounded-xl sm:p-8 sm:shadow-sm lg:border-0 lg:shadow-none lg:p-0">
-          <VerifyOtp email={email} />
+          <VerifyOtp />
         </div>
 
         <div className="lg:hidden absolute bottom-4 left-0 right-0">

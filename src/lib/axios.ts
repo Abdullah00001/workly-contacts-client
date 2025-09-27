@@ -1,3 +1,4 @@
+'use client';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // interface CustomAxiosRequestConfig extends AxiosRequestConfig {

@@ -2,10 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  if (pathname === '/auth/verify') {
-    const actvToken = request.cookies.get('actv_token')?.value;
-    if (!actvToken) return NextResponse.redirect(new URL('/', request.url));
+  const actvToken = request.cookies.get('actv_token')?.value;
+  if (actvToken && pathname !== '/auth/verify') {
     return NextResponse.redirect(new URL('/auth/verify', request.url));
   }
   return NextResponse.next();

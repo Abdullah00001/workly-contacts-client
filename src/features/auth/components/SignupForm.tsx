@@ -17,7 +17,7 @@ import {
 } from '@/lib/validation/auth-validation';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
-import { SignupService } from '../service/auth-service';
+import { SignupService } from '@/features/auth/service/auth-service';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const SignupForm: FC = () => {

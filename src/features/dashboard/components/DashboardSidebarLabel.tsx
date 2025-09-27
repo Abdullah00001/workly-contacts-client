@@ -8,7 +8,8 @@ import { useState, type FC } from 'react';
 
 const DashboardSidebarLabel: FC = () => {
   const pathname = usePathname();
-  const { toggleCreateLabelModal,toggleRenameLabelModal } = useLabelModalStore();
+  const { toggleCreateLabelModal, toggleRenameLabelModal } =
+    useLabelModalStore();
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const labels = [
     {
