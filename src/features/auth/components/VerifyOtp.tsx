@@ -23,6 +23,8 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
   const [timer, setTimer] = useState<number>(60);
   const [canResend, setCanResend] = useState<boolean>(false);
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
+  const [resendError, setResendError] = useState<string>('');
+  const [isResendSuccess, setIsResendSuccess] = useState<boolean>(false);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const { mutate: verifyAccount, isPending: isVerifying } = useMutation({
@@ -39,19 +41,85 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
     onError: (error: Error) => {
       setOtpError(true);
       setErrorMessage(error.message);
+      // Clear OTP and focus first input
+      setOtp(['', '', '', '', '', '']);
       setTimeout(() => {
         otpRefs.current[0]?.focus();
       }, 100);
     },
   });
 
-  const { mutate: resendOtp } = useMutation({
+  const { mutate: resendOtp, isPending: isResending } = useMutation({
     mutationFn: async () => await ResendOtp(),
-    onSuccess: (data) => {
+    onSuccess: (response) => {
+      const { data } = response;
       const { availableAt } = data;
+
+      // Calculate remaining time by comparing with current time
+      const currentTime = Date.now();
+      const remainingMs = availableAt - currentTime;
+      const remainingSeconds = Math.max(0, Math.ceil(remainingMs / 1000));
+
+      setTimer(remainingSeconds);
+      setCanResend(remainingSeconds === 0);
+
+      // Show success message
+      setIsResendSuccess(true);
+      setResendError('');
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setIsResendSuccess(false);
+      }, 3000);
+
+      // Clear current OTP and focus first input
+      setOtp(['', '', '', '', '', '']);
+      setOtpError(false);
+      setErrorMessage('');
+
+      setTimeout(() => {
+        otpRefs.current[0]?.focus();
+      }, 100);
     },
-    onError: (error) => {},
+    onError: (error: Error) => {
+      setResendError(error.message);
+      setIsResendSuccess(false);
+
+      // Clear resend error after 5 seconds
+      setTimeout(() => {
+        setResendError('');
+      }, 5000);
+    },
   });
+
+  const { mutate: checkResendAvailability, isPending: isCheckingAvailability } =
+    useMutation({
+      mutationFn: async () => await CheckResendOtpAvailability(),
+      onSuccess: (response) => {
+        const { data } = response;
+        const { availableAt } = data;
+
+        if (availableAt && availableAt > 0) {
+          // Calculate remaining time by comparing with current time
+          const currentTime = Date.now();
+          const remainingMs = availableAt - currentTime;
+          const remainingSeconds = Math.max(0, Math.ceil(remainingMs / 1000));
+
+          setTimer(remainingSeconds);
+          setCanResend(remainingSeconds === 0);
+        } else {
+          // If availableAt is 0 or not present, allow immediate resend
+          setTimer(0);
+          setCanResend(true);
+        }
+      },
+      onError: (error: Error) => {
+        console.warn('Failed to check resend availability:', error.message);
+        // Default fallback - allow resend after 60 seconds
+        setTimer(60);
+        setCanResend(false);
+      },
+    });
 
   const canProceed = otp.every((digit) => digit !== '') && !isVerifying;
 
@@ -59,13 +127,24 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
+        setTimer((prev) => {
+          if (prev <= 1) {
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
       return () => clearInterval(interval);
     } else {
       setCanResend(true);
     }
   }, [timer]);
+
+  // Check resend availability on component mount
+  useEffect(() => {
+    checkResendAvailability();
+  }, []);
 
   const handleOtpChange = (index: number, value: string) => {
     // Only allow digits
@@ -80,9 +159,11 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
     setOtp(newOtp);
 
     // Clear error state when user starts typing
-    if (otpError) {
+    if (otpError || resendError || isResendSuccess) {
       setOtpError(false);
       setErrorMessage('');
+      setResendError('');
+      setIsResendSuccess(false);
     }
 
     // Auto-focus next input
@@ -108,9 +189,11 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
       }
 
       // Clear error state when user starts editing
-      if (otpError) {
+      if (otpError || resendError || isResendSuccess) {
         setOtpError(false);
         setErrorMessage('');
+        setResendError('');
+        setIsResendSuccess(false);
       }
     }
   };
@@ -132,9 +215,11 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
     setOtp(newOtp);
 
     // Clear error state when pasting
-    if (otpError) {
+    if (otpError || resendError || isResendSuccess) {
       setOtpError(false);
       setErrorMessage('');
+      setResendError('');
+      setIsResendSuccess(false);
     }
 
     // Focus the next empty field or the last field
@@ -155,21 +240,14 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
   };
 
   const handleResendCode = () => {
-    // Reset all states
-    setTimer(60);
-    setCanResend(false);
-    setOtp(['', '', '', '', '', '']);
+    // Clear any existing messages
+    setResendError('');
+    setIsResendSuccess(false);
     setOtpError(false);
     setErrorMessage('');
 
-    // Focus first input
-    setTimeout(() => {
-      otpRefs.current[0]?.focus();
-    }, 100);
-
-    // Here you would typically call a resend OTP API
-    // For now, just reset the timer
-    console.log('Resending OTP to:', email);
+    // Call the resend API
+    resendOtp();
   };
 
   const formatTime = (seconds: number) => {
@@ -182,12 +260,6 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
     // Redirect to dashboard
     window.location.href = '/dashboard';
   };
-
-  useEffect(() => {
-    (async () => {
-      const { availableAt } = await CheckResendOtpAvailability();
-    })();
-  }, []);
 
   if (isSuccess) {
     return (
@@ -273,7 +345,7 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
                   onPaste={handleOtpPaste}
                   onFocus={() => setFocusedIndex(index)}
                   onBlur={() => setFocusedIndex(-1)}
-                  disabled={isVerifying}
+                  disabled={isVerifying || isResending}
                   className={`w-10 h-12 sm:w-12 sm:h-14 lg:w-14 lg:h-16 text-center text-lg sm:text-xl font-bold rounded-lg sm:rounded-xl lg:rounded-2xl transition-all duration-300 outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
                     otpError
                       ? 'border-2 border-red-400 bg-red-50 text-red-600 animate-pulse'
@@ -292,6 +364,36 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
             ))}
           </div>
 
+          {/* Success/Error Messages for Resend */}
+          {(isResendSuccess || resendError) && (
+            <div
+              className={`rounded-lg sm:rounded-xl p-3 sm:p-4 mx-2 transition-all duration-300 ${
+                isResendSuccess
+                  ? 'bg-green-50 border border-green-200'
+                  : 'bg-red-50 border border-red-200'
+              }`}
+            >
+              <p
+                className={`text-sm font-medium flex items-start justify-center space-x-2 text-center ${
+                  isResendSuccess ? 'text-green-600' : 'text-red-600'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full flex-shrink-0 mt-1.5 ${
+                    isResendSuccess
+                      ? 'bg-green-500 animate-pulse'
+                      : 'bg-red-500 animate-pulse'
+                  }`}
+                ></span>
+                <span>
+                  {isResendSuccess
+                    ? 'Verification code resent successfully! Check your email.'
+                    : resendError}
+                </span>
+              </p>
+            </div>
+          )}
+
           {/* Error Message */}
           {otpError && errorMessage && (
             <div className="bg-red-50 border border-red-200 rounded-lg sm:rounded-xl p-3 sm:p-4 mx-2 animate-shake">
@@ -305,9 +407,9 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
           {/* Verify Button */}
           <button
             onClick={handleVerifyOtp}
-            disabled={!canProceed}
-            className={`w-full py-3 cursor-pointer sm:py-4 rounded-lg sm:rounded-xl lg:rounded-2xl font-semibold text-sm sm:text-base text-white transition-all duration-200 ${
-              canProceed && !isVerifying
+            disabled={!canProceed || isResending}
+            className={`w-full py-3 sm:py-4 cursor-pointer rounded-lg sm:rounded-xl lg:rounded-2xl font-semibold text-sm sm:text-base text-white transition-all duration-200 ${
+              canProceed && !isVerifying && !isResending
                 ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
                 : 'bg-gray-300 cursor-not-allowed'
             }`}
@@ -338,15 +440,30 @@ export default function VerifyOtp({ email }: VerifyOtpProps = {}) {
                 )}
                 <button
                   onClick={handleResendCode}
-                  disabled={!canResend || isVerifying}
-                  className={`font-semibold px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${
-                    canResend && !isVerifying
+                  disabled={
+                    !canResend ||
+                    isVerifying ||
+                    isResending ||
+                    isCheckingAvailability
+                  }
+                  className={`font-semibold px-3 py-2 cursor-pointer sm:px-4 sm:py-2 rounded-lg transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${
+                    canResend &&
+                    !isVerifying &&
+                    !isResending &&
+                    !isCheckingAvailability
                       ? 'text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700'
                       : 'text-gray-400 cursor-not-allowed'
                   }`}
                   aria-label="Resend verification code"
                 >
-                  Resend Code
+                  {isResending ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                      <span>Sending...</span>
+                    </div>
+                  ) : (
+                    'Resend Code'
+                  )}
                 </button>
               </div>
             </div>
