@@ -4,7 +4,7 @@ import DashboardSidebar from '@/features/dashboard/components/DashboardSidebar';
 import ModalHolders from '@/features/dashboard/components/ModalHolders';
 import TLayout from '@/types/layout.types';
 
-export default function DashboardLayout({ children }: TLayout) {
+export default async function DashboardLayout({ children }: TLayout) {
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-[#f7fafc]">
       <DashboardHeader />
