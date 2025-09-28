@@ -22,43 +22,8 @@ export default async function middleware(request: NextRequest) {
     }
     return pathname === route;
   });
-  if (!accessToken && refreshToken) {
-    try {
-      const refreshTokenResponse = await fetch(
-        `${process.env.API_BASE_URL}/auth/refresh`,
-        {
-          method: 'POST',
-          headers: {
-            Cookie: `refreshtoken=${refreshToken}`,
-            'Content-Type': 'application/json',
-          },
-          cache: 'no-store',
-        }
-      );
-      if (refreshTokenResponse.ok) {
-        const setCookieHeaders = refreshTokenResponse.headers.get('set-cookie');
-        const response = NextResponse.next();
-        if (setCookieHeaders) {
-          const cookies = setCookieHeaders
-            .split(',')
-            .map((cookie) => cookie.trim());
-          cookies.forEach((cookie) => {
-            response.headers.append('Set-Cookie', cookie);
-          });
-        }
-        return response;
-      } else {
-        const response = NextResponse.redirect(new URL('/', request.url));
-        response.cookies.delete('accesstoken');
-        response.cookies.delete('refreshtoken');
-        return response;
-      }
-    } catch (error) {
-      const response = NextResponse.redirect(new URL('/', request.url));
-      response.cookies.delete('accesstoken');
-      response.cookies.delete('refreshtoken');
-      return response;
-    }
+  if ((accessToken || refreshToken) && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   if (isAuthPages && (accessToken || refreshToken)) {
     return NextResponse.redirect(new URL('/dashboard', request.url));

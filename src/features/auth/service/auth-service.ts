@@ -6,6 +6,7 @@ import {
 } from '@/features/auth/types/auth-types';
 import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
+import { redirect } from 'next/navigation';
 
 export const SignupService = async (payload: TSignupPayload) => {
   try {
@@ -105,5 +106,40 @@ export const CheckResendOtpAvailability = async () => {
       }
     }
     throw new Error('Check your internet connection or try again later.');
+  }
+};
+
+export const checkAccessAndRefresh = async () => {
+  try {
+    await axiosClient.get('/auth/check');
+    return true;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      const status = error?.response?.status;
+      switch (status) {
+        case 401:
+          try {
+            await axiosClient.post('/auth/refresh');
+            return true;
+          } catch (error) {
+            if (error instanceof AxiosError) {
+              const status = error?.response?.status;
+              switch (status) {
+                case 401:
+                  return false;
+                case 500:
+                  return false;
+                default:
+                  return false;
+              }
+            }
+          }
+        case 500:
+          return false;
+        default:
+          return false;
+      }
+    }
+    return false;
   }
 };
