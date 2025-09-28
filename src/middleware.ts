@@ -1,0 +1,42 @@
+import { NextResponse, type NextRequest } from 'next/server';
+
+const protectedRoutes = [
+  '/dashboard',
+  '/favorites',
+  '/trash',
+  '/suggestion',
+  '/people/*',
+  '/label/*',
+  '/accountcenter/*',
+];
+
+export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const actvToken = request.cookies.get('actv_token')?.value;
+  const accessToken = request.cookies.get('accesstoken')?.value;
+  const refreshToken = request.cookies.get('refreshtoken')?.value;
+  const isAuthPages = pathname.includes('/auth');
+  const isProtectedRoute = protectedRoutes.some((route) => {
+    if (route.endsWith('/*')) {
+      return pathname.startsWith(route.slice(0, -2));
+    }
+    return pathname === route;
+  });
+  if ((accessToken || refreshToken) && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  if (isAuthPages && (accessToken || refreshToken)) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  if (actvToken && pathname !== '/auth/verify') {
+    return NextResponse.redirect(new URL('/auth/verify', request.url));
+  }
+  if (isProtectedRoute && !accessToken && !refreshToken) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/((?!_next|api|static|favicon.ico).*)'],
+};

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff } from 'lucide-react';
+import { getPasswordStrength } from '@/lib/validation/auth-validation';
 
 interface PasswordResetStepProps {
   onReset: () => void;
@@ -15,27 +16,6 @@ export default function PasswordResetStep({ onReset }: PasswordResetStepProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Password strength validation
-  const getPasswordStrength = (password: string) => {
-    let score = 0;
-    const checks = {
-      length: password.length >= 8,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /\d/.test(password),
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    };
-
-    Object.values(checks).forEach((check) => check && score++);
-
-    return {
-      score,
-      checks,
-      strength: score < 2 ? 'weak' : score < 4 ? 'medium' : 'strong',
-    };
-  };
-
   const passwordStrength = getPasswordStrength(password);
   const passwordsMatch = password === confirmPassword && confirmPassword !== '';
   const canProceed = password && passwordsMatch && passwordStrength.score >= 3;

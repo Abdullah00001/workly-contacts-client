@@ -53,14 +53,14 @@ export default function UserConfirmationStep({
         <Button
           onClick={() => onConfirm(false)}
           variant="outline"
-          className="h-12 border-gray-200 hover:bg-gray-50 rounded-lg text-sm"
+          className="h-12 border-gray-200 hover:text-gray-600 hover:!bg-gray-50 rounded-lg text-sm cursor-pointer"
         >
           <X className="w-4 h-4 mr-2" />
           No, it{`'`}s not me
         </Button>
         <Button
           onClick={() => onConfirm(true)}
-          className="h-12 text-white hover:opacity-90 rounded-lg text-sm"
+          className="h-12 text-white hover:opacity-90 rounded-lg text-sm cursor-pointer"
           style={{ backgroundColor: '#3F3FF3' }}
         >
           <Check className="w-4 h-4 mr-2" />

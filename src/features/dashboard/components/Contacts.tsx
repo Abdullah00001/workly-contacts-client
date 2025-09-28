@@ -151,7 +151,9 @@ const Contacts: FC = () => {
         <h1 className="font-google-sans text-[#444746] text-2xl font-normal">
           Contacts
         </h1>
-        <span className="font-google-sans-text text-sm font-medium text-[#444746]">(22)</span>
+        <span className="font-google-sans-text text-sm font-medium text-[#444746]">
+          (22)
+        </span>
       </div>
       <ContactTable contacts={contacts} />
     </>
