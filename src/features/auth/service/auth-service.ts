@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  AuthMessages,
   TAccountVerifyPayload,
   TLoginPayload,
   TSignupPayload,
@@ -112,7 +113,7 @@ export const CheckResendOtpAvailability = async () => {
 export const checkAccessAndRefresh = async () => {
   try {
     await axiosClient.get('/auth/check');
-    return true;
+    return AuthMessages.AUTHENTICATED;
   } catch (error) {
     if (error instanceof AxiosError) {
       const status = error?.response?.status;
@@ -120,27 +121,27 @@ export const checkAccessAndRefresh = async () => {
         case 401:
           try {
             await axiosClient.post('/auth/refresh');
-            return true;
+            return AuthMessages.AUTHENTICATED;
           } catch (error) {
             if (error instanceof AxiosError) {
               const status = error?.response?.status;
               switch (status) {
                 case 401:
-                  return false;
+                  return AuthMessages.UNAUTHENTICATED;
                 case 500:
-                  return false;
+                  return AuthMessages.SERVER_ERROR;
                 default:
-                  return false;
+                  return AuthMessages.SERVER_ERROR;
               }
             }
           }
         case 500:
-          return false;
+          return AuthMessages.SERVER_ERROR;
         default:
-          return false;
+          return AuthMessages.SERVER_ERROR;
       }
     }
-    return false;
+    return AuthMessages.SERVER_ERROR;
   }
 };
 

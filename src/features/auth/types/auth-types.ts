@@ -17,3 +17,9 @@ export type TLoginPayload = {
   password: string;
   rememberMe: boolean;
 };
+
+export enum AuthMessages {
+  AUTHENTICATED = 'authenticated',
+  UNAUTHENTICATED = 'unauthenticated',
+  SERVER_ERROR = 'server_error',
+}
