@@ -61,6 +61,9 @@ const SignupForm: FC = () => {
     }
     return true;
   };
+  const handleGoogleSignUp = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+  };
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: TSignupPayload) => await SignupService(payload),
     onSuccess: (data) => {
@@ -274,6 +277,7 @@ const SignupForm: FC = () => {
       </div>
 
       <Button
+        onClick={handleGoogleSignUp}
         variant="outline"
         className="w-full h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
       >
