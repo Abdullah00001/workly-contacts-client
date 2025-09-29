@@ -1,20 +1,62 @@
 'use client';
-import { FC } from 'react';
+import { ChangeEvent, FC, FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
+import { TLoginPayload } from '@/features/auth/types/auth-types';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useMutation } from '@tanstack/react-query';
+import { LoginService } from '@/features/auth/service/auth-service';
+import { AxiosError } from 'axios';
 
 const LoginForm: FC = () => {
+  const [payload, setPayload] = useState<TLoginPayload>({
+    email: '',
+    password: '',
+    rememberMe: false,
+  });
+  const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const handleChangeField = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPayload((prev) => ({ ...prev, rememberMe: e.target.checked }));
+  };
   const handleGoogleSignUp = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
   };
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: TLoginPayload) => await LoginService(payload),
+    onSuccess: (data) => {
+      window.location.href = '/dashboard';
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        setServerError(error.response?.data?.message || 'An error occurred');
+      } else {
+        setServerError('An unexpected error occurred');
+      }
+    },
+  });
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    mutate(payload);
+  };
   return (
     <>
+      {serverError && (
+        <Alert variant="destructive" className={`mb-4 !bg-transparent`}>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Signup Failed</AlertTitle>
+          <AlertDescription>{serverError}</AlertDescription>
+        </Alert>
+      )}
       <div className="space-y-4">
         <div className="space-y-2">
           <Label
@@ -24,8 +66,10 @@ const LoginForm: FC = () => {
             Email
           </Label>
           <Input
+            onChange={handleChangeField}
             id="email"
             type="email"
+            name="email"
             placeholder="user@company.com"
             className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3]"
           />
@@ -41,6 +85,8 @@ const LoginForm: FC = () => {
           <div className="relative">
             <Input
               id="password"
+              name="password"
+              onChange={handleChangeField}
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter password"
               className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3]"
@@ -66,6 +112,9 @@ const LoginForm: FC = () => {
             <input
               type="checkbox"
               id="remember"
+              name="remember"
+              checked={payload.rememberMe}
+              onChange={handleCheckboxChange}
               className="rounded border-gray-300 cursor-pointer"
             />
             <Label
@@ -86,6 +135,8 @@ const LoginForm: FC = () => {
       </div>
 
       <Button
+        disabled={isPending}
+        onClick={onSubmit}
         className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer"
         style={{ backgroundColor: '#3F3FF3' }}
       >

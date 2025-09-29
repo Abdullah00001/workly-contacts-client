@@ -2,11 +2,11 @@
 
 import {
   TAccountVerifyPayload,
+  TLoginPayload,
   TSignupPayload,
 } from '@/features/auth/types/auth-types';
 import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
-import { redirect } from 'next/navigation';
 
 export const SignupService = async (payload: TSignupPayload) => {
   try {
@@ -141,5 +141,17 @@ export const checkAccessAndRefresh = async () => {
       }
     }
     return false;
+  }
+};
+
+export const LoginService = async (payload: TLoginPayload) => {
+  try {
+    const response = await axiosClient.post('/auth/login', payload);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error('Check your internet connection or try again later.');
   }
 };

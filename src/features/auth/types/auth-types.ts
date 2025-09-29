@@ -11,3 +11,9 @@ export type TSignupPayloadError = {
 export type TAccountVerifyPayload = {
   otp: string;
 };
+
+export type TLoginPayload = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
