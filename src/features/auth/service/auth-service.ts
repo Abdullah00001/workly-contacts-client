@@ -156,3 +156,14 @@ export const LoginService = async (payload: TLoginPayload) => {
     throw new Error('Check your internet connection or try again later.');
   }
 };
+
+export const LogoutService = async () => {
+  try {
+    await axiosClient.post('/auth/logout');
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error('Check your internet connection or try again later.');
+  }
+};

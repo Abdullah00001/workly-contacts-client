@@ -3,7 +3,7 @@ import TLayout from '@/types/layout.types';
 import { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkAccessAndRefresh } from '@/features/auth/service/auth-service';
-import { AuthMessages } from '../types/auth-types';
+import { AuthMessages } from '@/features/auth/types/auth-types';
 import LoadingPage from '@/components/common/Loading';
 import ServerErrorUi from '@/components/common/ServerErrorUi';
 
