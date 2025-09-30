@@ -15,6 +15,7 @@ export type TAccountVerifyPayload = {
 export type TLoginPayload = {
   email: string;
   password: string;
+  captchaToken: string;
   rememberMe: boolean;
 };
 

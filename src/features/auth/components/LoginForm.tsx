@@ -1,5 +1,5 @@
 'use client';
-import { ChangeEvent, FC, FormEvent } from 'react';
+import { ChangeEvent, FC, FormEvent, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,9 +18,11 @@ const LoginForm: FC = () => {
     email: '',
     password: '',
     rememberMe: false,
+    captchaToken: '',
   });
   const [serverError, setServerError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showCaptcha, setShowCaptcha] = useState<boolean>(false);
   const handleChangeField = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPayload((prev) => ({ ...prev, [name]: value }));
@@ -38,16 +40,84 @@ const LoginForm: FC = () => {
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          if (showCaptcha && window.grecaptcha) {
+            window.grecaptcha.reset();
+            setPayload((prev) => ({ ...prev, captchaToken: '' }));
+            setShowCaptcha(false);
+          }
+          setServerError(error.response?.data?.message || 'An error occurred');
+        }
+        if (error.response?.status === 402) {
+          setPayload((prev) => ({ ...prev, captchaToken: '' }));
+          setShowCaptcha(true);
+          setServerError(error.response?.data?.message);
+          return;
+        }
         setServerError(error.response?.data?.message || 'An error occurred');
       } else {
         setServerError('An unexpected error occurred');
       }
     },
   });
+  const onCaptchaChange = (token: string) => {
+    setPayload((prev) => ({ ...prev, captchaToken: token }));
+  };
+
+  // Called when captcha expires
+  const onCaptchaExpired = () => {
+    setPayload((prev) => ({ ...prev, captchaToken: '' }));
+    setServerError('CAPTCHA expired, please verify again');
+  };
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     mutate(payload);
   };
+  useEffect(() => {
+    if (showCaptcha && typeof window !== 'undefined' && window.grecaptcha) {
+      const container = document.getElementById('recaptcha-container');
+      if (window.grecaptcha && container) {
+        container.innerHTML = '';
+
+        // Render new captcha
+        window.grecaptcha.render('recaptcha-container', {
+          sitekey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY as string,
+          callback: onCaptchaChange,
+          'expired-callback': onCaptchaExpired,
+          'error-callback': () => {
+            setServerError(
+              'reCAPTCHA error occurred. Please refresh and try again.'
+            );
+          },
+        });
+      }
+    }
+  }, [showCaptcha]);
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://www.google.com/recaptcha/api.js';
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      console.log('reCAPTCHA v2 script loaded successfully');
+    };
+
+    script.onerror = () => {
+      console.error('Failed to load reCAPTCHA script');
+      setServerError('Failed to load CAPTCHA. Please refresh the page.');
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      try {
+        document.head.removeChild(script);
+      } catch (e) {
+        console.log('Script cleanup error:', e);
+      }
+    };
+  }, []);
   return (
     <>
       {serverError && (
@@ -133,14 +203,21 @@ const LoginForm: FC = () => {
           </Button>
         </div>
       </div>
-
+      {/* CAPTCHA Container */}
+      {showCaptcha && (
+        <div className="space-y-2">
+          <div className="flex justify-center p-4 bg-gray-50 rounded-md">
+            <div id="recaptcha-container"></div>
+          </div>
+        </div>
+      )}
       <Button
         disabled={isPending}
         onClick={onSubmit}
         className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer"
         style={{ backgroundColor: '#3F3FF3' }}
       >
-        Log In
+        {isPending ? 'Processing...' : 'Log In'}
       </Button>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

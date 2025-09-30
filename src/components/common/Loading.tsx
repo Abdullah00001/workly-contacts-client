@@ -61,7 +61,7 @@ export default function LoadingPage() {
               Loading Your Experience
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground text-pretty max-w-lg mx-auto">
-              We're preparing something amazing for you. This will only take a
+              We{`'`}re preparing something amazing for you. This will only take a
               moment.
             </p>
           </div>

@@ -23,7 +23,7 @@ const ServerErrorUi: FC = () => {
           </h2>
           <p className="text-lg text-center text-muted-foreground leading-relaxed">
             Oops! Something went wrong on our end. Our servers encountered an
-            unexpected error and couldn't complete your request.
+            unexpected error and couldn{`'`}t complete your request.
           </p>
           <div className="pt-4 flex items-center justify-center">
             <Button
