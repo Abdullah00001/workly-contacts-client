@@ -1,5 +1,3 @@
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import SignupForm from '@/features/auth/components/SignupForm';
 import { Users } from 'lucide-react';
 import Link from 'next/link';

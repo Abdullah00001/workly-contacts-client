@@ -1,12 +1,24 @@
 'use client';
 import { useLogoutModalStore } from '@/stores/logout-modal-store';
+import { useMutation } from '@tanstack/react-query';
 import { FC } from 'react';
+import { LogoutService } from '@/features/auth/service/auth-service';
 
 /**
  *  Logout Modal For Logout Functionality
  **/
 const LogoutModal: FC = () => {
   const { setLogoutModalOpen } = useLogoutModalStore();
+  const { isPending, mutate } = useMutation({
+    mutationFn: async () => await LogoutService(),
+    onSuccess: (data) => {
+      setLogoutModalOpen(false);
+      window.location.href = '/';
+    },
+  });
+  const handleLogout = () => {
+    mutate();
+  };
   return (
     <div
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
@@ -25,8 +37,12 @@ const LogoutModal: FC = () => {
           >
             Cancel
           </button>
-          <button className="px-4 py-2 text-[14px] cursor-pointer bg-red-600 text-white rounded-lg hover:bg-red-700">
-            Logout
+          <button
+            disabled={isPending}
+            onClick={handleLogout}
+            className="px-4 py-2 text-[14px] cursor-pointer bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            {isPending ? 'Processing...' : 'Logout'}
           </button>
         </div>
       </div>

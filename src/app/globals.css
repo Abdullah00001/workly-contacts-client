@@ -270,3 +270,77 @@
   filter: drop-shadow(0 0 15px currentColor);
   transform: scale(1.1) !important;
 }
+
+/* Loading page specific animations */
+@keyframes grid-fade {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(var(--color-primary), 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(var(--color-primary), 0.6);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(var(--color-border), 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--color-border), 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-fade 4s ease-in-out infinite;
+}
+
+.loading-spinner {
+  animation: spin-slow 2s linear infinite;
+}
+
+.loading-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.loading-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.loading-dots span {
+  animation: float 1.5s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}

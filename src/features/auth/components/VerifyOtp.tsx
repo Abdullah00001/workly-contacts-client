@@ -9,7 +9,7 @@ import {
   CheckResendOtpAvailability,
   ResendOtp,
 } from '@/features/auth/service/auth-service';
-import { TAccountVerifyPayload } from '../types/auth-types';
+import { TAccountVerifyPayload } from '@/features/auth/types/auth-types';
 
 interface VerifyOtpProps {
   email?: string;

@@ -11,3 +11,16 @@ export type TSignupPayloadError = {
 export type TAccountVerifyPayload = {
   otp: string;
 };
+
+export type TLoginPayload = {
+  email: string;
+  password: string;
+  captchaToken: string;
+  rememberMe: boolean;
+};
+
+export enum AuthMessages {
+  AUTHENTICATED = 'authenticated',
+  UNAUTHENTICATED = 'unauthenticated',
+  SERVER_ERROR = 'server_error',
+}

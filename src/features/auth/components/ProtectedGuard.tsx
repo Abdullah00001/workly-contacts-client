@@ -3,23 +3,28 @@ import TLayout from '@/types/layout.types';
 import { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkAccessAndRefresh } from '@/features/auth/service/auth-service';
+import { AuthMessages } from '@/features/auth/types/auth-types';
+import LoadingPage from '@/components/common/Loading';
+import ServerErrorUi from '@/components/common/ServerErrorUi';
 
 const ProtectedGuard: FC<TLayout> = ({ children }) => {
   const router = useRouter();
-  const [isAllowed, setIsAllowed] = useState(false);
-
+  const [status, setStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     (async () => {
       const result = await checkAccessAndRefresh();
-      if (!result) {
-        router.replace('/'); // redirect to homepage if not authenticated
+      if (result === AuthMessages.UNAUTHENTICATED) {
+        router.replace('/');
       } else {
-        setIsAllowed(true); // allow rendering of children
+        setStatus(result);
       }
+      setLoading(false);
     })();
   }, [router]);
-  if (!isAllowed) return null; // prevent flashing protected content
-
+  if (loading && status === null) return <LoadingPage />;
+  if (!loading && status === AuthMessages.SERVER_ERROR)
+    return <ServerErrorUi />;
   return <>{children}</>;
 };
 

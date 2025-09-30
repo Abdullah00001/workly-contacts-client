@@ -1,9 +1,9 @@
 'use client';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-// interface CustomAxiosRequestConfig extends AxiosRequestConfig {
-//   _retry?: boolean;
-// }
+interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -15,9 +15,8 @@ const axiosClient = axios.create({
 //   (response: AxiosResponse) => response,
 //   async (error: AxiosError) => {
 //     const originalRequest = error.config as CustomAxiosRequestConfig;
-
 //     if (
-//       error.response?.status === 403 &&
+//       error.response?.status === 401 &&
 //       !originalRequest._retry &&
 //       !originalRequest.url?.includes('/auth/refresh')
 //     ) {
@@ -31,6 +30,7 @@ const axiosClient = axios.create({
 //         return Promise.reject(refreshError);
 //       }
 //     }
+//     window.location.reload();
 //     return Promise.reject(error);
 //   }
 // );
