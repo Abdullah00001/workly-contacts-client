@@ -11,7 +11,7 @@ import { TLoginPayload } from '@/features/auth/types/auth-types';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useMutation } from '@tanstack/react-query';
 import { LoginService } from '@/features/auth/service/auth-service';
-import { AxiosError } from 'axios';
+import HttpError from '@/lib/error';
 
 const LoginForm: FC = () => {
   const [payload, setPayload] = useState<TLoginPayload>({
@@ -39,22 +39,22 @@ const LoginForm: FC = () => {
       window.location.href = '/dashboard';
     },
     onError: (error) => {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
+      if (error instanceof HttpError) {
+        if (error.status === 401) {
           if (showCaptcha && window.grecaptcha) {
             window.grecaptcha.reset();
             setPayload((prev) => ({ ...prev, captchaToken: '' }));
             setShowCaptcha(false);
           }
-          setServerError(error.response?.data?.message || 'An error occurred');
+          setServerError(error.message);
         }
-        if (error.response?.status === 402) {
+        if (error.status === 402) {
           setPayload((prev) => ({ ...prev, captchaToken: '' }));
           setShowCaptcha(true);
-          setServerError(error.response?.data?.message);
+          setServerError(error.message);
           return;
         }
-        setServerError(error.response?.data?.message || 'An error occurred');
+        setServerError(error.message || 'An error occurred');
       } else {
         setServerError('An unexpected error occurred');
       }
