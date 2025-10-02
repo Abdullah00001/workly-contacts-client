@@ -23,7 +23,7 @@ export enum AuthMessages {
   AUTHENTICATED = 'authenticated',
   UNAUTHENTICATED = 'unauthenticated',
   SERVER_ERROR = 'server_error',
-  SESSION_EXPIRED='session_expired'
+  SESSION_EXPIRED = 'session_expired',
 }
 
 export type TDeviceIconProps = {
@@ -32,6 +32,7 @@ export type TDeviceIconProps = {
 };
 
 export type TSessionActionsProps = {
+  payload: string[];
   /** Callback function when "Remove All Other Sessions" is clicked */
   onRemoveAll: () => void;
   /** Callback function when "Continue" is clicked */
@@ -68,6 +69,6 @@ export type TSessionContainerProps = {
   sessionList: TSession[];
 };
 
-export type TClearSessionServicePayload={
-  devices:string[]
-}
+export type TClearSessionServicePayload = {
+  devices: string[];
+};

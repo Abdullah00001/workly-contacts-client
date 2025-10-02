@@ -20,7 +20,7 @@ export function SessionCard({ session, onRemove }: TSessionCardProps) {
 
   return (
     <Card className="border-2 hover:border-blue-300 transition-colors">
-      <CardContent className="p-4 sm:p-6">
+      <CardContent className="p-2 px-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           {/* Device Info */}
           <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -55,10 +55,11 @@ export function SessionCard({ session, onRemove }: TSessionCardProps) {
           {/* Remove Button */}
           <div className="flex-shrink-0 sm:ml-4">
             <Button
+            type='button'
               variant="destructive"
               size="sm"
               onClick={handleRemove}
-              className="w-full sm:w-auto text-xs sm:text-sm"
+              className="w-full sm:w-auto text-xs sm:text-sm cursor-pointer"
             >
               Remove
             </Button>

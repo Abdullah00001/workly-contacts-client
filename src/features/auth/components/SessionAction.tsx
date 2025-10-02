@@ -13,21 +13,23 @@ import { TSessionActionsProps } from '@/features/auth/types/auth-types';
 export function SessionActions({
   onRemoveAll,
   onContinue,
+  payload,
 }: TSessionActionsProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
       <Button
-      type='button'
+        type="button"
         variant="outline"
         onClick={onRemoveAll}
-        className="w-full sm:flex-1 text-sm sm:text-base bg-transparent"
+        className="w-full sm:flex-1 cursor-pointer text-sm sm:!text-base !bg-transparent hover:!bg-[#94abfd] "
       >
         Remove All Sessions
       </Button>
       <Button
-      type='button'
+        disabled={payload.length === 0}
+        type="button"
         onClick={onContinue}
-        className="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-sm sm:text-base"
+        className={`w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-sm sm:text-base cursor-pointer`}
       >
         Continue
       </Button>

@@ -46,7 +46,6 @@ export default function SessionContainer({
    * Handles continue action (placeholder for navigation)
    */
   const handleContinue = () => {
-    console.log(payload);
     mutate({ devices: payload });
   };
   useEffect(() => {
@@ -63,6 +62,7 @@ export default function SessionContainer({
       <SessionActions
         onRemoveAll={handleRemoveAll}
         onContinue={handleContinue}
+        payload={payload}
       />
     </div>
   );
