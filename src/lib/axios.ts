@@ -11,28 +11,29 @@ const axiosClient = axios.create({
   withCredentials: true,
 });
 
-// axiosClient.interceptors.response.use(
-//   (response: AxiosResponse) => response,
-//   async (error: AxiosError) => {
-//     const originalRequest = error.config as CustomAxiosRequestConfig;
-//     if (
-//       error.response?.status === 401 &&
-//       !originalRequest._retry &&
-//       !originalRequest.url?.includes('/auth/refresh')
-//     ) {
-//       originalRequest._retry = true;
-//       try {
-//         await axiosClient.post('/auth/refresh');
-//         return axiosClient(originalRequest);
-//       } catch (refreshError) {
-//         await axiosClient.post('/auth/logout');
-//         window.location.reload();
-//         return Promise.reject(refreshError);
-//       }
-//     }
-//     window.location.reload();
-//     return Promise.reject(error);
-//   }
-// );
+axiosClient.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as CustomAxiosRequestConfig;
+    if (error.response?.status === 440) {
+      window.location.href = '/';
+    }
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes('/auth/refresh')
+    ) {
+      originalRequest._retry = true;
+      try {
+        await axiosClient.post('/auth/refresh');
+        return axiosClient(originalRequest);
+      } catch (refreshError) {
+        await axiosClient.post('/auth/logout');
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosClient;

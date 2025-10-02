@@ -15,6 +15,7 @@ export default async function middleware(request: NextRequest) {
   const actvToken = request.cookies.get('actv_token')?.value;
   const accessToken = request.cookies.get('accesstoken')?.value;
   const refreshToken = request.cookies.get('refreshtoken')?.value;
+  const clearSessionToken = request.cookies.get('__clear_device')?.value;
   const isAuthPages = pathname.includes('/auth');
   const isProtectedRoute = protectedRoutes.some((route) => {
     if (route.endsWith('/*')) {
@@ -30,6 +31,9 @@ export default async function middleware(request: NextRequest) {
   }
   if (actvToken && pathname !== '/auth/verify') {
     return NextResponse.redirect(new URL('/auth/verify', request.url));
+  }
+  if (clearSessionToken && pathname !== '/auth/clear-session') {
+    return NextResponse.redirect(new URL('/auth/clear-session', request.url));
   }
   if (isProtectedRoute && !accessToken && !refreshToken) {
     return NextResponse.redirect(new URL('/', request.url));

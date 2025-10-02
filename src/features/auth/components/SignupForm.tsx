@@ -15,13 +15,11 @@ import {
   getPasswordStrength,
   SignupSchema,
 } from '@/lib/validation/auth-validation';
-import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { SignupService } from '@/features/auth/service/auth-service';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const SignupForm: FC = () => {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -56,7 +54,6 @@ const SignupForm: FC = () => {
       });
 
       setPayloadErrors(fieldErrors);
-      console.log(fieldErrors);
       return false;
     }
     return true;
@@ -70,7 +67,11 @@ const SignupForm: FC = () => {
       window.location.href = '/auth/verify';
     },
     onError: (error) => {
-      setServerError(error.message);
+      if (error instanceof Error) {
+        setServerError(error.message);
+      } else {
+        setServerError('Something went wrong');
+      }
     },
   });
   const onSubmit = async (e: FormEvent) => {
@@ -233,7 +234,7 @@ const SignupForm: FC = () => {
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm password"
               onChange={handleConfirmPasswordField}
-              className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3]"
+              className={`h-12 pr-10 ${passwordsMatch ? 'border-green-500' : 'border-red-500'} focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3]`}
             />
             <Button
               type="button"
@@ -263,7 +264,7 @@ const SignupForm: FC = () => {
         className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer"
         style={{ backgroundColor: '#3F3FF3' }}
       >
-        Create Account
+        {isPending ? 'Processing...' : 'Create Account'}
       </Button>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

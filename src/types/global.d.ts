@@ -15,7 +15,7 @@ declare global {
       reset: (widgetId?: number) => void;
       getResponse: (widgetId?: number) => string;
     };
-    onRecaptchaLoad?: ()=> void;
+    onRecaptchaLoad?: () => void;
   }
 }
 

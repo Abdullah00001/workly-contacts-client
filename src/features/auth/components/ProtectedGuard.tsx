@@ -12,9 +12,15 @@ const ProtectedGuard: FC<TLayout> = ({ children }) => {
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
+    let redirected = false;
     (async () => {
       const result = await checkAccessAndRefresh();
-      if (result === AuthMessages.UNAUTHENTICATED) {
+      if (result === AuthMessages.SESSION_EXPIRED && !redirected) {
+        redirected = true;
+        router.replace('/');
+      }
+      if (result === AuthMessages.UNAUTHENTICATED && !redirected) {
+        redirected = true;
         router.replace('/');
       } else {
         setStatus(result);
