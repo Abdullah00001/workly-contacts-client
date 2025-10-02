@@ -1,6 +1,3 @@
+const useVerifyPageGuard = () => {};
 
-const useVerifyPageGuard = () => {
-  
-}
-
-export default useVerifyPageGuard
+export default useVerifyPageGuard;

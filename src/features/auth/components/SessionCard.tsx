@@ -55,7 +55,7 @@ export function SessionCard({ session, onRemove }: TSessionCardProps) {
           {/* Remove Button */}
           <div className="flex-shrink-0 sm:ml-4">
             <Button
-            type='button'
+              type="button"
               variant="destructive"
               size="sm"
               onClick={handleRemove}
