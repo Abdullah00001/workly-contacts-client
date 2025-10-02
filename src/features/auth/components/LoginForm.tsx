@@ -40,6 +40,10 @@ const LoginForm: FC = () => {
     },
     onError: (error) => {
       if (error instanceof HttpError) {
+        if (error.status === 429) {
+          window.location.href = '/auth/clear-session';
+          return;
+        }
         if (error.status === 401) {
           if (showCaptcha && window.grecaptcha) {
             window.grecaptcha.reset();

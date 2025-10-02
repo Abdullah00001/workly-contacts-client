@@ -250,6 +250,8 @@ export const LoginService = async (payload: TLoginPayload) => {
         );
       case 423:
         throw new HttpError(423, 'Account Not Verified.');
+      case 429:
+        throw new HttpError(429, 'Login limit exceed');
     }
   } catch (error) {
     if (error instanceof HttpError) {
