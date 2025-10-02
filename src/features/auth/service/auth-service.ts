@@ -3,6 +3,7 @@
 import {
   AuthMessages,
   TAccountVerifyPayload,
+  TClearSessionServicePayload,
   TLoginPayload,
   TSignupPayload,
 } from '@/features/auth/types/auth-types';
@@ -168,35 +169,52 @@ export const CheckResendOtpAvailability = async () => {
 
 export const checkAccessAndRefresh = async () => {
   try {
-    await axiosClient.get('/auth/check');
-    return AuthMessages.AUTHENTICATED;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      const status = error?.response?.status;
-      switch (status) {
-        case 401:
-          try {
-            await axiosClient.post('/auth/refresh');
-            return AuthMessages.AUTHENTICATED;
-          } catch (error) {
-            if (error instanceof AxiosError) {
-              const status = error?.response?.status;
-              switch (status) {
-                case 401:
-                  return AuthMessages.UNAUTHENTICATED;
-                case 500:
-                  return AuthMessages.SERVER_ERROR;
-                default:
-                  return AuthMessages.SERVER_ERROR;
-              }
-            }
-          }
-        case 500:
-          return AuthMessages.SERVER_ERROR;
-        default:
-          return AuthMessages.SERVER_ERROR;
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/check`,
+      {
+        cache: 'no-cache',
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
+    );
+    if (response.ok) return AuthMessages.AUTHENTICATED;
+    const status = response.status;
+    switch (status) {
+      case 401:
+        const refreshResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
+          {
+            cache: 'no-cache',
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        if (refreshResponse.ok) return AuthMessages.AUTHENTICATED;
+        const refreshResponseStatus = refreshResponse.status;
+        switch (refreshResponseStatus) {
+          case 401:
+            return AuthMessages.UNAUTHENTICATED;
+          case 440:
+            return AuthMessages.SESSION_EXPIRED;
+          case 500:
+            return AuthMessages.SERVER_ERROR;
+          default:
+            return AuthMessages.SERVER_ERROR;
+        }
+      case 440:
+        return AuthMessages.SESSION_EXPIRED;
+      case 500:
+        return AuthMessages.SERVER_ERROR;
+      default:
+        return AuthMessages.SERVER_ERROR;
     }
+  } catch (error) {
     return AuthMessages.SERVER_ERROR;
   }
 };
@@ -251,6 +269,31 @@ export const LogoutService = async () => {
     await axiosClient.post('/auth/logout');
   } catch (error) {
     if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error('Check your internet connection or try again later.');
+  }
+};
+
+export const ClearSessionService = async (
+  payload: TClearSessionServicePayload
+) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/clear-device`,
+      {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      }
+    );
+    if (response.ok) return await response.json();
+  } catch (error) {
+    if (error instanceof Error) {
       throw error;
     }
     throw new Error('Check your internet connection or try again later.');
