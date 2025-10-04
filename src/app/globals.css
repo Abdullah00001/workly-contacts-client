@@ -39,6 +39,8 @@
   --sidebar-border: oklch(0.9 0.01 220); /* Light sidebar border */
   --sidebar-ring: oklch(0.25 0.12 250 / 0.5); /* Dark blue sidebar ring */
   --font-dm-sans: 'DM Sans', sans-serif;
+  --toast-bg: #303030;
+  --toast-text: #ffffff;
 }
 
 /* Dark mode overrides */

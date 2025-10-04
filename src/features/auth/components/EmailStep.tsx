@@ -5,26 +5,34 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import type {
+  TEmailStepProps,
+  TFindUserPayload,
+} from '@/features/auth/types/recover-type';
+import { useMutation } from '@tanstack/react-query';
+import { FindUserService } from '../service/recover-service';
+import { toast } from 'sonner';
 
-interface EmailStepProps {
-  onSubmit: (email: string) => void;
-}
-
-export default function EmailStep({ onSubmit }: EmailStepProps) {
+export default function EmailStep({ onNavigate }: TEmailStepProps) {
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [error, setError] = useState('');
   const canProceed = email.includes('@') && email.includes('.');
-
-  const handleSubmit = async () => {
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (payload: TFindUserPayload) =>
+      await FindUserService(payload),
+    onSuccess: (data) => {
+      toast('User found', { closeButton: false });
+      setTimeout(() => {
+        onNavigate('identify');
+      }, 1000);
+    },
+    onError: (error) => {
+      setError(error.message);
+    },
+  });
+  const handleSubmit = () => {
     if (!canProceed) return;
-
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      onSubmit(email);
-      setIsLoading(false);
-    }, 1000);
+    mutate({ email });
   };
 
   return (
@@ -52,17 +60,19 @@ export default function EmailStep({ onSubmit }: EmailStepProps) {
             placeholder="user@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3]"
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
 
         <Button
           onClick={handleSubmit}
-          disabled={!canProceed || isLoading}
+          disabled={!canProceed || isPending}
           className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer disabled:opacity-50"
           style={{ backgroundColor: '#3F3FF3' }}
         >
-          {isLoading ? 'Finding Account...' : 'Find Account'}
+          {isPending ? 'Finding Account...' : 'Find Account'}
         </Button>
 
         <div className="text-center text-sm text-muted-foreground">

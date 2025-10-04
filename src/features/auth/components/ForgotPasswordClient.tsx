@@ -1,81 +1,63 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import StepIndicator from '@/features/auth/components/StepIndicator';
 import EmailStep from '@/features/auth/components/EmailStep';
 import UserConfirmationStep from '@/features/auth/components/UserConfirmationStep';
 import OtpStep from '@/features/auth/components/OtpStep';
 import PasswordResetStep from '@/features/auth/components/PasswordResetStep';
 import SuccessStep from '@/features/auth/components/SuccessStep';
+import type { TRecoverStep } from '@/features/auth/types/recover-type';
 
-interface UserInfo {
-  name: string;
-  email: string;
-  avatar: string;
-}
+const STEP_MAP: Record<TRecoverStep, number> = {
+  initiate: 1,
+  identify: 2,
+  verify_otp: 3,
+  reset_password: 4,
+  success: 5,
+};
 
 export default function ForgotPasswordClient() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [email, setEmail] = useState('');
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [currentStep, setCurrentStep] = useState<TRecoverStep>('initiate');
 
-  const handleStepChange = (step: number) => {
+  useEffect(() => {
+    const stepParam = searchParams.get('step') as TRecoverStep | null;
+
+    if (!stepParam || !STEP_MAP[stepParam]) {
+      // No step param or invalid, default to initiate
+      if (stepParam && !STEP_MAP[stepParam]) {
+        router.replace('/auth/recover?step=initiate');
+      }
+      setCurrentStep('initiate');
+    } else {
+      setCurrentStep(stepParam);
+    }
+  }, [searchParams, router]);
+
+  const handleNavigate = (step: TRecoverStep) => {
+    router.push(`/auth/recover?step=${step}`);
     setCurrentStep(step);
   };
 
-  const handleEmailSubmit = (emailValue: string) => {
-    setEmail(emailValue);
-    // Mock user data
-    setUserInfo({
-      name: 'John Doe',
-      email: emailValue,
-      avatar: '/diverse-user-avatars.png',
-    });
-    setCurrentStep(2);
-  };
-
-  const handleUserConfirmation = (isCorrectUser: boolean) => {
-    if (isCorrectUser) {
-      setCurrentStep(3);
-    } else {
-      setCurrentStep(1);
-      setUserInfo(null);
-      setEmail('');
-    }
-  };
-
-  const handleOtpVerification = () => {
-    setCurrentStep(4);
-  };
-
-  const handlePasswordReset = () => {
-    setCurrentStep(5);
-  };
+  const stepNumber = STEP_MAP[currentStep];
 
   return (
     <>
-      <StepIndicator currentStep={currentStep} totalSteps={4} />
-
-      {/* Step Components */}
-      {currentStep === 1 && <EmailStep onSubmit={handleEmailSubmit} />}
-
-      {currentStep === 2 && userInfo && (
-        <UserConfirmationStep
-          userInfo={userInfo}
-          onConfirm={handleUserConfirmation}
-        />
+      {stepNumber < 5 && (
+        <StepIndicator currentStep={stepNumber} totalSteps={4} />
       )}
-
-      {currentStep === 3 && (
-        <OtpStep
-          email={userInfo?.email || ''}
-          onVerify={handleOtpVerification}
-        />
+      {currentStep === 'initiate' && <EmailStep onNavigate={handleNavigate} />}
+      {currentStep === 'identify' && (
+        <UserConfirmationStep onNavigate={handleNavigate} />
       )}
-
-      {currentStep === 4 && <PasswordResetStep onReset={handlePasswordReset} />}
-
-      {currentStep === 5 && <SuccessStep />}
+      {/* {currentStep === 'verify_otp' && <OtpStep onNavigate={handleNavigate} />}
+      {currentStep === 'reset_password' && (
+        <PasswordResetStep onNavigate={handleNavigate} />
+      )}
+      {currentStep === 'success' && <SuccessStep />} */}
     </>
   );
 }

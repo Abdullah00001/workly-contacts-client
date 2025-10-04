@@ -1,176 +1,184 @@
 'use client';
 
-import { useState } from 'react';
+import type React from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
-import { getPasswordStrength } from '@/lib/validation/auth-validation';
+import Link from 'next/link';
+import type { TOtpStepProps } from '@/features/auth/types/recover-type';
+import {
+  VerifyOtpService,
+  ResendOtpService,
+} from '@/features/auth/service/recover-service';
 
-interface PasswordResetStepProps {
-  onReset: () => void;
-}
+export default function OtpStep({ onNavigate }: TOtpStepProps) {
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [isLoading, setIsLoading] = useState(false);
+  const [resendTimer, setResendTimer] = useState(60);
+  const [error, setError] = useState('');
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-export default function PasswordResetStep({ onReset }: PasswordResetStepProps) {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const passwordStrength = getPasswordStrength(password);
-  const passwordsMatch = password === confirmPassword && confirmPassword !== '';
-  const canProceed = password && passwordsMatch && passwordStrength.score >= 3;
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
-  const handleResetPassword = () => {
-    if (canProceed) {
-      onReset();
+  const handleChange = (index: number, value: string) => {
+    if (value.length > 1) {
+      value = value.slice(-1);
+    }
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+    const newOtp = [...otp];
+
+    for (let i = 0; i < pastedData.length; i++) {
+      if (/^\d$/.test(pastedData[i])) {
+        newOtp[i] = pastedData[i];
+      }
+    }
+
+    setOtp(newOtp);
+
+    const nextEmptyIndex = newOtp.findIndex((digit) => !digit);
+    if (nextEmptyIndex !== -1) {
+      inputRefs.current[nextEmptyIndex]?.focus();
+    } else {
+      inputRefs.current[5]?.focus();
+    }
+  };
+
+  const handleVerify = async () => {
+    if (!otp.every((digit) => digit)) return;
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const otpString = otp.join('');
+      const response = await VerifyOtpService({ otp: otpString });
+
+      if (response.success) {
+        onNavigate('reset_password');
+      } else {
+        setError(response.message || 'Invalid OTP. Please try again.');
+        setOtp(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      setOtp(['', '', '', '', '', '']);
+      inputRefs.current[0]?.focus();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      await ResendOtpService();
+      setResendTimer(60);
+      setError('');
+    } catch (err) {
+      setError('Failed to resend code. Please try again.');
+    }
+  };
+
+  const canProceed = otp.every((digit) => digit);
 
   return (
     <div className="space-y-6">
       <div className="space-y-2 text-center">
         <h2 className="text-2xl sm:text-3xl text-foreground">
-          Create New Password
+          Verify Your Identity
         </h2>
         <p className="text-muted-foreground text-sm sm:text-base">
-          Choose a strong password for your account.
+          We sent a 6-digit code to your email
         </p>
       </div>
 
       <div className="space-y-4">
-        <div className="space-y-2">
-          <Label
-            htmlFor="new-password"
-            className="text-sm font-medium text-foreground"
-          >
-            New Password
-          </Label>
-          <div className="relative">
+        <div className="flex justify-center gap-2 sm:gap-3">
+          {otp.map((digit, index) => (
             <Input
-              id="new-password"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter new password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3]"
+              key={index}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              onPaste={handlePaste}
+              className="w-12 h-12 sm:w-14 sm:h-14 text-center text-lg sm:text-xl font-semibold border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3]"
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <Eye className="h-4 w-4 text-muted-foreground" />
-              )}
-            </Button>
-          </div>
-
-          {/* Password Strength Indicator */}
-          {password && (
-            <div className="space-y-2">
-              <div className="flex space-x-1">
-                {[1, 2, 3, 4, 5].map((level) => (
-                  <div
-                    key={level}
-                    className={`h-1 flex-1 rounded ${
-                      level <= passwordStrength.score
-                        ? passwordStrength.strength === 'weak'
-                          ? 'bg-red-500'
-                          : passwordStrength.strength === 'medium'
-                            ? 'bg-yellow-500'
-                            : 'bg-green-500'
-                        : 'bg-gray-200'
-                    }`}
-                  />
-                ))}
-              </div>
-              <div className="text-xs space-y-1">
-                <div
-                  className={`flex items-center space-x-1 ${passwordStrength.checks.length ? 'text-green-600' : 'text-gray-400'}`}
-                >
-                  <div
-                    className={`w-2 h-2 rounded-full ${passwordStrength.checks.length ? 'bg-green-600' : 'bg-gray-400'}`}
-                  />
-                  <span>At least 8 characters</span>
-                </div>
-                <div
-                  className={`flex items-center space-x-1 ${passwordStrength.checks.uppercase ? 'text-green-600' : 'text-gray-400'}`}
-                >
-                  <div
-                    className={`w-2 h-2 rounded-full ${passwordStrength.checks.uppercase ? 'bg-green-600' : 'bg-gray-400'}`}
-                  />
-                  <span>One uppercase letter</span>
-                </div>
-                <div
-                  className={`flex items-center space-x-1 ${passwordStrength.checks.number ? 'text-green-600' : 'text-gray-400'}`}
-                >
-                  <div
-                    className={`w-2 h-2 rounded-full ${passwordStrength.checks.number ? 'bg-green-600' : 'bg-gray-400'}`}
-                  />
-                  <span>One number</span>
-                </div>
-                <div
-                  className={`flex items-center space-x-1 ${passwordStrength.checks.special ? 'text-green-600' : 'text-gray-400'}`}
-                >
-                  <div
-                    className={`w-2 h-2 rounded-full ${passwordStrength.checks.special ? 'bg-green-600' : 'bg-gray-400'}`}
-                  />
-                  <span>One special character</span>
-                </div>
-              </div>
-            </div>
-          )}
+          ))}
         </div>
 
-        <div className="space-y-2">
-          <Label
-            htmlFor="confirm-password"
-            className="text-sm font-medium text-foreground"
-          >
-            Confirm Password
-          </Label>
-          <div className="relative">
-            <Input
-              id="confirm-password"
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Confirm new password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3] ${
-                confirmPassword && !passwordsMatch ? 'border-red-500' : ''
-              }`}
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <Eye className="h-4 w-4 text-muted-foreground" />
-              )}
-            </Button>
-          </div>
-          {confirmPassword && !passwordsMatch && (
-            <p className="text-red-500 text-xs">Passwords do not match</p>
-          )}
-        </div>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
         <Button
-          onClick={handleResetPassword}
-          disabled={!canProceed}
+          onClick={handleVerify}
+          disabled={!canProceed || isLoading}
           className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer disabled:opacity-50"
           style={{ backgroundColor: '#3F3FF3' }}
         >
-          Reset Password
+          {isLoading ? 'Verifying...' : 'Verify Code'}
         </Button>
+
+        <div className="text-center text-sm">
+          {resendTimer > 0 ? (
+            <p className="text-muted-foreground">
+              Resend code in{' '}
+              <span className="font-medium text-foreground">
+                {resendTimer}s
+              </span>
+            </p>
+          ) : (
+            <button
+              onClick={handleResend}
+              className="text-sm hover:text-opacity-80 font-medium cursor-pointer underline-offset-4 hover:underline"
+              style={{ color: '#3F3FF3' }}
+            >
+              Resend Code
+            </button>
+          )}
+        </div>
+
+        <div className="text-center text-sm text-muted-foreground">
+          Remember your password?{' '}
+          <Link
+            href="/auth/login"
+            className="text-sm hover:text-opacity-80 font-medium cursor-pointer underline-offset-4 hover:underline"
+            style={{ color: '#3F3FF3' }}
+          >
+            Sign in instead
+          </Link>
+        </div>
       </div>
     </div>
   );
