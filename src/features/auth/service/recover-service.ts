@@ -167,6 +167,26 @@ export const RecoverUserInfoService = async () => {
     );
     if (response.ok) return await response.json();
   } catch (error) {
-    return AuthMessages.SERVER_ERROR;
+    return error;
+  }
+};
+
+export const SentRecoverOtp = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/recover/sent-otp`,
+      {
+        credentials: 'include',
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (response.ok) return 'Otp sent Successful';
+  } catch (error) {
+    if (error instanceof Error) return error.message;
+    return new Error('Otp Sent Failed,Check Your Internet Connection!');
   }
 };

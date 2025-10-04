@@ -6,16 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import type { TOtpStepProps } from '@/features/auth/types/recover-type';
-import {
-  VerifyOtpService,
-  ResendOtpService,
-} from '@/features/auth/service/recover-service';
 
 export default function OtpStep({ onNavigate }: TOtpStepProps) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
-  const [error, setError] = useState('');
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -34,7 +28,6 @@ export default function OtpStep({ onNavigate }: TOtpStepProps) {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -70,40 +63,13 @@ export default function OtpStep({ onNavigate }: TOtpStepProps) {
     }
   };
 
-  const handleVerify = async () => {
+  const handleVerify = () => {
     if (!otp.every((digit) => digit)) return;
-
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const otpString = otp.join('');
-      const response = await VerifyOtpService({ otp: otpString });
-
-      if (response.success) {
-        onNavigate('reset_password');
-      } else {
-        setError(response.message || 'Invalid OTP. Please try again.');
-        setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
-      setOtp(['', '', '', '', '', '']);
-      inputRefs.current[0]?.focus();
-    } finally {
-      setIsLoading(false);
-    }
+    onNavigate('reset_password');
   };
 
-  const handleResend = async () => {
-    try {
-      await ResendOtpService();
-      setResendTimer(60);
-      setError('');
-    } catch (err) {
-      setError('Failed to resend code. Please try again.');
-    }
+  const handleResend = () => {
+    setResendTimer(60);
   };
 
   const canProceed = otp.every((digit) => digit);
@@ -139,15 +105,13 @@ export default function OtpStep({ onNavigate }: TOtpStepProps) {
           ))}
         </div>
 
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
         <Button
           onClick={handleVerify}
-          disabled={!canProceed || isLoading}
+          disabled={!canProceed}
           className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer disabled:opacity-50"
           style={{ backgroundColor: '#3F3FF3' }}
         >
-          {isLoading ? 'Verifying...' : 'Verify Code'}
+          Verify Code
         </Button>
 
         <div className="text-center text-sm">

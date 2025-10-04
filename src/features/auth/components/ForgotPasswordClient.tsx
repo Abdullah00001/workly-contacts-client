@@ -9,6 +9,7 @@ import OtpStep from '@/features/auth/components/OtpStep';
 import PasswordResetStep from '@/features/auth/components/PasswordResetStep';
 import SuccessStep from '@/features/auth/components/SuccessStep';
 import type { TRecoverStep } from '@/features/auth/types/recover-type';
+import { RecoverStepOneGuard, RecoverStepTwoGuard } from './RecoverStepsGuard';
 
 const STEP_MAP: Record<TRecoverStep, number> = {
   initiate: 1,
@@ -26,11 +27,10 @@ export default function ForgotPasswordClient() {
   useEffect(() => {
     const stepParam = searchParams.get('step') as TRecoverStep | null;
 
-    if (!stepParam || !STEP_MAP[stepParam]) {
-      // No step param or invalid, default to initiate
-      if (stepParam && !STEP_MAP[stepParam]) {
-        router.replace('/auth/recover?step=initiate');
-      }
+    if (!stepParam) {
+      setCurrentStep('initiate');
+    } else if (!STEP_MAP[stepParam]) {
+      router.replace('/auth/recover?step=initiate');
       setCurrentStep('initiate');
     } else {
       setCurrentStep(stepParam);
@@ -39,7 +39,6 @@ export default function ForgotPasswordClient() {
 
   const handleNavigate = (step: TRecoverStep) => {
     router.push(`/auth/recover?step=${step}`);
-    setCurrentStep(step);
   };
 
   const stepNumber = STEP_MAP[currentStep];
@@ -49,15 +48,22 @@ export default function ForgotPasswordClient() {
       {stepNumber < 5 && (
         <StepIndicator currentStep={stepNumber} totalSteps={4} />
       )}
+
       {currentStep === 'initiate' && <EmailStep onNavigate={handleNavigate} />}
       {currentStep === 'identify' && (
-        <UserConfirmationStep onNavigate={handleNavigate} />
+        <RecoverStepOneGuard>
+          <UserConfirmationStep onNavigate={handleNavigate} />
+        </RecoverStepOneGuard>
       )}
-      {/* {currentStep === 'verify_otp' && <OtpStep onNavigate={handleNavigate} />}
+      {currentStep === 'verify_otp' && (
+        <RecoverStepTwoGuard>
+          <OtpStep onNavigate={handleNavigate} />
+        </RecoverStepTwoGuard>
+      )}
       {currentStep === 'reset_password' && (
         <PasswordResetStep onNavigate={handleNavigate} />
       )}
-      {currentStep === 'success' && <SuccessStep />} */}
+      {currentStep === 'success' && <SuccessStep />}
     </>
   );
 }

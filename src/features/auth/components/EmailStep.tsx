@@ -67,6 +67,7 @@ export default function EmailStep({ onNavigate }: TEmailStepProps) {
         </div>
 
         <Button
+          type="button"
           onClick={handleSubmit}
           disabled={!canProceed || isPending}
           className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer disabled:opacity-50"
