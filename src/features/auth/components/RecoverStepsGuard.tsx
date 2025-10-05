@@ -106,7 +106,7 @@ export const RecoverStepTwoGuard: FC<TLayout> = ({ children }) => {
 
 export const RecoverStepThreeGuard: FC<TLayout> = ({ children }) => {
   const router = useRouter();
-  const [status, setStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

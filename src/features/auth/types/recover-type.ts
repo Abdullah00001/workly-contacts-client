@@ -15,7 +15,7 @@ export type TFindUserPayload = {
   email: string;
 };
 
-export type TVerifyOtpPayload = {
+export type TVerifyRecoverOtpPayload = {
   otp: string;
 };
 

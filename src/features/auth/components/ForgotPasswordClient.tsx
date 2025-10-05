@@ -9,7 +9,11 @@ import OtpStep from '@/features/auth/components/OtpStep';
 import PasswordResetStep from '@/features/auth/components/PasswordResetStep';
 import SuccessStep from '@/features/auth/components/SuccessStep';
 import type { TRecoverStep } from '@/features/auth/types/recover-type';
-import { RecoverStepOneGuard, RecoverStepTwoGuard } from './RecoverStepsGuard';
+import {
+  RecoverStepOneGuard,
+  RecoverStepThreeGuard,
+  RecoverStepTwoGuard,
+} from './RecoverStepsGuard';
 
 const STEP_MAP: Record<TRecoverStep, number> = {
   initiate: 1,
@@ -22,7 +26,7 @@ const STEP_MAP: Record<TRecoverStep, number> = {
 export default function ForgotPasswordClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [currentStep, setCurrentStep] = useState<TRecoverStep>('initiate');
+  const [currentStep, setCurrentStep] = useState<TRecoverStep | null>(null);
 
   useEffect(() => {
     const stepParam = searchParams.get('step') as TRecoverStep | null;
@@ -40,7 +44,14 @@ export default function ForgotPasswordClient() {
   const handleNavigate = (step: TRecoverStep) => {
     router.push(`/auth/recover?step=${step}`);
   };
-
+  if (!currentStep) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px]">
+        <StepIndicator currentStep={1} totalSteps={4} />
+        <div className="w-[320px] h-[160px] bg-gray-100 rounded-md animate-pulse mt-4" />
+      </div>
+    );
+  }
   const stepNumber = STEP_MAP[currentStep];
 
   return (
@@ -61,7 +72,9 @@ export default function ForgotPasswordClient() {
         </RecoverStepTwoGuard>
       )}
       {currentStep === 'reset_password' && (
-        <PasswordResetStep onNavigate={handleNavigate} />
+        <RecoverStepThreeGuard>
+          <PasswordResetStep onNavigate={handleNavigate} />
+        </RecoverStepThreeGuard>
       )}
       {currentStep === 'success' && <SuccessStep />}
     </>
