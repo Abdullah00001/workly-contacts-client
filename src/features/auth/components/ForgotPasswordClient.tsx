@@ -1,81 +1,82 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import StepIndicator from '@/features/auth/components/StepIndicator';
 import EmailStep from '@/features/auth/components/EmailStep';
 import UserConfirmationStep from '@/features/auth/components/UserConfirmationStep';
 import OtpStep from '@/features/auth/components/OtpStep';
 import PasswordResetStep from '@/features/auth/components/PasswordResetStep';
 import SuccessStep from '@/features/auth/components/SuccessStep';
+import type { TRecoverStep } from '@/features/auth/types/recover-type';
+import {
+  RecoverStepOneGuard,
+  RecoverStepThreeGuard,
+  RecoverStepTwoGuard,
+} from './RecoverStepsGuard';
 
-interface UserInfo {
-  name: string;
-  email: string;
-  avatar: string;
-}
+const STEP_MAP: Record<TRecoverStep, number> = {
+  initiate: 1,
+  identify: 2,
+  verify_otp: 3,
+  reset_password: 4,
+  success: 5,
+};
 
 export default function ForgotPasswordClient() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [email, setEmail] = useState('');
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [currentStep, setCurrentStep] = useState<TRecoverStep | null>(null);
 
-  const handleStepChange = (step: number) => {
-    setCurrentStep(step);
-  };
+  useEffect(() => {
+    const stepParam = searchParams.get('step') as TRecoverStep | null;
 
-  const handleEmailSubmit = (emailValue: string) => {
-    setEmail(emailValue);
-    // Mock user data
-    setUserInfo({
-      name: 'John Doe',
-      email: emailValue,
-      avatar: '/diverse-user-avatars.png',
-    });
-    setCurrentStep(2);
-  };
-
-  const handleUserConfirmation = (isCorrectUser: boolean) => {
-    if (isCorrectUser) {
-      setCurrentStep(3);
+    if (!stepParam) {
+      setCurrentStep('initiate');
+    } else if (!STEP_MAP[stepParam]) {
+      router.replace('/auth/recover?step=initiate');
+      setCurrentStep('initiate');
     } else {
-      setCurrentStep(1);
-      setUserInfo(null);
-      setEmail('');
+      setCurrentStep(stepParam);
     }
-  };
+  }, [searchParams, router]);
 
-  const handleOtpVerification = () => {
-    setCurrentStep(4);
+  const handleNavigate = (step: TRecoverStep) => {
+    router.push(`/auth/recover?step=${step}`);
   };
-
-  const handlePasswordReset = () => {
-    setCurrentStep(5);
-  };
+  if (!currentStep) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px]">
+        <StepIndicator currentStep={1} totalSteps={4} />
+        <div className="w-[320px] h-[160px] bg-gray-100 rounded-md animate-pulse mt-4" />
+      </div>
+    );
+  }
+  const stepNumber = STEP_MAP[currentStep];
 
   return (
     <>
-      <StepIndicator currentStep={currentStep} totalSteps={4} />
-
-      {/* Step Components */}
-      {currentStep === 1 && <EmailStep onSubmit={handleEmailSubmit} />}
-
-      {currentStep === 2 && userInfo && (
-        <UserConfirmationStep
-          userInfo={userInfo}
-          onConfirm={handleUserConfirmation}
-        />
+      {stepNumber < 5 && (
+        <StepIndicator currentStep={stepNumber} totalSteps={4} />
       )}
 
-      {currentStep === 3 && (
-        <OtpStep
-          email={userInfo?.email || ''}
-          onVerify={handleOtpVerification}
-        />
+      {currentStep === 'initiate' && <EmailStep onNavigate={handleNavigate} />}
+      {currentStep === 'identify' && (
+        <RecoverStepOneGuard>
+          <UserConfirmationStep onNavigate={handleNavigate} />
+        </RecoverStepOneGuard>
       )}
-
-      {currentStep === 4 && <PasswordResetStep onReset={handlePasswordReset} />}
-
-      {currentStep === 5 && <SuccessStep />}
+      {currentStep === 'verify_otp' && (
+        <RecoverStepTwoGuard>
+          <OtpStep onNavigate={handleNavigate} />
+        </RecoverStepTwoGuard>
+      )}
+      {currentStep === 'reset_password' && (
+        <RecoverStepThreeGuard>
+          <PasswordResetStep onNavigate={handleNavigate} />
+        </RecoverStepThreeGuard>
+      )}
+      {currentStep === 'success' && <SuccessStep />}
     </>
   );
 }
