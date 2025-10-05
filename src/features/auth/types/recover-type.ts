@@ -21,7 +21,7 @@ export type TVerifyRecoverOtpPayload = {
 
 export type TResetPasswordPayload = {
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
 };
 
 export type TPasswordStrength = {

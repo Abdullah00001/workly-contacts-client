@@ -6,7 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff } from 'lucide-react';
 import { getPasswordStrength } from '@/lib/validation/auth-validation';
-import type { TPasswordResetStepProps } from '@/features/auth/types/recover-type';
+import type {
+  TPasswordResetStepProps,
+  TResetPasswordPayload,
+} from '@/features/auth/types/recover-type';
+import { useMutation } from '@tanstack/react-query';
+import { ResetPassword } from '../service/recover-service';
+import { toast } from 'sonner';
 
 export default function PasswordResetStep({
   onNavigate,
@@ -15,14 +21,26 @@ export default function PasswordResetStep({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const passwordStrength = getPasswordStrength(password);
   const passwordsMatch = password === confirmPassword && confirmPassword !== '';
   const canProceed = password && passwordsMatch && passwordStrength.score >= 3;
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: TResetPasswordPayload) =>
+      await ResetPassword(payload),
+    onSuccess: (data) => {
+      toast('Password change successful!', { closeButton: false });
+      setTimeout(() => {
+        onNavigate('success');
+      }, 1500);
+    },
+    onError: (error) => {
+      toast(error.message, { closeButton: false });
+    },
+  });
   const handleResetPassword = () => {
     if (!canProceed) return;
-    onNavigate('success');
+    mutate({ password });
   };
 
   return (
@@ -168,7 +186,7 @@ export default function PasswordResetStep({
           className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer disabled:opacity-50"
           style={{ backgroundColor: '#3F3FF3' }}
         >
-          Reset Password
+          {isPending ? 'Processing...' : 'Reset Password'}
         </Button>
       </div>
     </div>
