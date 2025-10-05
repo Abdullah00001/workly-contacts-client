@@ -2,6 +2,7 @@ import { Users } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ForgotPasswordClient from '@/features/auth/components/ForgotPasswordClient';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Forgot Password',
@@ -107,7 +108,9 @@ export default function Recover() {
 
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md space-y-8">
-            <ForgotPasswordClient />
+            <Suspense fallback={<div></div>}>
+              <ForgotPasswordClient />
+            </Suspense>
           </div>
         </div>
       </div>
