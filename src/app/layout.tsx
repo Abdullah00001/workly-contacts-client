@@ -143,7 +143,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${googleSans.variable} ${googleSansText.variable} ${productSans.variable} antialiased`}
       >
         <ReactQueryProvider>{children}</ReactQueryProvider>
-        <Toaster closeButton position='top-center' />
+        <Toaster closeButton position="top-center" />
       </body>
     </html>
   );

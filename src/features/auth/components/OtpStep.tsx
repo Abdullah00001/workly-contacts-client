@@ -275,7 +275,7 @@ export default function OtpStep({ onNavigate }: TOtpStepProps) {
           <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 mx-1">
             <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 text-sm">
               <span className="text-gray-600 text-center sm:text-left">
-                Didn't receive the code?
+                Didn{`'`}t receive the code?
               </span>
               <div className="flex items-center justify-center space-x-3">
                 {!canResend && (
