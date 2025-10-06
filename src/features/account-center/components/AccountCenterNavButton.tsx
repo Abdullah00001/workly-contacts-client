@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import Link from 'next/link';
 import { FC } from 'react';
 import { TAccountCenterNavItem } from '../types/const.types';

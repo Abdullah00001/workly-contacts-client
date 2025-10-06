@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { Users } from 'lucide-react';
 import { FC } from 'react';
 import { AccountCenterNavItems } from '../types/const.types';

@@ -6,6 +6,16 @@ import AccountCenterErrorBoundary from './AccountCenterErrorBoundary';
 import { useQuery } from '@tanstack/react-query';
 import { GetFullProfileService } from '../services/personal-info-services';
 
+const BasicInfo = lazy(
+  () => import('@/features/account-center/components/BasicInfoSection')
+);
+const ContactInfo = lazy(
+  () => import('@/features/account-center/components/ContactInfoSection')
+);
+const AddressInfo = lazy(
+  () => import('@/features/account-center/components/AddressInfoSection')
+);
+
 const PersonalInfoSectionHolder: FC = () => {
   const { data, isPending } = useQuery({
     queryFn: async () => await GetFullProfileService(),
@@ -17,7 +27,16 @@ const PersonalInfoSectionHolder: FC = () => {
       {isPending ? (
         <PersonalInfoPageSkeleton />
       ) : (
-        <Suspense fallback={<PersonalInfoPageSkeleton />}></Suspense>
+        <Suspense fallback={<PersonalInfoPageSkeleton />}>
+          <BasicInfo
+            avatar={data.avatar}
+            dateOfBirth={data.dateOfBirth}
+            gender={data.gender}
+            name={data.name}
+          />
+          <ContactInfo email={data.email} phone={data.phone} />
+          <AddressInfo home={data.location.home} work={data.location.home} />
+        </Suspense>
       )}
     </ErrorBoundary>
   );
