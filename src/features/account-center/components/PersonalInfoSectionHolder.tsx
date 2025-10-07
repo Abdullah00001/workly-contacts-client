@@ -1,5 +1,5 @@
 'use client';
-import { FC, lazy, Suspense, useState } from 'react';
+import { FC, lazy, Suspense } from 'react';
 import PersonalInfoPageSkeleton from './PersonalInfoPageSkeleton';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import AccountCenterErrorBoundary from './AccountCenterErrorBoundary';
