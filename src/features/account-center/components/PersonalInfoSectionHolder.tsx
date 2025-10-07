@@ -21,7 +21,6 @@ const PersonalInfoSectionHolder: FC = () => {
     queryFn: async () => await GetFullProfileService(),
     queryKey: ['personal_info'],
   });
-  console.log(data);
   return (
     <ErrorBoundary errorComponent={AccountCenterErrorBoundary}>
       {isPending ? (

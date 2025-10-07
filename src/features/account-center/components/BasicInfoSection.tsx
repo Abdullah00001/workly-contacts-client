@@ -2,11 +2,14 @@
 import { FC, useRef, useState } from 'react';
 import { Camera, Edit, ChevronRight } from 'lucide-react';
 import { TBasicInfoProps } from '../types/personal-info-types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UpdateDateOfBirthModal from './UpdateDateOfBirthModal';
 import UpdateGenderModal from './UpdateGenderModal';
 import UpdateNameModal from './UpdateNameModal';
 import UpdateProfileAvatarModal from './UpdateProfileAvatarModal';
+import { UploadProfileAvatar } from '../services/personal-info-services';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
 
 const BasicInfoSection: FC<TBasicInfoProps> = ({
   avatar,
@@ -14,15 +17,34 @@ const BasicInfoSection: FC<TBasicInfoProps> = ({
   gender,
   name,
 }) => {
+  const queryClient = useQueryClient();
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [isDobModalOpen, setIsDobModalOpen] = useState(false);
   const [isGenderModalOpen, setIsGenderModalOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { isPending } = useMutation({});
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (payload: FormData) => await UploadProfileAvatar(payload),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['personal_info'], (oldData: AxiosResponse) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          avatar: data,
+        };
+      });
+      toast.success('Profile Picture Uploaded', { closeButton: false });
+    },
+    onError: (error) => {
+      console.error('Profile picture upload failed:', error);
+      toast.error('Profile picture upload failed', { closeButton: false });
+    },
+  });
   const handleAvatarClick = () => {
     if (!avatar?.url) {
       fileInputRef.current?.click();
+    } else {
+      setIsAvatarModalOpen(true);
     }
   };
   const handleModalOpen = (field: 'name' | 'dob' | 'gender' | null) => {
@@ -34,6 +56,7 @@ const BasicInfoSection: FC<TBasicInfoProps> = ({
     const file = e.target.files?.[0] as File;
     const payload = new FormData();
     payload.append('avatar', file);
+    mutate(payload);
   };
   return (
     <>
@@ -166,6 +189,7 @@ const BasicInfoSection: FC<TBasicInfoProps> = ({
         setIsUpdateNameModalOpen={setIsNameModalOpen}
       />
       <UpdateProfileAvatarModal
+        name={name}
         avatar={avatar}
         isUpdateProfileAvatarModalOpen={isAvatarModalOpen}
         setIsUpdateProfileAvatarModalOpen={setIsAvatarModalOpen}

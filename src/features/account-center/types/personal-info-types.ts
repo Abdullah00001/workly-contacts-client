@@ -58,6 +58,7 @@ export type TUpdateWorkAddressModalProps = {
 };
 
 export type TUpdateProfileAvatarModalProps = {
+  name: string;
   avatar: TImage;
   isUpdateProfileAvatarModalOpen: boolean;
   setIsUpdateProfileAvatarModalOpen: Dispatch<SetStateAction<boolean>>;
