@@ -34,7 +34,7 @@ const PersonalInfoSectionHolder: FC = () => {
             name={data.name}
           />
           <ContactInfo email={data.email} phone={data.phone} />
-          <AddressInfo home={data.location.home} work={data.location.home} />
+          <AddressInfo home={data.location.home} work={data.location.work} />
         </Suspense>
       )}
     </ErrorBoundary>

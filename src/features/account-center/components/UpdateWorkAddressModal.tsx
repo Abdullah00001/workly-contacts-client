@@ -12,17 +12,53 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FC, useEffect, useState } from 'react';
-import { TUpdateWorkAddressModalProps } from '../types/personal-info-types';
+import {
+  TUpdateWorkAddressModalProps,
+  TProfileUpdatePayload,
+} from '../types/personal-info-types';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { UpdateProfileField } from '../services/personal-info-services';
+
 const UpdateWorkAddressModal: FC<TUpdateWorkAddressModalProps> = ({
-  work,
+  location,
   isUpdateWorkAddressModalOpen,
   setIsUpdateWorkAddressModalOpen,
 }) => {
+  const queryClient = useQueryClient();
   const [userWorkAddress, setUserWorkAddress] = useState<string>('');
-
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (payload: TProfileUpdatePayload) =>
+      await UpdateProfileField(payload),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['personal_info'], (oldData: AxiosResponse) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          location: {
+            home: data.location.home,
+            work: data.location.work,
+          },
+        };
+      });
+      toast.success('Work Address Changed', { closeButton: false });
+      setIsUpdateWorkAddressModalOpen(false);
+    },
+    onError: (error) => {
+      console.log(error.message);
+      toast.error('Work Address  Failed,Try Again!', { closeButton: false });
+    },
+  });
+  const isFieldChange = location.work === userWorkAddress;
+  const handleSave = () => {
+    if (!isFieldChange) {
+      mutate({ location: { ...location, work: userWorkAddress } });
+    }
+  };
   useEffect(() => {
-    setUserWorkAddress(work ?? '');
-  }, [work]);
+    setUserWorkAddress(location.work ?? '');
+  }, [location]);
   return (
     <Dialog
       open={isUpdateWorkAddressModalOpen}
@@ -52,7 +88,13 @@ const UpdateWorkAddressModal: FC<TUpdateWorkAddressModalProps> = ({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit">Save changes</Button>
+          <Button
+            onClick={handleSave}
+            disabled={isFieldChange || isPending}
+            type="submit"
+          >
+            {isPending ? 'Processing...' : 'Save changes'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

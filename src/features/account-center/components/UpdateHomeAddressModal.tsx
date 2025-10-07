@@ -12,17 +12,53 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FC, useEffect, useState } from 'react';
-import { TUpdateHomeAddressModalProps } from '../types/personal-info-types';
+import {
+  TUpdateHomeAddressModalProps,
+  TProfileUpdatePayload,
+} from '../types/personal-info-types';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { UpdateProfileField } from '../services/personal-info-services';
+
 const UpdateHomeAddressModal: FC<TUpdateHomeAddressModalProps> = ({
-  home,
+  location,
   isUpdateHomeAddressModalOpen,
   setIsUpdateHomeAddressModalOpen,
 }) => {
+  const queryClient = useQueryClient();
   const [userHomeAddress, setUserHomeAddress] = useState<string>('');
-
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (payload: TProfileUpdatePayload) =>
+      await UpdateProfileField(payload),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['personal_info'], (oldData: AxiosResponse) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          location: {
+            home: data.location.home,
+            work: data.location.work,
+          },
+        };
+      });
+      toast.success('Home Address Changed', { closeButton: false });
+      setIsUpdateHomeAddressModalOpen(false);
+    },
+    onError: (error) => {
+      console.log(error.message);
+      toast.error('Home Address  Failed,Try Again!', { closeButton: false });
+    },
+  });
+  const isFieldChange = location.home === userHomeAddress;
+  const handleSave = () => {
+    if (!isFieldChange) {
+      mutate({ location: { ...location, home: userHomeAddress } });
+    }
+  };
   useEffect(() => {
-    setUserHomeAddress(home ?? '');
-  }, [home]);
+    setUserHomeAddress(location.home ?? '');
+  }, [location]);
   return (
     <Dialog
       open={isUpdateHomeAddressModalOpen}
@@ -52,7 +88,13 @@ const UpdateHomeAddressModal: FC<TUpdateHomeAddressModalProps> = ({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit">Save changes</Button>
+          <Button
+            onClick={handleSave}
+            disabled={isFieldChange || isPending}
+            type="submit"
+          >
+            {isPending ? 'Processing...' : 'Save changes'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
