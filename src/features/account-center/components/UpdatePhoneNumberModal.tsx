@@ -12,14 +12,49 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FC, useEffect, useState } from 'react';
-import { TUpdatePhoneNumberModalProps } from '../types/personal-info-types';
+import {
+  TUpdatePhoneNumberModalProps,
+  TProfileUpdatePayload,
+} from '../types/personal-info-types';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { UpdateProfileField } from '../services/personal-info-services';
+
 const UpdatePhoneNumberModal: FC<TUpdatePhoneNumberModalProps> = ({
   isUpdatePhoneModalOpen,
   phone,
   setIsUpdatePhoneModalOpen,
 }) => {
+  const queryClient = useQueryClient();
   const [userPhone, setUserPhone] = useState<string>('');
-
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (payload: TProfileUpdatePayload) =>
+      await UpdateProfileField(payload),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['personal_info'], (oldData: AxiosResponse) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          phone: data.phone,
+        };
+      });
+      toast.success('Phone Number Changed', { closeButton: false });
+      setIsUpdatePhoneModalOpen(false);
+    },
+    onError: (error) => {
+      console.log(error.message);
+      toast.error('Phone Number Change Failed,Try Again!', {
+        closeButton: false,
+      });
+    },
+  });
+  const isFieldChange = phone === userPhone;
+  const handleSave = () => {
+    if (!isFieldChange) {
+      mutate({ phone: userPhone });
+    }
+  };
   useEffect(() => {
     setUserPhone(phone ?? '');
   }, [phone]);
@@ -52,7 +87,13 @@ const UpdatePhoneNumberModal: FC<TUpdatePhoneNumberModalProps> = ({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit">Save changes</Button>
+          <Button
+            onClick={handleSave}
+            disabled={isFieldChange || isPending}
+            type="submit"
+          >
+            {isPending ? 'Processing...' : 'Save changes'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

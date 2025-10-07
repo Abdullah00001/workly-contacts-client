@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { FC, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { TAddressInfoProps } from '../types/personal-info-types';
@@ -69,12 +69,12 @@ const AddressInfoSection: FC<TAddressInfoProps> = ({ home, work }) => {
         </div>
       </div>
       <UpdateHomeAddressModal
-        home={home}
+        location={{ home, work }}
         isUpdateHomeAddressModalOpen={isUpdateHomeAddressModalOpen}
         setIsUpdateHomeAddressModalOpen={setIsUpdateHomeAddressModalOpen}
       />
       <UpdateWorkAddressModal
-        work={work}
+        location={{ home, work }}
         isUpdateWorkAddressModalOpen={isUpdateWorkAddressModalOpen}
         setIsUpdateWorkAddressModalOpen={setIsUpdateWorkAddressModalOpen}
       />

@@ -11,7 +11,10 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { FC, useEffect, useState } from 'react';
-import { TUpdateGenderModalProps } from '../types/personal-info-types';
+import {
+  TProfileUpdatePayload,
+  TUpdateGenderModalProps,
+} from '../types/personal-info-types';
 import {
   Select,
   SelectContent,
@@ -19,12 +22,43 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { UpdateProfileField } from '../services/personal-info-services';
+
 const UpdateGenderModal: FC<TUpdateGenderModalProps> = ({
   isUpdateGenderModalOpen,
   gender,
   setIsUpdateGenderModalOpen,
 }) => {
+  const queryClient = useQueryClient();
   const [userGender, setUserGender] = useState<string | undefined>(undefined);
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (payload: TProfileUpdatePayload) =>
+      await UpdateProfileField(payload),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['personal_info'], (oldData: AxiosResponse) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          gender: data.gender,
+        };
+      });
+      toast.success('Gender Changed', { closeButton: false });
+      setIsUpdateGenderModalOpen(false);
+    },
+    onError: (error) => {
+      console.log(error.message);
+      toast.error('Gender Change Failed,Try Again!', { closeButton: false });
+    },
+  });
+  const isFieldChange = gender === userGender;
+  const handleSave = () => {
+    if (!isFieldChange) {
+      mutate({ gender: userGender });
+    }
+  };
   useEffect(() => {
     setUserGender(gender ?? undefined);
   }, [gender]);
@@ -50,8 +84,8 @@ const UpdateGenderModal: FC<TUpdateGenderModalProps> = ({
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -60,7 +94,13 @@ const UpdateGenderModal: FC<TUpdateGenderModalProps> = ({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit">Save changes</Button>
+          <Button
+            onClick={handleSave}
+            disabled={isFieldChange || isPending}
+            type="submit"
+          >
+            {isPending ? 'Processing...' : 'Save changes'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

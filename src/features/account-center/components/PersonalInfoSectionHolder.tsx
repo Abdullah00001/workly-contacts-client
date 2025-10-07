@@ -21,7 +21,6 @@ const PersonalInfoSectionHolder: FC = () => {
     queryFn: async () => await GetFullProfileService(),
     queryKey: ['personal_info'],
   });
-  console.log(data);
   return (
     <ErrorBoundary errorComponent={AccountCenterErrorBoundary}>
       {isPending ? (
@@ -35,7 +34,7 @@ const PersonalInfoSectionHolder: FC = () => {
             name={data.name}
           />
           <ContactInfo email={data.email} phone={data.phone} />
-          <AddressInfo home={data.location.home} work={data.location.home} />
+          <AddressInfo home={data.location.home} work={data.location.work} />
         </Suspense>
       )}
     </ErrorBoundary>

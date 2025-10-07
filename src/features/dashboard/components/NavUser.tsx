@@ -45,6 +45,7 @@ export default function NavUser() {
       <DropdownMenuContent className="mt-2 w-72 mr-4 md:mr-7 ">
         <DropdownMenuItem className="py-3 cursor-pointer hover:!bg-gray-100 hover:!text-primary">
           <Avatar>
+            <AvatarImage src={data?.avatar?.url} alt={data?.name} />
             <AvatarFallback className="bg-primary text-primary-foreground">
               {data?.name.slice(0, 2).toUpperCase()}
             </AvatarFallback>

@@ -46,19 +46,28 @@ export type TAddressInfoProps = {
 };
 
 export type TUpdateHomeAddressModalProps = {
-  home: string | null;
+  location: TAddressInfoProps;
   isUpdateHomeAddressModalOpen: boolean;
   setIsUpdateHomeAddressModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export type TUpdateWorkAddressModalProps = {
-  work: string | null;
+  location: TAddressInfoProps;
   isUpdateWorkAddressModalOpen: boolean;
   setIsUpdateWorkAddressModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export type TUpdateProfileAvatarModalProps = {
+  name: string;
   avatar: TImage;
   isUpdateProfileAvatarModalOpen: boolean;
   setIsUpdateProfileAvatarModalOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export type TProfileUpdatePayload = {
+  location?: TAddressInfoProps;
+  dateOfBirth?: string;
+  name?: string;
+  phone?: string;
+  gender?: string;
 };
