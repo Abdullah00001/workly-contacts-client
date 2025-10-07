@@ -60,3 +60,13 @@ export const UpdateProfileField = async (payload: TProfileUpdatePayload) => {
     throw new Error('Unknown Error Occurred In Update Profile Field Service');
   }
 };
+
+export const SecurityOverviewData = async () => {
+  try {
+    const response = await axiosClient.get('/auth/security-overview');
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Security Overview Data Service');
+  }
+};

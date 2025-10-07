@@ -19,3 +19,28 @@ export function formatRelativeTime(dateString: string): string {
     return `${diffInDays}d ago`;
   }
 }
+
+export function formatISODateForDisplay(isoDate: string, type: DateFormatType): string {
+  const date = new Date(isoDate);
+
+  const optionsWithoutTime: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+
+  const optionsWithTime: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  };
+
+  if (type === 'withtime') {
+    return date.toLocaleString('en-US', optionsWithTime);
+  } else {
+    return date.toLocaleDateString('en-US', optionsWithoutTime);
+  }
+}

@@ -71,3 +71,12 @@ export type TProfileUpdatePayload = {
   phone?: string;
   gender?: string;
 };
+
+export type SecurityOverviewData = {
+  accountCreatedAt?: string;
+  lastPasswordChange?: string;
+  lastLoginBrowser?: string;
+  lastLoginOs?: string;
+  lastLoginLocation?: string;
+  lastLoginTime?: string;
+};

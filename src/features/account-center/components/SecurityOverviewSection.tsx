@@ -1,8 +1,17 @@
-'use client'
+'use client';
 import { FC } from 'react';
 import { ChevronRight } from 'lucide-react';
+import { SecurityOverviewData } from '../types/personal-info-types';
+import { formatISODateForDisplay } from '@/lib/date-utils';
 
-const SecurityOverview: FC = () => {
+const SecurityOverview: FC<SecurityOverviewData> = ({
+  accountCreatedAt,
+  lastLoginBrowser,
+  lastLoginLocation,
+  lastLoginOs,
+  lastPasswordChange,
+  lastLoginTime,
+}) => {
   return (
     <div className="w-full mt-4 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Security Overview</h5>
@@ -13,7 +22,11 @@ const SecurityOverview: FC = () => {
               Password
             </h6>
             <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]  whitespace-nowrap">
-              Last Changed July 26,2025
+              Last Changed{' '}
+              {formatISODateForDisplay(
+                lastPasswordChange as string,
+                'withouttime'
+              )}
             </h5>
           </div>
           <div className="flex justify-end min-[620px]:w-[40%]">
@@ -30,7 +43,7 @@ const SecurityOverview: FC = () => {
               Last Logged In
             </h6>
             <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]  whitespace-nowrap">
-              July 25, 2025, 08:31PM
+              {formatISODateForDisplay(lastLoginTime as string, 'withtime')}
             </h5>
           </div>
           <div className="flex justify-end min-[620px]:w-[40%]">
@@ -47,7 +60,7 @@ const SecurityOverview: FC = () => {
               Last Login Location
             </h6>
             <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]  whitespace-nowrap">
-              Dhaka,Bangladesh
+              {lastLoginLocation}
             </h5>
           </div>
           <div className="flex justify-end min-[620px]:w-[40%]">
@@ -64,7 +77,7 @@ const SecurityOverview: FC = () => {
               Last Login Device
             </h6>
             <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]  whitespace-nowrap">
-              Google Chrome On Linux
+              {lastLoginBrowser} On {lastLoginOs}
             </h5>
           </div>
           <div className="flex justify-end min-[620px]:w-[40%]">
@@ -81,7 +94,10 @@ const SecurityOverview: FC = () => {
               Account Created On
             </h6>
             <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]  whitespace-nowrap">
-              July 02,2023
+              {formatISODateForDisplay(
+                accountCreatedAt as string,
+                'withouttime'
+              )}
             </h5>
           </div>
           <div className="flex justify-end min-[620px]:w-[40%]">
