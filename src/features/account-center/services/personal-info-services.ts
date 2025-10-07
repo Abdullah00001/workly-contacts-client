@@ -1,6 +1,7 @@
 'use client';
 import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
+import { TProfileUpdatePayload } from '../types/personal-info-types';
 
 export const GetFullProfileService = async () => {
   try {
@@ -47,5 +48,15 @@ export const DeleteProfileAvatar = async (payload: string) => {
   } catch (error) {
     if (error instanceof AxiosError) throw error;
     throw new Error('Unknown Error Occurred In Delete Profile Avatar Service');
+  }
+};
+
+export const UpdateProfileField = async (payload: TProfileUpdatePayload) => {
+  try {
+    const response = await axiosClient.patch('/me', payload);
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Update Profile Field Service');
   }
 };

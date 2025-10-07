@@ -63,3 +63,11 @@ export type TUpdateProfileAvatarModalProps = {
   isUpdateProfileAvatarModalOpen: boolean;
   setIsUpdateProfileAvatarModalOpen: Dispatch<SetStateAction<boolean>>;
 };
+
+export type TProfileUpdatePayload = {
+  location?: TAddressInfoProps;
+  dateOfBirth?: string;
+  name?: string;
+  phone?: string;
+  gender?: string;
+};
