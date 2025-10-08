@@ -1,7 +1,11 @@
 'use client';
 import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
-import { TProfileUpdatePayload } from '../types/personal-info-types';
+import {
+  TChangePasswordPayload,
+  TProfileUpdatePayload,
+  TRemoveSession,
+} from '../types/personal-info-types';
 
 export const GetFullProfileService = async () => {
   try {
@@ -58,5 +62,55 @@ export const UpdateProfileField = async (payload: TProfileUpdatePayload) => {
   } catch (error) {
     if (error instanceof AxiosError) throw error;
     throw new Error('Unknown Error Occurred In Update Profile Field Service');
+  }
+};
+
+export const ChangePassword = async (payload: TChangePasswordPayload) => {
+  try {
+    const response = await axiosClient.post('/me', payload);
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Change Password Service');
+  }
+};
+
+export const SecurityOverviewData = async () => {
+  try {
+    const response = await axiosClient.get('/auth/security-overview');
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Security Overview Data Service');
+  }
+};
+
+export const ActiveSessions = async () => {
+  try {
+    const response = await axiosClient.get('/auth/active-sessions');
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Active Sessions Data Service');
+  }
+};
+
+export const RecentActivities = async () => {
+  try {
+    const response = await axiosClient.get('/auth/activity/recent');
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Recent Activity Data Service');
+  }
+};
+
+export const RemoveSession = async (payload: TRemoveSession) => {
+  try {
+    const response = await axiosClient.post('/auth/session-remove', payload);
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Remove Session Service');
   }
 };

@@ -72,3 +72,11 @@ export type TSessionContainerProps = {
 export type TClearSessionServicePayload = {
   devices: string[];
 };
+
+export enum AuthErrorType {
+  SESSION_EXPIRED = 'SESSION_EXPIRED',
+  SESSION_BLACKLISTED = 'SESSION_BLACKLISTED',
+  TOKEN_EXPIRED = 'TOKEN_EXPIRED',
+  TOKEN_INVALID = 'TOKEN_INVALID',
+  TOKEN_BLACKLISTED = 'TOKEN_BLACKLISTED',
+}

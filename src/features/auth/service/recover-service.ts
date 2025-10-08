@@ -333,7 +333,6 @@ export const CheckRecoverResendOtpAvailability = async () => {
 };
 
 export const ResetPassword = async (payload: TResetPasswordPayload) => {
-  console.log(payload);
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/recover/reset`,

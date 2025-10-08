@@ -43,7 +43,10 @@ export default function NavUser() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mt-2 w-72 mr-4 md:mr-7 ">
-        <DropdownMenuItem className="py-3 cursor-pointer hover:!bg-gray-100 hover:!text-primary">
+        <DropdownMenuItem
+          onClick={() => router.push('/accountscenter')}
+          className="py-3 cursor-pointer hover:!bg-gray-100 hover:!text-primary"
+        >
           <Avatar>
             <AvatarImage src={data?.avatar?.url} alt={data?.name} />
             <AvatarFallback className="bg-primary text-primary-foreground">

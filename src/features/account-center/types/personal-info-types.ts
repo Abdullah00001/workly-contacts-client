@@ -71,3 +71,51 @@ export type TProfileUpdatePayload = {
   phone?: string;
   gender?: string;
 };
+
+export type SecurityOverviewData = {
+  accountCreatedAt?: string;
+  lastPasswordChange?: string;
+  lastLoginBrowser?: string;
+  lastLoginOs?: string;
+  lastLoginLocation?: string;
+  lastLoginTime?: string;
+};
+
+export type TSessionData = {
+  sessionId: string;
+  lastUsedAt: string;
+  userId: string;
+  browser: string;
+  os: string;
+  location: string;
+  currentSession?: boolean;
+};
+
+export type TActiveSessionSectionProps = {
+  sessions: TSessionData[];
+};
+
+export type TRecentActivityData = {
+  _id: string;
+  activityType: string;
+  location: string;
+  createdAt: string;
+};
+
+export type TRecentActivitySectionProps = {
+  activities: TRecentActivityData[];
+};
+
+export type TChangePasswordPayload = {
+  currentPassword: string;
+  password: string;
+};
+
+export type TChangePasswordModalProps = {
+  isOpenChangePasswordModal: boolean;
+  setOpenChangePasswordModal: Dispatch<SetStateAction<boolean>>;
+};
+
+export type TRemoveSession = {
+  sessionId: string;
+};
