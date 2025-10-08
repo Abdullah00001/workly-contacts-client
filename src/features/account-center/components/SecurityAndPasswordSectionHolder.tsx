@@ -4,7 +4,11 @@ import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import AccountCenterErrorBoundary from './AccountCenterErrorBoundary';
 import { useQuery } from '@tanstack/react-query';
 import SecurityAndPasswordPageSkeleton from './SecurityAndPasswordPageSkeleton';
-import { SecurityOverviewData } from '../services/personal-info-services';
+import {
+  ActiveSessions,
+  RecentActivities,
+  SecurityOverviewData,
+} from '../services/personal-info-services';
 
 const SecurityOverviewSection = lazy(
   () => import('@/features/account-center/components/SecurityOverviewSection')
@@ -17,14 +21,25 @@ const RecentActivitySection = lazy(
 );
 
 const SecurityAndPasswordSectionHolder: FC = () => {
-  const { isPending, data } = useQuery({
-    queryFn: async () => await SecurityOverviewData(),
-    queryKey: ['security_overview'],
-  });
-  useEffect(() => {
-    console.log(data?.accountCreatedAt);
-  }, [data]);
-  const isLoading = isPending;
+  const { isPending: isSecurityOverviewPending, data: securityOverViewData } =
+    useQuery({
+      queryFn: async () => await SecurityOverviewData(),
+      queryKey: ['security_overview'],
+    });
+  const { isPending: isActiveSessionsPending, data: activeSessionsData } =
+    useQuery({
+      queryFn: async () => await ActiveSessions(),
+      queryKey: ['active_sessions'],
+    });
+  const { isPending: isRecentActivityDataPending, data: recentActivities } =
+    useQuery({
+      queryFn: async () => await RecentActivities(),
+      queryKey: ['recent_activities'],
+    });
+  const isLoading =
+    isSecurityOverviewPending ||
+    isActiveSessionsPending ||
+    isRecentActivityDataPending;
   return (
     <ErrorBoundary errorComponent={AccountCenterErrorBoundary}>
       {isLoading ? (
@@ -32,15 +47,15 @@ const SecurityAndPasswordSectionHolder: FC = () => {
       ) : (
         <Suspense fallback={<SecurityAndPasswordPageSkeleton />}>
           <SecurityOverviewSection
-            accountCreatedAt={data?.accountCreatedAt}
-            lastLoginBrowser={data?.lastLoginBrowser}
-            lastLoginLocation={data?.lastLoginLocation}
-            lastLoginOs={data?.lastLoginOs}
-            lastPasswordChange={data?.lastPasswordChange}
-            lastLoginTime={data?.lastLoginTime}
+            accountCreatedAt={securityOverViewData?.accountCreatedAt}
+            lastLoginBrowser={securityOverViewData?.lastLoginBrowser}
+            lastLoginLocation={securityOverViewData?.lastLoginLocation}
+            lastLoginOs={securityOverViewData?.lastLoginOs}
+            lastPasswordChange={securityOverViewData?.lastPasswordChange}
+            lastLoginTime={securityOverViewData?.lastLoginTime}
           />
-          <ActiveSessionSection />
-          <RecentActivitySection />
+          <ActiveSessionSection sessions={activeSessionsData} />
+          <RecentActivitySection activities={recentActivities} />
         </Suspense>
       )}
     </ErrorBoundary>

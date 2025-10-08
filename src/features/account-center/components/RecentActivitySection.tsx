@@ -2,58 +2,26 @@
 
 import { ChevronRight } from 'lucide-react';
 import { FC } from 'react';
+import { TRecentActivitySectionProps } from '../types/personal-info-types';
+import { getMonthAndDayFromISO } from '@/lib/date-utils';
 
-const securityActivities = [
-  {
-    id: 1,
-    activity: 'New Login',
-    date: 'July 29',
-    location: 'Dhaka, Bangladesh',
-  },
-  {
-    id: 2,
-    activity: 'Password Changed',
-    date: 'July 28',
-    location: 'Chittagong, Bangladesh',
-  },
-  {
-    id: 3,
-    activity: 'New Login',
-    date: 'July 27',
-    location: 'New York, USA',
-  },
-  {
-    id: 4,
-    activity: 'Email Updated',
-    date: 'July 26',
-    location: 'London, UK',
-  },
-  {
-    id: 5,
-    activity: 'New Login',
-    date: 'July 25',
-    location: 'Sydney, Australia',
-  },
-];
-
-const RecentSecurityActivity: FC = () => {
+const RecentSecurityActivity: FC<TRecentActivitySectionProps> = ({activities}) => {
   return (
     <div className="w-full mt-4 mb-10 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Recent Security Activity</h5>
       <div className="mt-2">
-        {securityActivities
-          .slice(0, 3)
-          .map(({ activity, date, id, location }) => (
-            <div key={id}>
+        {activities
+          .map(({ activityType,createdAt,_id,location },index) => (
+            <div key={_id}>
               <div
                 className={`flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full`}
               >
                 <div className="flex flex-col min-[620px]:w-[60%] min-[620px]:flex-row min-[620px]:justify-between min-[620px]:items-center">
                   <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]  whitespace-nowrap">
-                    {activity}
+                    {activityType}
                   </h5>
                   <h6 className="text-xs font-medium min-[620px]:w-[50%]">
-                    {date},{location}
+                    {getMonthAndDayFromISO(createdAt)},{location}
                   </h6>
                 </div>
                 <div className="flex justify-end min-[620px]:w-[40%]">

@@ -70,3 +70,23 @@ export const SecurityOverviewData = async () => {
     throw new Error('Unknown Error Occurred In Security Overview Data Service');
   }
 };
+
+export const ActiveSessions = async () => {
+  try {
+    const response = await axiosClient.get('/auth/active-sessions');
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Active Sessions Data Service');
+  }
+};
+
+export const RecentActivities = async () => {
+  try {
+    const response = await axiosClient.get('/auth/activity/recent');
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Recent Activity Data Service');
+  }
+};

@@ -80,3 +80,28 @@ export type SecurityOverviewData = {
   lastLoginLocation?: string;
   lastLoginTime?: string;
 };
+
+export type TSessionData = {
+  sessionId: string;
+  lastUsedAt: string;
+  userId: string;
+  browser: string;
+  os: string;
+  location: string;
+  currentSession?: boolean;
+};
+
+export type TActiveSessionSectionProps = {
+  sessions: TSessionData[];
+};
+
+export type TRecentActivityData = {
+  _id: string;
+  activityType: string;
+  location: string;
+  createdAt: string;
+};
+
+export type TRecentActivitySectionProps = {
+  activities: TRecentActivityData[];
+};
