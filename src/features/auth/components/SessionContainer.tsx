@@ -38,7 +38,6 @@ export default function SessionContainer({
    */
   const handleRemoveAll = () => {
     const allSessions = sessions.map((item) => item.sessionId);
-    console.log(allSessions);
     mutate({ devices: allSessions });
   };
 

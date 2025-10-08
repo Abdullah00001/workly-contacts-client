@@ -1,3 +1,5 @@
+import { AuthErrorType } from '@/features/auth/types/auth-types';
+
 export default class HttpError extends Error {
   status: number;
 
@@ -6,3 +8,10 @@ export default class HttpError extends Error {
     this.status = status;
   }
 }
+
+export const getErrorCode = (data: unknown): AuthErrorType | undefined => {
+  if (data && typeof data === 'object' && 'error' in data) {
+    return (data as { error: AuthErrorType }).error;
+  }
+  return undefined;
+};

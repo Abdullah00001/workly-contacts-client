@@ -17,11 +17,11 @@ const ProtectedGuard: FC<TLayout> = ({ children }) => {
       const result = await checkAccessAndRefresh();
       if (result === AuthMessages.SESSION_EXPIRED && !redirected) {
         redirected = true;
-        router.replace('/');
+        window.location.href = '/';
       }
       if (result === AuthMessages.UNAUTHENTICATED && !redirected) {
         redirected = true;
-        router.replace('/');
+        window.location.href = '/';
       } else {
         setStatus(result);
       }

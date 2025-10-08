@@ -1,4 +1,5 @@
 'use client';
+import { AuthErrorType } from '@/features/auth/types/auth-types';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
@@ -20,6 +21,35 @@ axiosClient.interceptors.response.use(
     }
     if (
       error.response?.status === 401 &&
+      (error.response?.data as { error: AuthErrorType })?.error ===
+        AuthErrorType.SESSION_BLACKLISTED
+    ) {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/force-logout`,
+        { Credential: true }
+      );
+      window.location.href = '/';
+      return;
+    }
+    if (
+      error.response?.status === 401 &&
+      ((error.response?.data as { error: AuthErrorType })?.error ===
+        AuthErrorType.TOKEN_INVALID ||
+        (error.response?.status === 401 &&
+          (error.response?.data as { error: AuthErrorType })?.error ===
+            AuthErrorType.TOKEN_BLACKLISTED))
+    ) {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/force-logout`,
+        { Credential: true }
+      );
+      window.location.href = '/';
+      return;
+    }
+    if (
+      error.response?.status === 401 &&
+      (error.response?.data as { error: AuthErrorType })?.error ===
+        AuthErrorType.TOKEN_EXPIRED &&
       !originalRequest._retry &&
       !originalRequest.url?.includes('/auth/refresh')
     ) {
@@ -29,6 +59,7 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         await axiosClient.post('/auth/logout');
+        window.location.href = '/';
         return Promise.reject(refreshError);
       }
     }

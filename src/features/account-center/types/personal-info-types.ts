@@ -107,11 +107,15 @@ export type TRecentActivitySectionProps = {
 };
 
 export type TChangePasswordPayload = {
-  currentPassword:string
+  currentPassword: string;
   password: string;
 };
 
 export type TChangePasswordModalProps = {
   isOpenChangePasswordModal: boolean;
   setOpenChangePasswordModal: Dispatch<SetStateAction<boolean>>;
+};
+
+export type TRemoveSession = {
+  sessionId: string;
 };

@@ -45,8 +45,6 @@ const ChangePasswordModal: FC<TChangePasswordModalProps> = ({
       queryClient.setQueryData(
         ['security_overview'],
         (oldData: AxiosResponse) => {
-          console.log('new', data);
-          console.log('old', oldData);
           if (!oldData) return oldData;
           return {
             ...oldData,
@@ -67,7 +65,7 @@ const ChangePasswordModal: FC<TChangePasswordModalProps> = ({
         toast.error(error.response?.data?.message, {
           closeButton: false,
         });
-      }else{
+      } else {
         toast.error('Unknown Error Occurred,Try Again!', {
           closeButton: false,
         });

@@ -1,12 +1,54 @@
 'use client';
 
 import { FC } from 'react';
-import { TActiveSessionSectionProps } from '../types/personal-info-types';
+import {
+  TActiveSessionSectionProps,
+  TRemoveSession,
+} from '../types/personal-info-types';
 import { getRelativeTimeFromNow } from '@/lib/date-utils';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { LogoutService } from '@/features/auth/service/auth-service';
+import { RemoveSession } from '../services/personal-info-services';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
 
 const ActiveSessionsSection: FC<TActiveSessionSectionProps> = ({
   sessions,
 }) => {
+  const queryClient = useQueryClient();
+  const { isPending: currentDeviceLogoutPending, mutate: currentDeviceLogout } =
+    useMutation({
+      mutationFn: async () => await LogoutService(),
+      onSuccess: (data) => {
+        window.location.href = '/';
+      },
+    });
+  const { isPending: isRemoveSessionPending, mutate: removeSession } =
+    useMutation({
+      mutationFn: async (payload: TRemoveSession) =>
+        await RemoveSession(payload),
+      onSuccess: (data) => {
+        queryClient.setQueryData(['active_sessions'], data);
+        toast.success('Session Removed', { closeButton: false });
+      },
+      onError: (error) => {
+        console.log(error.message);
+        toast.error('Session Remove Failed, Try Again!', {
+          closeButton: false,
+        });
+      },
+    });
+  const isLoading = currentDeviceLogoutPending || isRemoveSessionPending;
+  const handleRemove = ({
+    currentSession,
+    sid,
+  }: {
+    currentSession: boolean;
+    sid: string;
+  }) => {
+    if (currentSession) currentDeviceLogout();
+    else removeSession({ sessionId: sid });
+  };
   return (
     <div className="w-full  mt-4 mb-4 border border-gray-500 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Active Sessions</h5>
@@ -65,8 +107,16 @@ const ActiveSessionsSection: FC<TActiveSessionSectionProps> = ({
                     {getRelativeTimeFromNow(lastUsedAt)}
                   </td>
                   <td className="py-3 px-4">
-                    <button className="bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-2 px-3 cursor-pointer rounded transition-colors">
-                      Logout
+                    <button
+                      onClick={() =>
+                        handleRemove({
+                          currentSession: currentSession as boolean,
+                          sid: sessionId,
+                        })
+                      }
+                      className="bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-2 px-3 cursor-pointer rounded transition-colors"
+                    >
+                      {isLoading ? 'Processing...' : 'Logout'}
                     </button>
                   </td>
                 </tr>

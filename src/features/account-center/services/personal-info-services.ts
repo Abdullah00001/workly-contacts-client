@@ -4,6 +4,7 @@ import { AxiosError } from 'axios';
 import {
   TChangePasswordPayload,
   TProfileUpdatePayload,
+  TRemoveSession,
 } from '../types/personal-info-types';
 
 export const GetFullProfileService = async () => {
@@ -101,5 +102,15 @@ export const RecentActivities = async () => {
   } catch (error) {
     if (error instanceof AxiosError) throw error;
     throw new Error('Unknown Error Occurred In Recent Activity Data Service');
+  }
+};
+
+export const RemoveSession = async (payload: TRemoveSession) => {
+  try {
+    const response = await axiosClient.post('/auth/session-remove', payload);
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Remove Session Service');
   }
 };

@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  AuthErrorType,
   AuthMessages,
   TAccountVerifyPayload,
   TClearSessionServicePayload,
@@ -182,8 +183,40 @@ export const checkAccessAndRefresh = async () => {
     );
     if (response.ok) return AuthMessages.AUTHENTICATED;
     const status = response.status;
-    switch (status) {
-      case 401:
+    const data = await response.json();
+    if (status === 401) {
+      if (
+        data?.error === AuthErrorType.TOKEN_INVALID ||
+        data?.error === AuthErrorType.TOKEN_BLACKLISTED
+      ) {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/force-logout`,
+          {
+            cache: 'no-cache',
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        return AuthMessages.UNAUTHENTICATED;
+      }
+      if (data?.error === AuthErrorType.SESSION_BLACKLISTED) {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/force-logout`,
+          {
+            cache: 'no-cache',
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        return AuthMessages.SESSION_EXPIRED;
+      }
+      if (data?.error === AuthErrorType.TOKEN_EXPIRED) {
         const refreshResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
           {
@@ -196,24 +229,46 @@ export const checkAccessAndRefresh = async () => {
           }
         );
         if (refreshResponse.ok) return AuthMessages.AUTHENTICATED;
-        const refreshResponseStatus = refreshResponse.status;
-        switch (refreshResponseStatus) {
-          case 401:
+        const refreshStatus = refreshResponse.status;
+        const refreshResponseData = await refreshResponse.json();
+        if (refreshStatus === 401) {
+          if (
+            refreshResponseData?.error === AuthErrorType.TOKEN_INVALID ||
+            refreshResponseData?.error === AuthErrorType.TOKEN_BLACKLISTED
+          ) {
+            await fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/force-logout`,
+              {
+                cache: 'no-cache',
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
             return AuthMessages.UNAUTHENTICATED;
-          case 440:
+          }
+          if (
+            refreshResponseData?.error === AuthErrorType.SESSION_BLACKLISTED
+          ) {
+            await fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/force-logout`,
+              {
+                cache: 'no-cache',
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
             return AuthMessages.SESSION_EXPIRED;
-          case 500:
-            return AuthMessages.SERVER_ERROR;
-          default:
-            return AuthMessages.SERVER_ERROR;
+          }
         }
-      case 440:
-        return AuthMessages.SESSION_EXPIRED;
-      case 500:
-        return AuthMessages.SERVER_ERROR;
-      default:
-        return AuthMessages.SERVER_ERROR;
+      }
     }
+    return AuthMessages.UNAUTHENTICATED;
   } catch (error) {
     return AuthMessages.SERVER_ERROR;
   }

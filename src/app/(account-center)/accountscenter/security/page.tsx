@@ -54,7 +54,7 @@ export default function SecurityAndPassword() {
           activity to keep your account safe and under your control.
         </p>
       </div>
-      <SecurityAndPasswordSectionHolder/>
+      <SecurityAndPasswordSectionHolder />
     </div>
   );
 }
