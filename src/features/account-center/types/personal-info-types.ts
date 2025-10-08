@@ -105,3 +105,13 @@ export type TRecentActivityData = {
 export type TRecentActivitySectionProps = {
   activities: TRecentActivityData[];
 };
+
+export type TChangePasswordPayload = {
+  currentPassword:string
+  password: string;
+};
+
+export type TChangePasswordModalProps = {
+  isOpenChangePasswordModal: boolean;
+  setOpenChangePasswordModal: Dispatch<SetStateAction<boolean>>;
+};

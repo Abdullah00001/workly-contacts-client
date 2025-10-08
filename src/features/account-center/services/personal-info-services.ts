@@ -1,7 +1,10 @@
 'use client';
 import axiosClient from '@/lib/axios';
 import { AxiosError } from 'axios';
-import { TProfileUpdatePayload } from '../types/personal-info-types';
+import {
+  TChangePasswordPayload,
+  TProfileUpdatePayload,
+} from '../types/personal-info-types';
 
 export const GetFullProfileService = async () => {
   try {
@@ -58,6 +61,16 @@ export const UpdateProfileField = async (payload: TProfileUpdatePayload) => {
   } catch (error) {
     if (error instanceof AxiosError) throw error;
     throw new Error('Unknown Error Occurred In Update Profile Field Service');
+  }
+};
+
+export const ChangePassword = async (payload: TChangePasswordPayload) => {
+  try {
+    const response = await axiosClient.post('/me', payload);
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown Error Occurred In Change Password Service');
   }
 };
 
