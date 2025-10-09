@@ -4,16 +4,18 @@ import { ChevronRight } from 'lucide-react';
 import { FC } from 'react';
 import { TRecentActivitySectionProps } from '../types/personal-info-types';
 import { getMonthAndDayFromISO } from '@/lib/date-utils';
+import { useRouter } from 'next/navigation';
 
 const RecentSecurityActivity: FC<TRecentActivitySectionProps> = ({
   activities,
 }) => {
+  const router = useRouter();
   return (
     <div className="w-full mt-4 mb-10 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
       <h5 className="font-medium text-[16px]">Recent Security Activity</h5>
       <div className="mt-2">
-        {activities.map(({ activityType, createdAt, _id, location }, index) => (
-          <div key={_id}>
+        {activities.map(({ activityType, createdAt, _id, location }) => (
+          <div key={_id} onClick={() => router.push(`/activity/${_id}`)}>
             <div
               className={`flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 lg:border-b lg:border-gray-400 items-center justify-between w-full`}
             >
@@ -37,7 +39,10 @@ const RecentSecurityActivity: FC<TRecentActivitySectionProps> = ({
         ))}
       </div>
       <div className="mt-4">
-        <button className="font-bold text-[#0064e0] cursor-pointer">
+        <button
+          onClick={() => router.push('/activity')}
+          className="font-bold text-[#0064e0] cursor-pointer"
+        >
           More Activity
         </button>
       </div>

@@ -57,3 +57,22 @@ export const navItems: TNavItem[] = [
     },
   },
 ];
+
+export const PublicPages = [
+  {
+    pathName: 'Privacy',
+    path: '/privacy',
+  },
+  {
+    pathName: 'Terms',
+    path: '/terms',
+  },
+  {
+    pathName: 'Help',
+    path: '/help',
+  },
+  {
+    pathName: 'Contact Us',
+    path: '/contact',
+  },
+];
