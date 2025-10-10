@@ -1,8 +1,4 @@
-import ActivityRow from '@/features/activity/components/ActivityRow';
-import { groupActivitiesByDate } from '@/features/activity/lib/activity-lib';
-import { RetrieveActivity } from '@/features/activity/services/activity-service';
-import { TActivity } from '@/features/activity/types/activity-type';
-import { ChevronRight } from 'lucide-react';
+import ActivityTable from '@/features/activity/components/ActivityTable';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -39,8 +35,6 @@ export const metadata: Metadata = {
 };
 
 export default async function page() {
-  const data = await RetrieveActivity();
-  const activities = groupActivitiesByDate(data?.data);
   return (
     <div className="w-full h-full overflow-y-scroll">
       <div className="lg:w-[870px] mx-auto">
@@ -49,25 +43,7 @@ export default async function page() {
             Security activity and alerts from the last 28 days.
           </p>
         </div>
-        <div className="flex flex-1 flex-col gap-5 px-4 lg:px-0 pb-4">
-          {Object.entries(activities).map(([date, items]) => (
-            <div key={date}>
-              <h1 className="text-lg font-google-sans mb-6">{date}</h1>
-              <div className="flex flex-col gap-3">
-                {items.map(({ _id, createdAt, device, location, title }) => (
-                  <ActivityRow
-                    key={_id}
-                    _id={_id}
-                    createdAt={createdAt}
-                    device={device}
-                    location={location}
-                    title={title}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <ActivityTable />
       </div>
     </div>
   );

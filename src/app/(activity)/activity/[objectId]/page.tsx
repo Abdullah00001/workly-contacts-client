@@ -229,7 +229,7 @@ export default async function ActivityDetails({
                   Security Reminder
                 </h3>
                 <p className="text-xs sm:text-sm text-amber-200 leading-relaxed">
-                  If you don't recognize this activity, please secure your
+                  If you don{`'`}t recognize this activity, please secure your
                   account immediately by changing your password and reviewing
                   your security settings.
                 </p>
