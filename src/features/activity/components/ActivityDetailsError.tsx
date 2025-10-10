@@ -7,7 +7,7 @@ const ActivityDetailsError: FC<{ error: Error; onRetry: () => void }> = ({
   error,
   onRetry,
 }) => (
-  <div className="flex flex-1 items-center justify-center px-4 py-12">
+  <div className="flex flex-1 items-center justify-center px-4 py-12 bg-[#152127]">
     <Card className="max-w-md w-full bg-[#1a2930] border-red-800">
       <CardContent className="p-6 text-center">
         <div className="w-16 h-16 bg-red-950/50 rounded-full flex items-center justify-center mx-auto mb-4">

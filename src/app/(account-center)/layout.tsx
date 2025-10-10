@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: TLayout) {
         {/* Tablet And Mobile Device Layout */}
         <div className="block lg:hidden text-white bg-[#152127] min-h-screen">
           <header className="sticky top-0 z-50 bg-[#152127]">
-            <AccountCenterHeader/>
+            <AccountCenterHeader />
           </header>
           <main className="overflow-y-auto">{children}</main>
         </div>

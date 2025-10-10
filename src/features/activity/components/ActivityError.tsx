@@ -1,3 +1,4 @@
+'use client';
 import { FC } from 'react';
 
 const ActivityError: FC<{ error: Error; onRetry: () => void }> = ({

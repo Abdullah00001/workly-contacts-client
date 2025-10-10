@@ -2,13 +2,7 @@ import { parseISO, format } from 'date-fns';
 import { ActivityType, TActivity } from '../types/activity-type';
 import {
   CheckCircle2,
-  Monitor,
-  MapPin,
-  Globe,
-  Smartphone,
-  Calendar,
   Shield,
-  AlertCircle,
   XCircle,
   UserPlus,
   KeyRound,
