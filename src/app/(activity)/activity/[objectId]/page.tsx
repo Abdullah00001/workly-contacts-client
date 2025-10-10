@@ -89,20 +89,20 @@ export default async function ActivityDetails({
                 </div>
                 <div className="flex-1 min-w-0">
                   <CardTitle
-                    className={`text-lg sm:text-xl lg:text-2xl mb-2 text-balance ${getActivityColor(data.activityType)}`}
+                    className={`text-lg sm:text-xl lg:text-2xl mb-2 text-balance ${getActivityColor(data?.activityType)}`}
                   >
-                    {data.title}
+                    {data?.title}
                   </CardTitle>
                   <CardDescription className="text-xs sm:text-sm text-gray-400 break-all">
-                    Activity ID: {data._id}
+                    Activity ID: {data?._id}
                   </CardDescription>
                 </div>
               </div>
               <Badge
-                variant={getActivityBadgeVariant(data.activityType)}
+                variant={getActivityBadgeVariant(data?.activityType)}
                 className="shrink-0 text-xs sm:text-sm"
               >
-                {data.activityType.replace(/_/g, ' ')}
+                {data?.activityType.replace(/_/g, ' ')}
               </Badge>
             </div>
           </CardHeader>
@@ -110,7 +110,7 @@ export default async function ActivityDetails({
             <div className="flex items-start gap-3 p-3 sm:p-4 bg-[#0f1a1f] rounded-lg border border-gray-800">
               <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 shrink-0 mt-0.5" />
               <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                {data.description}
+                {data?.description}
               </p>
             </div>
           </CardContent>
@@ -133,7 +133,7 @@ export default async function ActivityDetails({
                 <div className="flex items-center gap-2">
                   <Smartphone className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
                   <span className="font-medium capitalize text-white text-sm sm:text-base">
-                    {data.device}
+                    {data?.device}
                   </span>
                 </div>
               </div>
@@ -143,7 +143,7 @@ export default async function ActivityDetails({
                   Browser
                 </span>
                 <span className="font-medium text-white text-sm sm:text-base">
-                  {data.browser}
+                  {data?.browser}
                 </span>
               </div>
               <Separator className="bg-gray-800" />
@@ -152,7 +152,7 @@ export default async function ActivityDetails({
                   Operating System
                 </span>
                 <span className="font-medium text-white text-sm sm:text-base">
-                  {data.os}
+                  {data?.os}
                 </span>
               </div>
             </CardContent>
@@ -171,7 +171,7 @@ export default async function ActivityDetails({
                   Location
                 </span>
                 <span className="font-medium text-white text-sm sm:text-base">
-                  {data.location}
+                  {data?.location}
                 </span>
               </div>
               <Separator className="bg-gray-800" />
@@ -182,7 +182,7 @@ export default async function ActivityDetails({
                 <div className="flex items-center gap-2">
                   <Globe className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
                   <span className="font-mono text-xs sm:text-sm text-white">
-                    {data.ipAddress}
+                    {data?.ipAddress}
                   </span>
                 </div>
               </div>
@@ -204,7 +204,7 @@ export default async function ActivityDetails({
                 Activity Occurred
               </div>
               <div className="font-medium text-white text-sm sm:text-base">
-                {activityDetailsFormatDate(data.createdAt)}
+                {activityDetailsFormatDate(data?.createdAt)}
               </div>
             </div>
             <Separator className="bg-gray-800" />
@@ -213,7 +213,7 @@ export default async function ActivityDetails({
                 Last Updated
               </div>
               <div className="font-medium text-white text-sm sm:text-base">
-                {activityDetailsFormatDate(data.updatedAt)}
+                {activityDetailsFormatDate(data?.updatedAt)}
               </div>
             </div>
           </CardContent>
