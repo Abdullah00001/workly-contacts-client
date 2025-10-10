@@ -1,5 +1,6 @@
-import { LucideIcon } from 'lucide-react';
+import { Home, LucideIcon } from 'lucide-react';
 import { User, Shield } from 'lucide-react';
+import { Dispatch, SetStateAction } from 'react';
 
 export type TAccountCenterNavItem = {
   path: string;
@@ -17,5 +18,28 @@ export const AccountCenterNavItems: TAccountCenterNavItem[] = [
     pathName: 'Security & Password',
     path: '/accountscenter/security',
     icon: Shield,
+  },
+];
+
+export type TAccountCenterHeaderSheetProps = {
+  isSheetOpen: boolean;
+  setSheetOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export const AccountCenterHeaderNavItems = [
+  {
+    icon: Home,
+    label: 'Home',
+    href: '/',
+  },
+  {
+    icon: User,
+    label: 'Personal Info',
+    href: '/accountscenter',
+  },
+  {
+    icon: Shield,
+    label: 'Security And Password',
+    href: '/accountscenter/security',
   },
 ];

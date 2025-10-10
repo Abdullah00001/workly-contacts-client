@@ -1,3 +1,4 @@
+import AccountCenterHeader from '@/features/account-center/components/AccountCenterHeader';
 import AccountCenterSideBar from '@/features/account-center/components/AccountCenterSidebar';
 import ProtectedGuard from '@/features/auth/components/ProtectedGuard';
 import ModalHolders from '@/features/dashboard/components/ModalHolders';
@@ -28,7 +29,9 @@ export default function DashboardLayout({ children }: TLayout) {
         </div>
         {/* Tablet And Mobile Device Layout */}
         <div className="block lg:hidden text-white bg-[#152127] min-h-screen">
-          <header className="sticky top-0 z-50 bg-[#152127]"></header>
+          <header className="sticky top-0 z-50 bg-[#152127]">
+            <AccountCenterHeader />
+          </header>
           <main className="overflow-y-auto">{children}</main>
         </div>
         <ModalHolders />
