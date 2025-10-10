@@ -5,15 +5,21 @@ import { useQuery } from '@tanstack/react-query';
 import { RetrieveActivity } from '../services/activity-service';
 import { groupActivitiesByDate } from '../lib/activity-lib';
 import ActivityTableSkeleton from './ActivityTableSkeleton';
+import ActivityError from './ActivityError';
 
 const ActivityTable: FC = () => {
-  const { isPending, data } = useQuery({
+  const { isPending, data, error, refetch } = useQuery({
     queryFn: RetrieveActivity,
     queryKey: ['all_activities'],
   });
-  if (isPending) return <ActivityTableSkeleton />;
+
+  if (isPending && !error) return <ActivityTableSkeleton />;
   const activities = groupActivitiesByDate(data);
-  if (!isPending)
+
+  if (error && !isPending)
+    <ActivityError error={error} onRetry={() => refetch()} />;
+
+  if (!isPending && !error)
     return (
       <div className="flex flex-1 flex-col gap-5 px-4 lg:px-0 pb-4">
         {Object.entries(activities).map(([date, items]) => (
