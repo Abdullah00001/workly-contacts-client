@@ -3,12 +3,13 @@ import { Users } from 'lucide-react';
 import { FC } from 'react';
 import { AccountCenterNavItems } from '../types/const.types';
 import AccountCenterNavButton from './AccountCenterNavButton';
+import Link from 'next/link';
 
 const AccountCenterSideBar: FC = () => {
   return (
     <div className="w-full">
       <div className="mt-4">
-        <div>
+        <Link href={'/'}>
           <div className="flex items-center space-x-3 cursor-pointer group transition-all duration-300 ">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
               <Users className="w-5 h-5 text-white" />
@@ -20,7 +21,7 @@ const AccountCenterSideBar: FC = () => {
               <p className="text-sm text-gray-300 -mt-1">Contact Management</p>
             </div>
           </div>
-        </div>
+        </Link>
         <h2 className="font-bold text-[22px] mt-2">Account Center</h2>
         <h5 className="text-wrap mt-2 font-normal">
           Manage your personal info and account security to make Workly Contacts
