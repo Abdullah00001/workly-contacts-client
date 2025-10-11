@@ -355,3 +355,35 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+
+@media (min-width: 769px) {
+  .create-contact-header-padding-for-large-screen {
+    padding-left: 40px;
+  }
+  .create-contact-header-width-for-large-screen {
+    width: 680px;
+  }
+  .create-contact-header-avatar-container-for-large-screen {
+    padding-left: 2.5rem;
+  }
+  .create-contact-header-avatar-positioning-for-large-screen {
+    justify-content: left;
+  }
+  .create-contact-header-avatar-width-for-large-screen {
+    width: 162px;
+    height: 162px;
+  }
+  .create-contact-header-avatar-plus-outer-for-large-screen {
+    top: 7rem;
+    right: 0rem;
+    width: 47px;
+    height: 47px;
+  }
+  .create-contact-header-avatar-plus-inner-for-large-screen {
+    width: 40px;
+    height: 40px;
+  }
+  /* .create-contact-name-input-width {
+    width: 64rem;
+  } */
+}
