@@ -22,64 +22,18 @@ const CreateContact: FC = () => {
       postCode: null,
       streetAddress: null,
     },
-    phone: '',
+    phone: {
+      countryCode: '',
+      number: '',
+    },
     worksAt: {
       companyName: null,
       jobTitle: null,
     },
   });
-  const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPayload((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleChangeWorksAt = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPayload((prev) => ({
-      ...prev,
-      worksAt: { ...prev.worksAt, [name]: value },
-    }));
-  };
-  const handleChangeLocation = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    const updatedValue =
-      name === 'postCode'
-        ? value === ''
-          ? null
-          : Number(value)
-        : value === ''
-          ? null
-          : value;
-
-    setPayload((prev) => ({
-      ...prev,
-      location: {
-        ...prev.location,
-        [name]: updatedValue,
-      },
-    }));
-  };
-
-  const handleChangeBirthday = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    const updatedValue =
-      name === 'day' || name === 'year'
-        ? value === ''
-          ? null
-          : Number(value)
-        : value === ''
-          ? null
-          : value;
-    setPayload((prev) => ({
-      ...prev,
-      birthday: { ...prev.birthday, [name]: updatedValue },
-    }));
-  };
   return (
     <>
-      <CreateContactHeader />
+      <CreateContactHeader payload={payload} setPayload={setPayload} />
       <CreateContactForm payload={payload} setPayload={setPayload} />
     </>
   );

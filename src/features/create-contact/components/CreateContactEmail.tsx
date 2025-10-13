@@ -1,12 +1,16 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import Icon from '@/components/common/Icon';
+import { TFieldComponentProps } from '../types/type';
 
-const CreateContactEmail: FC = () => {
+const CreateContactEmail: FC<TFieldComponentProps> = ({ setPayload }) => {
   const [isEmailFieldOpen, setEmailFieldOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-
+  const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({ ...prev, [name]: value }));
+  };
   useEffect(() => {
     const updateSize = () => setIsMobile(window.innerWidth < 769);
     updateSize();
@@ -76,6 +80,7 @@ const CreateContactEmail: FC = () => {
             </div>
             <div className="flex-[90%]">
               <input
+                onChange={handleChangeBasicField}
                 placeholder="Email"
                 className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                 type="text"
@@ -85,6 +90,7 @@ const CreateContactEmail: FC = () => {
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({ ...prev, email: '' }));
                 setEmailFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center items-center"
@@ -116,12 +122,14 @@ const CreateContactEmail: FC = () => {
                 placeholder="Email"
                 className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
                 type="text"
-                name="company"
-                id="company"
+                name="email"
+                id="email"
+                onChange={handleChangeBasicField}
               />
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({ ...prev, email: '' }));
                 setEmailFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center cursor-pointer items-center"

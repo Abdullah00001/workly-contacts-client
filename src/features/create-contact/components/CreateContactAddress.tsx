@@ -1,12 +1,30 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import Icon from '@/components/common/Icon';
+import { TFieldComponentProps } from '../types/type';
 
-const CreateContactAddress: FC = () => {
+const CreateContactAddress: FC<TFieldComponentProps> = ({ setPayload }) => {
   const [isAddressFieldOpen, setAddressFieldOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-
+  const handleChangeLocation = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const updatedValue =
+      name === 'postCode'
+        ? value === ''
+          ? null
+          : Number(value)
+        : value === ''
+          ? null
+          : value;
+    setPayload((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        [name]: updatedValue,
+      },
+    }));
+  };
   useEffect(() => {
     const updateSize = () => setIsMobile(window.innerWidth < 769);
     updateSize();
@@ -82,37 +100,50 @@ const CreateContactAddress: FC = () => {
             <div className="flex-[90%] create-contact-name-input-group">
               <div className="flex flex-col justify-start items-start gap-3">
                 <input
-                  placeholder="Company Name"
+                  onChange={handleChangeLocation}
+                  placeholder="Country"
                   className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                   type="text"
-                  name="companyName"
-                  id="companyName"
+                  name="country"
+                  id="country"
                 />
                 <input
-                  placeholder="Job Title"
+                  onChange={handleChangeLocation}
+                  placeholder="City"
                   className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                   type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  name="city"
+                  id="city"
                 />
                 <input
-                  placeholder="Job Title"
-                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
-                  type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  onChange={handleChangeLocation}
+                  placeholder="Post Code"
+                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield"
+                  type="number"
+                  name="postCode"
+                  id="postCode"
                 />
                 <input
-                  placeholder="Job Title"
+                  onChange={handleChangeLocation}
+                  placeholder="Street Address"
                   className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                   type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  name="streetAddress"
+                  id="streetAddress"
                 />
               </div>
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({
+                  ...prev,
+                  location: {
+                    country: '',
+                    city: '',
+                    postCode: null,
+                    streetAddress: '',
+                  },
+                }));
                 setAddressFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center items-center"
@@ -142,43 +173,56 @@ const CreateContactAddress: FC = () => {
             <div className="flex flex-col justify-start items-start gap-3">
               <div className="w-[520px] h-10">
                 <input
-                  placeholder="Company"
+                  onChange={handleChangeLocation}
+                  placeholder="Country"
                   className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
                   type="text"
-                  name="company"
-                  id="company"
+                  name="country"
+                  id="country"
                 />
               </div>
               <div className="w-[520px] h-10">
                 <input
-                  placeholder="Job title"
+                  onChange={handleChangeLocation}
+                  placeholder="City"
                   className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
                   type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  name="city"
+                  id="city"
                 />
               </div>
               <div className="w-[520px] h-10">
                 <input
-                  placeholder="Job title"
-                  className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                  type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  onChange={handleChangeLocation}
+                  placeholder="Post Code"
+                  className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield"
+                  type="number"
+                  name="postCode"
+                  id="postCode"
                 />
               </div>
               <div className="w-[520px] h-10">
                 <input
-                  placeholder="Job title"
+                  onChange={handleChangeLocation}
+                  placeholder="Street Address"
                   className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
                   type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  name="streetAddress"
+                  id="streetAddress"
                 />
               </div>
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({
+                  ...prev,
+                  location: {
+                    country: '',
+                    city: '',
+                    postCode: null,
+                    streetAddress: '',
+                  },
+                }));
                 setAddressFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center cursor-pointer items-center"

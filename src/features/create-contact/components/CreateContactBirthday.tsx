@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import Icon from '@/components/common/Icon';
 import {
   Select,
@@ -10,11 +10,24 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Month } from '@/consts/const';
+import { TFieldComponentProps } from '../types/type';
 
-const CreateContactBirthday: FC = () => {
+const CreateContactBirthday: FC<TFieldComponentProps> = ({ setPayload }) => {
   const [isBirthdayFieldOpen, setBirthdayFieldOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-
+  const handleBirthdayChange = (
+    field: 'month' | 'day' | 'year',
+    value: string
+  ) => {
+    setPayload((prev) => ({
+      ...prev,
+      birthday: {
+        ...prev.birthday,
+        [field]:
+          field === 'month' ? value : value === '' ? null : Number(value),
+      },
+    }));
+  };
   useEffect(() => {
     const updateSize = () => setIsMobile(window.innerWidth < 769);
     updateSize();
@@ -84,9 +97,13 @@ const CreateContactBirthday: FC = () => {
             </div>
             <div className="flex-[90%] flex  flex-col gap-2">
               <div className="flex justify-center items-center gap-2">
-                <Select>
-                  <SelectTrigger className="!w-full !rounded-[4px] !h-10 !border !border-[#747775] !outline-0">
-                    <SelectValue placeholder="Select month" />
+                <Select
+                  onValueChange={(value) =>
+                    handleBirthdayChange('month', value)
+                  }
+                >
+                  <SelectTrigger className="!min-w-[135px] w-full !rounded-[4px] !h-10 !border !border-[#747775] !outline-0">
+                    <SelectValue placeholder="Month" />
                   </SelectTrigger>
                   <SelectContent className="p-2">
                     {Object.values(Month).map((month) => (
@@ -97,25 +114,31 @@ const CreateContactBirthday: FC = () => {
                   </SelectContent>
                 </Select>
                 <input
-                  placeholder="Birthday"
-                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
-                  type="text"
-                  name="birthday"
-                  id="birthday"
+                  onChange={(e) => handleBirthdayChange('day', e.target.value)}
+                  placeholder="Day"
+                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield"
+                  type="number"
+                  name="day"
+                  id="day"
                 />
               </div>
               <div>
                 <input
-                  placeholder="Birthday"
-                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
-                  type="text"
-                  name="birthday"
-                  id="birthday"
+                  onChange={(e) => handleBirthdayChange('year', e.target.value)}
+                  placeholder="Year"
+                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield"
+                  type="number"
+                  name="year"
+                  id="year"
                 />
               </div>
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({
+                  ...prev,
+                  birthday: { month: '', day: null, year: null },
+                }));
                 setBirthdayFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center items-center"
@@ -143,9 +166,11 @@ const CreateContactBirthday: FC = () => {
               />
             </div>
             <div className="w-[520px] h-10 flex items-center gap-2">
-              <Select>
-                <SelectTrigger className="!w-full !rounded-[4px] !h-full !border !border-[#747775] !outline-0">
-                  <SelectValue placeholder="Select month" />
+              <Select
+                onValueChange={(value) => handleBirthdayChange('month', value)}
+              >
+                <SelectTrigger className="!w-[135px] !min-w-[135px] !max-w-[135px] !flex-none !rounded-[4px] !h-full !border !border-[#747775] !outline-0">
+                  <SelectValue placeholder="Month" />
                 </SelectTrigger>
                 <SelectContent className="p-2">
                   {Object.values(Month).map((month) => (
@@ -156,22 +181,28 @@ const CreateContactBirthday: FC = () => {
                 </SelectContent>
               </Select>
               <input
-                placeholder="Birthday"
-                className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                type="text"
-                name="company"
-                id="company"
+                onChange={(e) => handleBirthdayChange('day', e.target.value)}
+                placeholder="Date"
+                className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield"
+                type="number"
+                name="date"
+                id="date"
               />
               <input
-                placeholder="Birthday"
-                className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                type="text"
-                name="company"
-                id="company"
+                onChange={(e) => handleBirthdayChange('year', e.target.value)}
+                placeholder="Year"
+                className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield"
+                type="number"
+                name="year"
+                id="year"
               />
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({
+                  ...prev,
+                  birthday: { month: '', day: null, year: null },
+                }));
                 setBirthdayFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center cursor-pointer items-center"

@@ -20,11 +20,16 @@ export type TWorksAt = {
   jobTitle: string | null;
 };
 
+export type TPhone = {
+  countryCode: string;
+  number: string;
+};
+
 export type TContact = {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  phone: TPhone;
   avatar: TAvatar;
   location: TLocation;
   worksAt: TWorksAt;

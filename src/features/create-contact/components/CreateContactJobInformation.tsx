@@ -1,10 +1,19 @@
 'use client';
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import Icon from '@/components/common/Icon';
+import { TFieldComponentProps } from '../types/type';
 
-const CreateContactJobInformation: FC = () => {
+const CreateContactJobInformation: FC<TFieldComponentProps> = ({
+  setPayload,
+}) => {
   const [isMobile, setIsMobile] = useState(false);
-
+  const handleChangeWorksAt = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({
+      ...prev,
+      worksAt: { ...prev.worksAt, [name]: value },
+    }));
+  };
   useEffect(() => {
     const updateSize = () => setIsMobile(window.innerWidth < 769);
     updateSize();
@@ -29,6 +38,7 @@ const CreateContactJobInformation: FC = () => {
           <div className="flex-[90%] create-contact-name-input-group">
             <div className="flex flex-col justify-start items-start gap-3">
               <input
+                onChange={handleChangeWorksAt}
                 placeholder="Company Name"
                 className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                 type="text"
@@ -36,6 +46,7 @@ const CreateContactJobInformation: FC = () => {
                 id="companyName"
               />
               <input
+                onChange={handleChangeWorksAt}
                 placeholder="Job Title"
                 className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                 type="text"
@@ -62,15 +73,17 @@ const CreateContactJobInformation: FC = () => {
         <div className="flex flex-col justify-start items-start gap-3">
           <div className="w-[520px] h-10">
             <input
+              onChange={handleChangeWorksAt}
               placeholder="Company"
               className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
               type="text"
-              name="company"
-              id="company"
+              name="companyName"
+              id="companyName"
             />
           </div>
           <div className="w-[520px] h-10">
             <input
+              onChange={handleChangeWorksAt}
               placeholder="Job title"
               className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
               type="text"

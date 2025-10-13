@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import Icon from '@/components/common/Icon';
 import {
   Select,
@@ -10,11 +10,36 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Countries } from '@/consts/const';
+import { TFieldComponentProps } from '../types/type';
+import { getIsoFromPayloadValue } from '../helpers/create-contact-helper';
 
-const CreateContactPhone: FC = () => {
+const CreateContactPhone: FC<TFieldComponentProps> = ({
+  payload,
+  setPayload,
+}) => {
   const [isPhoneFieldOpen, setPhoneFieldOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-
+  // update phone number
+  const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPayload((prev) => ({
+      ...prev,
+      phone: {
+        ...(prev.phone || {}),
+        number: e.target.value,
+      },
+    }));
+  };
+  const isCodeSelect = payload.phone.countryCode;
+  // update country code
+  const handleCountryCodeChange = (value: string) => {
+    setPayload((prev) => ({
+      ...prev,
+      phone: {
+        ...(prev.phone || {}),
+        countryCode: value,
+      },
+    }));
+  };
   useEffect(() => {
     const updateSize = () => setIsMobile(window.innerWidth < 769);
     updateSize();
@@ -83,9 +108,15 @@ const CreateContactPhone: FC = () => {
               </div>
             </div>
             <div className="flex-[90%] flex gap-2">
-              <Select>
-                <SelectTrigger className="!w-[30%] !rounded-[4px] !h-10 !border !border-[#747775] !outline-0">
-                  <SelectValue placeholder="Code" />
+              <Select onValueChange={handleCountryCodeChange}>
+                <SelectTrigger className="!w-[84px] !min-w-[84px] !max-w-[84px] !flex-none !rounded-[4px] !h-10 !border !border-[#747775] !outline-0">
+                  <SelectValue placeholder={'Code'}>
+                    <img
+                      src={`https://flagcdn.com/w20/${getIsoFromPayloadValue(payload?.phone?.countryCode)}.png`}
+                      alt={'country_code'}
+                      className="inline-block object-cover w-7 h-4"
+                    />
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="p-2 h-[400px]">
                   {Countries.map(({ code, iso, name }) => (
@@ -105,15 +136,25 @@ const CreateContactPhone: FC = () => {
                 </SelectContent>
               </Select>
               <input
+                disabled={!isCodeSelect}
+                onChange={handlePhoneChange}
                 placeholder="Phone"
-                className="w-[70%] h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
-                type="text"
+                className={`!w-full h-10 placeholder:!text-[#747775] px-4 rounded-[4px] border  ${!isCodeSelect ? 'bg-[#f3f3f3] cursor-not-allowed text-[#9aa0a6] border-[#d0d4d9]' : 'bg-white border-[#747775] outline-0'}  appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield`}
+                type="number"
                 name="phone"
                 id="phone"
+                value={payload?.phone?.number as string}
               />
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({
+                  ...prev,
+                  phone: {
+                    countryCode: '',
+                    number: '',
+                  },
+                }));
                 setPhoneFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center items-center"
@@ -140,10 +181,16 @@ const CreateContactPhone: FC = () => {
                 variant="filled"
               />
             </div>
-            <div className="w-[520px] h-10 flex items-center justify-center gap-2">
-              <Select>
-                <SelectTrigger className="!w-[30%] !rounded-[4px] !h-full !border !border-[#747775] !outline-0">
-                  <SelectValue placeholder="Code" />
+            <div className="w-[520px] h-10 flex items-center justify-start gap-2">
+              <Select onValueChange={handleCountryCodeChange}>
+                <SelectTrigger className="!w-[84px] !min-w-[84px] !max-w-[84px] !flex-none !rounded-[4px] !h-full !border !border-[#747775] !outline-0">
+                  <SelectValue placeholder={'Code'}>
+                    <img
+                      src={`https://flagcdn.com/w20/${getIsoFromPayloadValue(payload?.phone?.countryCode)}.png`}
+                      alt={'country_code'}
+                      className="inline-block object-cover w-[26px] h-[18px]"
+                    />
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="p-2 h-[400px]">
                   {Countries.map(({ code, iso, name }) => (
@@ -163,15 +210,25 @@ const CreateContactPhone: FC = () => {
                 </SelectContent>
               </Select>
               <input
+                disabled={!isCodeSelect}
+                onChange={handlePhoneChange}
                 placeholder="Phone"
-                className="w-[70%] p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                type="text"
-                name="company"
-                id="company"
+                className={`w-full p-4 rounded-[4px] h-full border  placeholder:!text-[#747775] ${!isCodeSelect ? 'bg-[#f3f3f3] cursor-not-allowed text-[#9aa0a6] border-[#d0d4d9]' : 'border-[#747775] outline-0'}  appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield`}
+                type="number"
+                name="phone"
+                id="phone"
+                value={payload?.phone?.number as string}
               />
             </div>
             <button
               onClick={() => {
+                setPayload((prev) => ({
+                  ...prev,
+                  phone: {
+                    countryCode: '',
+                    number: '',
+                  },
+                }));
                 setPhoneFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center cursor-pointer items-center"

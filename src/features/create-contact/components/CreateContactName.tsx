@@ -1,11 +1,15 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import Icon from '@/components/common/Icon';
+import { TFieldComponentProps } from '../types/type';
 
-const CreateContactName: FC = () => {
+const CreateContactName: FC<TFieldComponentProps> = ({ setPayload }) => {
   const [isMobile, setIsMobile] = useState(false);
-
+  const handleChangeBasicField = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPayload((prev) => ({ ...prev, [name]: value }));
+  };
   useEffect(() => {
     const updateSize = () => setIsMobile(window.innerWidth < 769);
     updateSize();
@@ -35,6 +39,7 @@ const CreateContactName: FC = () => {
                 type="text"
                 name="firstName"
                 id="firstName"
+                onChange={handleChangeBasicField}
               />
               <input
                 placeholder="Last name"
@@ -42,6 +47,7 @@ const CreateContactName: FC = () => {
                 type="text"
                 name="lastName"
                 id="lastName"
+                onChange={handleChangeBasicField}
               />
             </div>
           </div>
@@ -68,6 +74,7 @@ const CreateContactName: FC = () => {
               type="text"
               name="firstName"
               id="firstName"
+              onChange={handleChangeBasicField}
             />
           </div>
           <div className="w-[520px] h-10">
@@ -77,6 +84,7 @@ const CreateContactName: FC = () => {
               type="text"
               name="lastName"
               id="lastName"
+              onChange={handleChangeBasicField}
             />
           </div>
         </div>
