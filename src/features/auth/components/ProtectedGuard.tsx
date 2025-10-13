@@ -4,7 +4,6 @@ import { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkAccessAndRefresh } from '@/features/auth/service/auth-service';
 import { AuthMessages } from '@/features/auth/types/auth-types';
-import LoadingPage from '@/components/common/Loading';
 import ServerErrorUi from '@/components/common/ServerErrorUi';
 
 const ProtectedGuard: FC<TLayout> = ({ children }) => {
@@ -28,7 +27,6 @@ const ProtectedGuard: FC<TLayout> = ({ children }) => {
       setLoading(false);
     })();
   }, [router]);
-  if (loading && status === null) return <LoadingPage />;
   if (!loading && status === AuthMessages.SERVER_ERROR)
     return <ServerErrorUi />;
   return <>{children}</>;

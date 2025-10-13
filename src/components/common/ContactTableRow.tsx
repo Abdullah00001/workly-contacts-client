@@ -27,11 +27,20 @@ const ContactTableRow: FC<TContactTableRow> = ({
   selectedContacts,
   setSelectContact,
 }) => {
-  const { avatar, email, name, objectId, phone } = contact;
-  const isSelected = selectedContacts.includes(objectId);
+  const {
+    _id,
+    avatar,
+    email,
+    firstName,
+    isFavorite,
+    isTrashed,
+    lastName,
+    phone,
+  } = contact;
+  const isSelected = selectedContacts.includes(_id);
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const [isRowHover, setIsRowHover] = useState<boolean>(false);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [favorite, setFavorite] = useState<boolean>(false);
   const [isMoreActionOpen, setIsMoreActionOpen] = useState<boolean>(false);
   const router = useRouter();
 
@@ -39,8 +48,8 @@ const ContactTableRow: FC<TContactTableRow> = ({
     e.stopPropagation();
     setSelectContact((prev) =>
       isSelected
-        ? prev.filter((contactId) => contactId !== objectId)
-        : [...prev, objectId]
+        ? prev.filter((contactId) => contactId !== _id)
+        : [...prev, _id]
     );
   };
   const handleMoreActionsClick = (e: MouseEvent) => {
@@ -68,7 +77,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
     <div
       onMouseEnter={onRowMouseEnter}
       onMouseLeave={onRowMouseLeave}
-      onClick={() => router.push(`/person/${objectId}`)}
+      onClick={() => router.push(`/person/${_id}`)}
       className={`flex rounded-sm px-2 py-[5px] gap-2 items-center justify-start ${
         isSelected && 'bg-[#d3e3fd] hover:bg-[#0b57d035]'
       } ${isChildHover ? '' : 'hover:bg-[#0b57d014]'} cursor-pointer`}
@@ -110,9 +119,9 @@ const ContactTableRow: FC<TContactTableRow> = ({
             >
               <img
                 src={
-                  avatar
-                    ? avatar
-                    : `https://api.dicebear.com/7.x/initials/svg?seed=${name}`
+                  avatar.url
+                    ? avatar.url
+                    : `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}`
                 }
                 alt="Avatar"
                 className="w-9 h-9 cursor-pointer rounded-full"
@@ -121,14 +130,14 @@ const ContactTableRow: FC<TContactTableRow> = ({
           )}
         </div>
         <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal">
-          {name}
+          {firstName} {lastName}
         </div>
       </div>
       <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden sm:block">
         {email}
       </div>
       <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden phone-field-md phone-field-lg">
-        {phone}
+        {phone.number}
       </div>
       <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden job-field-lg"></div>
       <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg"></div>
@@ -147,7 +156,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
             onMouseLeave={onChildMouseLeave}
             onClick={(e) => {
               e.stopPropagation();
-              setIsFavorite((prev) => !prev);
+              setFavorite((prev) => !prev);
             }}
             className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
           >
@@ -174,7 +183,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
             onMouseLeave={onChildMouseLeave}
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/person/${objectId}?edit=1`);
+              router.push(`/person/${_id}?edit=1`);
             }}
             className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
           >

@@ -11,11 +11,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export type TContacts = {
-  objectId: string;
-  name: string;
-  email: string | null;
-  phone: string;
-  avatar: string | null;
+  _id: string;
+  avatar: { url: null; publicId: null };
+  email: '';
+  firstName: string;
+  lastName: string;
+  phone: { countryCode: ''; number: '' };
+  isTrashed: false;
+  isFavorite: false;
 };
 
 type TContactTableProps = {
@@ -26,7 +29,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
   const { toggleExportModal, togglePrintModal } = useImportExportModalStore();
   const [selectedContacts, setSelectContact] = useState<string[]>([]);
   const handleSelectAll = () => {
-    setSelectContact(contacts.map(({ objectId }) => objectId as string));
+    setSelectContact(contacts.map(({ _id }) => _id as string));
   };
 
   const handleSelectNone = () => {
@@ -236,7 +239,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
         <div className="flex flex-col w-full gap-1 mt-2">
           {contacts.map((contact) => (
             <ContactTableRow
-              key={contact.objectId}
+              key={contact._id}
               selectedContacts={selectedContacts}
               setSelectContact={setSelectContact}
               contact={contact}
