@@ -1,6 +1,6 @@
 import { Countries } from '@/consts/const';
 
-export const getIsoFromPayloadValue = (value: string|null) => {
+export const getIsoFromPayloadValue = (value: string | null) => {
   if (!value) return 'bd'; // default
   const asIso = value.toLowerCase();
   // If it's already an ISO and exists in Countries, return it
