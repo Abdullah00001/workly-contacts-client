@@ -1,5 +1,4 @@
-import CreateContactForm from '@/features/create-contact/components/CreateContactForm';
-import CreateContactHeader from '@/features/create-contact/components/CreateContactHeader';
+import CreateContact from '@/features/create-contact/components/CreateContact';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -39,8 +38,7 @@ export default function page() {
   return (
     <div className="h-full w-full">
       <div className="create-contact-header-width-for-large-screen w-full h-full">
-        <CreateContactHeader />
-        <CreateContactForm />
+        <CreateContact />
       </div>
     </div>
   );

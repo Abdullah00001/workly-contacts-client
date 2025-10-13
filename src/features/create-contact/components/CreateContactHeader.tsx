@@ -1,12 +1,17 @@
 'use client';
 import Icon from '@/components/common/Icon';
+import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 
 const CreateContactHeader: FC = () => {
+  const router = useRouter();
   return (
     <div className="pt-6 create-contact-header-padding-for-large-screen px-2">
       <div className="flex justify-between items-center w-full">
-        <div className="w-12 h-12 flex justify-center items-center">
+        <div
+          onClick={() => router.back()}
+          className="w-12 h-12 flex justify-center items-center"
+        >
           <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
             <Icon
               name="arrow_back"

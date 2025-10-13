@@ -19,6 +19,7 @@ const CreateContactName: FC = () => {
           <div className="flex-[2.6%]">
             <div className="w-10 h-10 flex justify-center items-center">
               <Icon
+                className="text-[#747775]"
                 name="person_outline"
                 size={28}
                 type="icons"
@@ -52,6 +53,7 @@ const CreateContactName: FC = () => {
       <div className="flex justify-start items-start gap-4">
         <div className="w-10 h-10 flex justify-center items-center">
           <Icon
+            className="text-[#747775]"
             name="person_outline"
             size={28}
             type="icons"

@@ -2,9 +2,17 @@
 
 import { FC, useEffect, useState } from 'react';
 import Icon from '@/components/common/Icon';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Month } from '@/consts/const';
 
-const CreateContactAddress: FC = () => {
-  const [isAddressFieldOpen, setAddressFieldOpen] = useState<boolean>(false);
+const CreateContactBirthday: FC = () => {
+  const [isBirthdayFieldOpen, setBirthdayFieldOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
@@ -13,7 +21,7 @@ const CreateContactAddress: FC = () => {
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
   }, []);
-  if (!isAddressFieldOpen)
+  if (!isBirthdayFieldOpen)
     return (
       <>
         {isMobile ? (
@@ -24,17 +32,17 @@ const CreateContactAddress: FC = () => {
               </div>
               <div className="flex-[90%]">
                 <button
-                  onClick={() => setAddressFieldOpen(true)}
+                  onClick={() => setBirthdayFieldOpen(true)}
                   className="h-10 cursor-pointer w-full rounded-[20px] text-[#0b57d0] flex items-center justify-center gap-2 bg-[#f0f4f9]"
                 >
                   <Icon
-                    name="location_on"
+                    name="cake"
                     size={18}
-                    type="icons"
+                    type="symbols"
                     variant="outlined"
                   />
                   <span className="font-google-sans-text font-medium text-sm">
-                    Add address
+                    Add birthday
                   </span>
                 </button>
               </div>
@@ -45,17 +53,12 @@ const CreateContactAddress: FC = () => {
             <div className="flex justify-start items-center gap-4">
               <div className="w-10"></div>
               <button
-                onClick={() => setAddressFieldOpen(true)}
+                onClick={() => setBirthdayFieldOpen(true)}
                 className="h-10 cursor-pointer w-[520px] rounded-[20px] text-[#0b57d0] flex items-center justify-center gap-2 bg-[#f0f4f9]"
               >
-                <Icon
-                  name="location_on"
-                  size={18}
-                  type="icons"
-                  variant="outlined"
-                />
+                <Icon name="cake" size={18} type="symbols" variant="outlined" />
                 <span className="font-google-sans-text font-medium text-sm">
-                  Add address
+                  Add birthday
                 </span>
               </button>
             </div>
@@ -72,48 +75,48 @@ const CreateContactAddress: FC = () => {
               <div className="w-10 h-10 flex justify-center items-center">
                 <Icon
                   className="text-[#747775]"
-                  name="location_on"
+                  name="cake"
                   size={28}
-                  type="icons"
+                  type="symbols"
                   variant="outlined"
                 />
               </div>
             </div>
-            <div className="flex-[90%] create-contact-name-input-group">
-              <div className="flex flex-col justify-start items-start gap-3">
+            <div className="flex-[90%] flex  flex-col gap-2">
+              <div className="flex justify-center items-center gap-2">
+                <Select>
+                  <SelectTrigger className="!w-full !rounded-[4px] !h-10 !border !border-[#747775] !outline-0">
+                    <SelectValue placeholder="Select month" />
+                  </SelectTrigger>
+                  <SelectContent className="p-2">
+                    {Object.values(Month).map((month) => (
+                      <SelectItem key={month} value={month}>
+                        {month}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <input
-                  placeholder="Company Name"
+                  placeholder="Birthday"
                   className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                   type="text"
-                  name="companyName"
-                  id="companyName"
+                  name="birthday"
+                  id="birthday"
                 />
+              </div>
+              <div>
                 <input
-                  placeholder="Job Title"
+                  placeholder="Birthday"
                   className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
                   type="text"
-                  name="jobTitle"
-                  id="jobTitle"
-                />
-                <input
-                  placeholder="Job Title"
-                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
-                  type="text"
-                  name="jobTitle"
-                  id="jobTitle"
-                />
-                <input
-                  placeholder="Job Title"
-                  className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0"
-                  type="text"
-                  name="jobTitle"
-                  id="jobTitle"
+                  name="birthday"
+                  id="birthday"
                 />
               </div>
             </div>
             <button
               onClick={() => {
-                setAddressFieldOpen(false);
+                setBirthdayFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center items-center"
             >
@@ -132,54 +135,44 @@ const CreateContactAddress: FC = () => {
           <div className="flex justify-start items-start gap-4">
             <div className="w-10 h-10 flex justify-center items-center">
               <Icon
-                className="text-[#747775]"
-                name="location_on"
+                name="cake"
                 size={28}
-                type="icons"
+                type="symbols"
+                className="text-[#747775]"
                 variant="outlined"
               />
             </div>
-            <div className="flex flex-col justify-start items-start gap-3">
-              <div className="w-[520px] h-10">
-                <input
-                  placeholder="Company"
-                  className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                  type="text"
-                  name="company"
-                  id="company"
-                />
-              </div>
-              <div className="w-[520px] h-10">
-                <input
-                  placeholder="Job title"
-                  className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                  type="text"
-                  name="jobTitle"
-                  id="jobTitle"
-                />
-              </div>
-              <div className="w-[520px] h-10">
-                <input
-                  placeholder="Job title"
-                  className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                  type="text"
-                  name="jobTitle"
-                  id="jobTitle"
-                />
-              </div>
-              <div className="w-[520px] h-10">
-                <input
-                  placeholder="Job title"
-                  className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
-                  type="text"
-                  name="jobTitle"
-                  id="jobTitle"
-                />
-              </div>
+            <div className="w-[520px] h-10 flex items-center gap-2">
+              <Select>
+                <SelectTrigger className="!w-full !rounded-[4px] !h-full !border !border-[#747775] !outline-0">
+                  <SelectValue placeholder="Select month" />
+                </SelectTrigger>
+                <SelectContent className="p-2">
+                  {Object.values(Month).map((month) => (
+                    <SelectItem key={month} value={month}>
+                      {month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <input
+                placeholder="Birthday"
+                className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
+                type="text"
+                name="company"
+                id="company"
+              />
+              <input
+                placeholder="Birthday"
+                className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0"
+                type="text"
+                name="company"
+                id="company"
+              />
             </div>
             <button
               onClick={() => {
-                setAddressFieldOpen(false);
+                setBirthdayFieldOpen(false);
               }}
               className="w-10 h-10 flex justify-center cursor-pointer items-center"
             >
@@ -198,4 +191,4 @@ const CreateContactAddress: FC = () => {
   );
 };
 
-export default CreateContactAddress;
+export default CreateContactBirthday;

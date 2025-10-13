@@ -17,7 +17,13 @@ const CreateContactJobInformation: FC = () => {
         <div className="flex items-start justify-start">
           <div className="flex-[2.6%]">
             <div className="w-10 h-10 flex justify-center items-center">
-              <Icon name="business" size={28} type="icons" variant="outlined" />
+              <Icon
+                className="text-[#747775]"
+                name="business"
+                size={28}
+                type="icons"
+                variant="outlined"
+              />
             </div>
           </div>
           <div className="flex-[90%] create-contact-name-input-group">
@@ -45,7 +51,13 @@ const CreateContactJobInformation: FC = () => {
     <div className="pl-10">
       <div className="flex justify-start items-start gap-4">
         <div className="w-10 h-10 flex justify-center items-center">
-          <Icon name="business" size={28} type="icons" variant="outlined" />
+          <Icon
+            className="text-[#747775]"
+            name="business"
+            size={28}
+            type="icons"
+            variant="outlined"
+          />
         </div>
         <div className="flex flex-col justify-start items-start gap-3">
           <div className="w-[520px] h-10">

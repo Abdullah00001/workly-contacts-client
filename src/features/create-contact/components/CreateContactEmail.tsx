@@ -25,7 +25,7 @@ const CreateContactEmail: FC = () => {
               <div className="flex-[90%]">
                 <button
                   onClick={() => setEmailFieldOpen(true)}
-                  className="h-10 w-full rounded-[20px] text-[#0b57d0] flex items-center justify-center gap-2 bg-[#f0f4f9]"
+                  className="h-10 cursor-pointer w-full rounded-[20px] text-[#0b57d0] flex items-center justify-center gap-2 bg-[#f0f4f9]"
                 >
                   <Icon
                     name="email"
@@ -46,7 +46,7 @@ const CreateContactEmail: FC = () => {
               <div className="w-10"></div>
               <button
                 onClick={() => setEmailFieldOpen(true)}
-                className="h-10 w-[520px] rounded-[20px] text-[#0b57d0] flex items-center justify-center gap-2 bg-[#f0f4f9]"
+                className="h-10 cursor-pointer w-[520px] rounded-[20px] text-[#0b57d0] flex items-center justify-center gap-2 bg-[#f0f4f9]"
               >
                 <Icon name="email" size={18} type="icons" variant="outlined" />
                 <span className="font-google-sans-text font-medium text-sm">
@@ -65,7 +65,13 @@ const CreateContactEmail: FC = () => {
           <div className="flex items-start justify-start">
             <div className="flex-[2.6%]">
               <div className="w-10 h-10 flex justify-center items-center">
-                <Icon name="email" size={28} type="icons" variant="outlined" />
+                <Icon
+                  className="text-[#747775]"
+                  name="email"
+                  size={28}
+                  type="icons"
+                  variant="outlined"
+                />
               </div>
             </div>
             <div className="flex-[90%]">
@@ -77,13 +83,33 @@ const CreateContactEmail: FC = () => {
                 id="email"
               />
             </div>
+            <button
+              onClick={() => {
+                setEmailFieldOpen(false);
+              }}
+              className="w-10 h-10 flex justify-center items-center"
+            >
+              <Icon
+                className="text-[#747775]"
+                name="close"
+                size={28}
+                type="icons"
+                variant="outlined"
+              />
+            </button>
           </div>
         </div>
       ) : (
         <div className="pl-10">
           <div className="flex justify-start items-start gap-4">
             <div className="w-10 h-10 flex justify-center items-center">
-              <Icon name="email" size={28} type="icons" variant="outlined" />
+              <Icon
+                className="text-[#747775]"
+                name="email"
+                size={28}
+                type="icons"
+                variant="outlined"
+              />
             </div>
             <div className="w-[520px] h-10">
               <input
@@ -94,6 +120,20 @@ const CreateContactEmail: FC = () => {
                 id="company"
               />
             </div>
+            <button
+              onClick={() => {
+                setEmailFieldOpen(false);
+              }}
+              className="w-10 h-10 flex justify-center cursor-pointer items-center"
+            >
+              <Icon
+                className="text-[#747775]"
+                name="close"
+                size={28}
+                type="icons"
+                variant="outlined"
+              />
+            </button>
           </div>
         </div>
       )}
