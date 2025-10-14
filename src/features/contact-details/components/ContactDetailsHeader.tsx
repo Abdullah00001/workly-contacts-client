@@ -1,17 +1,30 @@
 'use client';
 
-import { type FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/common/Icon';
 import { TContactDetailInfoHeader } from '../types/type';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
-  isFavorite,
   setIsEdit,
+  details,
 }) => {
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const router = useRouter();
+  useEffect(() => {
+    const updateSize = () => setIsMobile(window.innerWidth < 769);
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
   return (
-    <div className="flex justify-between items-center px-2 pt-2">
+    <div className="flex xl:max-w-[1032px] justify-between items-center px-2 pt-2 contact-details-header-padding">
       <div
         onClick={() => router.back()}
         className="w-12 h-12 flex justify-center items-center"
@@ -38,20 +51,26 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
             />
           </div>
         </div>
-        <div className="w-12 h-12 flex justify-center items-center">
-          <div
-            onClick={() => setIsEdit(true)}
-            className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center"
-          >
-            <Icon
-              name="edit"
-              size={22}
-              variant="outlined"
-              type="symbols"
-              className="text-[#444746]"
-            />
+        {isMobile ? (
+          <div className="w-12 h-12 flex justify-center items-center">
+            <div
+              onClick={() => setIsEdit(true)}
+              className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center"
+            >
+              <Icon
+                name="edit"
+                size={22}
+                variant="outlined"
+                type="symbols"
+                className="text-[#444746]"
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          <button className="h-10 cursor-pointer text-white bg-[#0b57d0] rounded-[24px] px-6 font-medium font-google-sans-text">
+            Edit
+          </button>
+        )}
         <div className="w-12 h-12 flex justify-center items-center">
           <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
             <Icon
@@ -64,15 +83,41 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
           </div>
         </div>
         <div className="w-12 h-12 flex justify-center items-center">
-          <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
-            <Icon
-              name="more_vert"
-              size={22}
-              variant="outlined"
-              type="icons"
-              className="text-[#444746]"
-            />
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
+              <Icon
+                name="more_vert"
+                size={22}
+                variant="outlined"
+                type="icons"
+                className="text-[#444746]"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className={`absolute right-0 w-[180px] mr-2 lg:mr-[10px] bg-white border border-gray-200  shadow-lg  px-0 rounded-[8px] py-2`}
+            >
+              <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+                <Icon
+                  name="print"
+                  variant="filled"
+                  className="text-[#444746]"
+                  size={22}
+                  type="icons"
+                />
+                Print
+              </DropdownMenuItem>
+              <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+                <Icon
+                  name="file_upload"
+                  variant="outlined"
+                  className=" text-[#444746]"
+                  size={22}
+                  type="icons"
+                />
+                Export
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

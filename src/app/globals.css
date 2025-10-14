@@ -386,4 +386,39 @@
   /* .create-contact-name-input-width {
     width: 64rem;
   } */
+
+  .contact-details-avatar-container {
+    flex-direction: row;
+    justify-content: start;
+    padding-left: 48px;
+  }
+  .contact-details-avatar-width-height {
+    width: 162px;
+    height: 162px;
+  }
+  .avatar-details-name-container {
+    justify-content: start;
+    align-items: start;
+  }
+  .contact-summary-container {
+    flex-direction: row;
+    padding: 0 0 0 32px;
+  }
+  .contact-details-info {
+    max-width: 520px;
+    flex: 1;
+  }
+  .avatar-plus-outer {
+    height: 48px !important;
+    width: 48px !important;
+    right: 0 !important;
+    top: 110px !important;
+  }
+  .avatar-plus-inner {
+    height: 40px !important;
+    width: 40px !important;
+  }
+  .contact-details-header-padding {
+    padding-top: 24px;
+  }
 }

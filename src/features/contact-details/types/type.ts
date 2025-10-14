@@ -57,7 +57,7 @@ export type TContactDetailsEditProps = {
 };
 
 export type TContactDetailInfoHeader = {
-  isFavorite: boolean;
+  details: TContactDetails;
   setIsEdit: Dispatch<SetStateAction<boolean>>;
 };
 

@@ -13,10 +13,10 @@ const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
   jobTitle,
 }) => {
   return (
-    <div className="w-full flex gap-5 flex-col items-center justify-center mt-6">
+    <div className="w-full flex gap-5 flex-col items-center justify-center mt-6 contact-details-avatar-container">
       <div
         className="w-[calc(112px+((100vw-320px)/448*156))] 
-                h-[calc(112px+((100vw-320px)/448*156))] flex justify-center items-center rounded-full cursor-pointer relative"
+                h-[calc(112px+((100vw-320px)/448*156))] flex justify-center items-center rounded-full cursor-pointer relative contact-details-avatar-width-height"
       >
         <img
           className="object-cover w-full h-full cursor-pointer hover:opacity-80 rounded-full"
@@ -29,7 +29,7 @@ const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
         />
         {!avatarUrl && (
           <div
-            className="absolute bg-white rounded-full top-[70%] right-0 flex justify-center items-center"
+            className="absolute bg-white rounded-full top-[70%] right-0 flex justify-center items-center avatar-plus-outer"
             style={{
               width: 'calc(30px + ((100vw - 320px)/448 * 43))',
               height: 'calc(30px + ((100vw - 320px)/448 * 43))',
@@ -37,7 +37,7 @@ const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
           >
             <div
               onClick={() => setIsEdit(true)}
-              className="flex items-center justify-center bg-[#c2e7ff] rounded-full"
+              className="flex items-center justify-center bg-[#c2e7ff] rounded-full avatar-plus-inner"
               style={{
                 width: 'calc(25px + ((100vw - 320px)/448 * 37))',
                 height: 'calc(25px + ((100vw - 320px)/448 * 37))',
@@ -54,7 +54,7 @@ const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
           </div>
         )}
       </div>
-      <div className="w-full h-full gap-1 flex-col flex justify-center items-center">
+      <div className="flex flex-col gap-1 justify-center items-center avatar-details-name-container">
         <h1 className="text-center text-[28px] font-normal font-sans text-[#1f1f1f]">
           {firstName} {lastName}
         </h1>

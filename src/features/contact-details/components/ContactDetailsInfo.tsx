@@ -11,10 +11,7 @@ const ContactDetailsInfo: FC<TContactDetailsInfoProps> = ({
 }) => {
   return (
     <>
-      <ContactDetailsHeader
-        setIsEdit={setIsEdit}
-        isFavorite={details?.isFavorite}
-      />
+      <ContactDetailsHeader setIsEdit={setIsEdit} details={details} />
       <ContactDetailsAvatar
         avatarUrl={details?.avatar?.url}
         setIsEdit={setIsEdit}
