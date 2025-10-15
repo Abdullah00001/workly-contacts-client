@@ -36,7 +36,9 @@ const ContactTableRow: FC<TContactTableRow> = ({
     isTrashed,
     lastName,
     phone,
-  } = contact;
+    location,
+    worksAt,
+  } = contact as TContacts;
   const isSelected = selectedContacts.includes(_id);
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const [isRowHover, setIsRowHover] = useState<boolean>(false);
@@ -139,8 +141,18 @@ const ContactTableRow: FC<TContactTableRow> = ({
       <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden phone-field-md phone-field-lg">
         {phone.number}
       </div>
-      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden job-field-lg"></div>
-      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg"></div>
+      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden job-field-lg overflow-hidden">
+        {worksAt?.jobTitle &&
+          ((worksAt?.jobTitle).length > 17
+            ? worksAt.jobTitle.slice(0, 16) + '...'
+            : worksAt.jobTitle)}
+      </div>
+      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg">
+        {location?.streetAddress &&
+          ((location?.streetAddress).length > 17
+            ? location.streetAddress.slice(0, 16) + '...'
+            : location.streetAddress)}
+      </div>
       <div className="flex-1 w-[170px] hidden sm:block">
         <div
           className={`flex items-center justify-end ${

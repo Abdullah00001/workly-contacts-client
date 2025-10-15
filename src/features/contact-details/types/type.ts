@@ -91,3 +91,18 @@ export type TContactSummary = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TToggleFavoriteStatus = {
+  id: string;
+  payload: {
+    isFavorite: boolean;
+  };
+};
+
+export type TTrashModal = {
+  singleId?: string;
+  bulkId?: string[];
+  isDetailPage?:boolean;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+};

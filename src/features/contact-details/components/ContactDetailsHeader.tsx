@@ -3,20 +3,80 @@
 import { useEffect, useState, type FC } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/common/Icon';
-import { TContactDetailInfoHeader } from '../types/type';
+import {
+  TContactDetailInfoHeader,
+  TContactDetails,
+  TToggleFavoriteStatus,
+} from '../types/type';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError, AxiosResponse } from 'axios';
+import { toast } from 'sonner';
+import { ToggleFavoriteStatus } from '../service/contact-detail-service';
+import TrashModal from '@/features/dashboard/components/TrashModal';
 
 const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
   setIsEdit,
   details,
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const router = useRouter();
+  const { mutate: favoriteToggle, isPending: favoriteTogglePending } =
+    useMutation({
+      mutationFn: async (payload: TToggleFavoriteStatus) =>
+        await ToggleFavoriteStatus(payload),
+      onSuccess: (data: TContactDetails) => {
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        queryClient.invalidateQueries({ queryKey: ['favorites'] });
+        queryClient.setQueryData(
+          ['contacts', details?._id],
+          (oldData: AxiosResponse) => {
+            if (!oldData) return oldData;
+            return {
+              ...oldData,
+              isFavorite: data,
+            };
+          }
+        );
+        if (data?.isFavorite === false)
+          toast(`${data?.firstName} ${data?.lastName} removed from contact`, {
+            closeButton: false,
+            position: 'bottom-center',
+          });
+        if (data?.isFavorite === true)
+          toast(`Added ${data?.firstName} ${data?.lastName} to favorites`, {
+            closeButton: false,
+            position: 'bottom-center',
+          });
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError)
+          toast.error(error.response?.data?.message, {
+            closeButton: false,
+            position: 'bottom-center',
+          });
+        toast.error('Unwanted error occurred,Try Again!');
+      },
+    });
+  const handleFavoriteToggle = () => {
+    favoriteToggle({
+      id: details?._id,
+      payload: { isFavorite: !details?.isFavorite },
+    });
+  };
+  const loading = favoriteTogglePending;
+  useEffect(() => {
+    if (loading) {
+      toast('Working...', { closeButton: false, position: 'bottom-center' });
+    }
+  }, [loading]);
   useEffect(() => {
     const updateSize = () => setIsMobile(window.innerWidth < 769);
     updateSize();
@@ -40,16 +100,34 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
         </div>
       </div>
       <div className="flex justify-end items-center">
-        <div className="w-12 h-12 flex justify-center items-center">
-          <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
-            <Icon
-              name="star_border"
-              size={22}
-              variant="outlined"
-              type="icons"
-              className="text-[#444746]"
-            />
-          </div>
+        <div
+          onClick={handleFavoriteToggle}
+          className="w-12 h-12 flex justify-center items-center"
+        >
+          {details?.isFavorite ? (
+            <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#0b57d016] transition-colors flex items-center justify-center">
+              <Icon
+                name="star"
+                size={22}
+                variant="filled"
+                type="icons"
+                className="text-[#0b57d0]"
+              />
+            </div>
+          ) : (
+            <div
+              onClick={handleFavoriteToggle}
+              className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center"
+            >
+              <Icon
+                name="star_border"
+                size={22}
+                variant="outlined"
+                type="icons"
+                className="text-[#444746]"
+              />
+            </div>
+          )}
         </div>
         {isMobile ? (
           <div className="w-12 h-12 flex justify-center items-center">
@@ -67,12 +145,20 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
             </div>
           </div>
         ) : (
-          <button className="h-10 cursor-pointer text-white bg-[#0b57d0] rounded-[24px] px-6 font-medium font-google-sans-text">
+          <button
+            onClick={() => setIsEdit(true)}
+            className="h-10 cursor-pointer text-white bg-[#0b57d0] rounded-[24px] px-6 font-medium font-google-sans-text"
+          >
             Edit
           </button>
         )}
         <div className="w-12 h-12 flex justify-center items-center">
-          <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
+          <div
+            onClick={() => {
+              setOpen(true);
+            }}
+            className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center"
+          >
             <Icon
               name="delete"
               size={22}
@@ -120,6 +206,7 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
           </DropdownMenu>
         </div>
       </div>
+      <TrashModal isDetailPage={true} open={open} setOpen={setOpen} singleId={details?._id} />
     </div>
   );
 };

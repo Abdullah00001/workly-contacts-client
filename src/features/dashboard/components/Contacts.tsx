@@ -40,6 +40,7 @@ const Contacts: FC = () => {
         </Button>
       </div>
     );
+  console.log(data);
   return (
     <>
       <div className="pl-2 pt-3 flex gap-2 items-center justify-start">
