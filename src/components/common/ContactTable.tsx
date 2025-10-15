@@ -13,12 +13,25 @@ import {
 export type TContacts = {
   _id: string;
   avatar: { url: null; publicId: null };
-  email: '';
+  email: string | null;
   firstName: string;
   lastName: string;
-  phone: { countryCode: ''; number: '' };
+  phone: {
+    countryCode: string | null;
+    number: string | null;
+  };
   isTrashed: false;
   isFavorite: false;
+  location: {
+    city: string | null;
+    country: string | null;
+    streetAddress: string | null;
+    postCode: string | null;
+  };
+  worksAt: {
+    companyName: string | null;
+    jobTitle: string | null;
+  };
 };
 
 type TContactTableProps = {
