@@ -91,3 +91,10 @@ export type TContactSummary = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TToggleFavoriteStatus = {
+  id: string;
+  payload: {
+    isFavorite: boolean;
+  };
+};
