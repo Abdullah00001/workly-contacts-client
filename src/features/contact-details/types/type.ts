@@ -98,3 +98,11 @@ export type TToggleFavoriteStatus = {
     isFavorite: boolean;
   };
 };
+
+export type TTrashModal = {
+  singleId?: string;
+  bulkId?: string[];
+  isDetailPage?:boolean;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+};

@@ -26,3 +26,23 @@ export async function ToggleFavoriteStatus({
     throw new Error('Unknown error occurred in favorite toggle service');
   }
 }
+
+export async function SingleTrash(contactId: string) {
+  try {
+    const response = await axiosClient.patch(`/trash/${contactId}`);
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof Error) throw error;
+    throw new Error('Unknown error occurred in favorite toggle service');
+  }
+}
+
+export async function BulkTrash(payload: { contactIds: string[] }) {
+  try {
+    const response = await axiosClient.patch(`/trash`, payload);
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof Error) throw error;
+    throw new Error('Unknown error occurred in favorite toggle service');
+  }
+}

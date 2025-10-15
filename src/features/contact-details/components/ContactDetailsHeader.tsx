@@ -18,11 +18,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 import { ToggleFavoriteStatus } from '../service/contact-detail-service';
+import TrashModal from '@/features/dashboard/components/TrashModal';
 
 const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
   setIsEdit,
   details,
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const router = useRouter();
@@ -44,7 +46,7 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
           }
         );
         if (data?.isFavorite === false)
-          toast(`Removed ${data?.firstName} ${data?.lastName} to favorites`, {
+          toast(`${data?.firstName} ${data?.lastName} removed from contact`, {
             closeButton: false,
             position: 'bottom-center',
           });
@@ -151,7 +153,12 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
           </button>
         )}
         <div className="w-12 h-12 flex justify-center items-center">
-          <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
+          <div
+            onClick={() => {
+              setOpen(true);
+            }}
+            className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center"
+          >
             <Icon
               name="delete"
               size={22}
@@ -199,6 +206,7 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
           </DropdownMenu>
         </div>
       </div>
+      <TrashModal isDetailPage={true} open={open} setOpen={setOpen} singleId={details?._id} />
     </div>
   );
 };
