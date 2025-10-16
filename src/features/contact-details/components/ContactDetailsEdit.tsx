@@ -63,7 +63,7 @@ const ContactDetailsEdit: FC<TContactDetailsEditProps> = ({ details }) => {
   return (
     <div className="h-full w-full">
       <div className="create-contact-header-width-for-large-screen w-full h-full">
-        <UpdateContactHeader />
+        <UpdateContactHeader details={details} payload={payload} />
         <Suspense fallback={<UpdateContactFormSkeleton />}>
           {isLoading ? (
             <UpdateContactFormSkeleton />

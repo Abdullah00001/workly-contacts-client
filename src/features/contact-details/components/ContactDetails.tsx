@@ -27,9 +27,8 @@ const ContactDetails: FC<TContactDetailsProps> = ({ objectId, isEditMode }) => {
         </div>
       </div>
     );
-  if (isEditMode)
-    return <ContactDetailsEdit details={data} />;
-  return <ContactDetailsInfo  details={data} />;
+  if (isEditMode) return <ContactDetailsEdit details={data} />;
+  return <ContactDetailsInfo details={data} />;
 };
 
 export default ContactDetails;

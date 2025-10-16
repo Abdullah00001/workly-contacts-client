@@ -5,11 +5,36 @@ import { useEffect, type FC, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
-import { TUpdateContactHeader } from '../types/type';
+import { TUpdateContactDetails, TUpdateContactHeader } from '../types/type';
+import { navigationGuardStore } from '@/stores/navigation-guard-store';
 
-const UpdateContactHeader: FC<TUpdateContactHeader> = ({}) => {
+const UpdateContactHeader: FC<TUpdateContactHeader> = ({
+  details,
+  payload,
+}) => {
+  const { hasUnsavedChanges, setUnsavedChanges, setNextRoute, setModalOpen } =
+    navigationGuardStore();
   const disabled = false;
+  const fetchedData: TUpdateContactDetails = {
+    avatar: details?.avatar,
+    birthday: details?.birthday,
+    email: details?.email,
+    firstName: details?.firstName,
+    lastName: details?.lastName,
+    location: details?.location,
+    phone: details?.phone,
+    worksAt: details?.worksAt,
+  };
   const router = useRouter();
+  const handleBack = () => {
+    if (hasUnsavedChanges) {
+      // show discard modal globally
+      setNextRoute('back'); // special flag for back navigation
+      setModalOpen(true);
+    } else {
+      router.back();
+    }
+  };
   // const { isPending, mutate } = useMutation({
   //   mutationFn: async (payload: TContact) => await CreateContact(payload),
   //   onSuccess: (data) => {
@@ -71,11 +96,15 @@ const UpdateContactHeader: FC<TUpdateContactHeader> = ({}) => {
   //     });
   //   }
   // }, [isPending]);
+  useEffect(() => {
+    const changed = JSON.stringify(fetchedData) !== JSON.stringify(payload);
+    setUnsavedChanges(changed);
+  }, [payload, details]);
   return (
     <div className="pt-6 create-contact-header-padding-for-large-screen px-2">
       <div className="flex justify-between items-center w-full">
         <div
-          onClick={() => router.back()}
+          onClick={handleBack}
           className="w-12 h-12 flex justify-center items-center"
         >
           <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
