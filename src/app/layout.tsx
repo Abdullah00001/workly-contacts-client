@@ -4,6 +4,7 @@ import { googleSans, googleSansText, productSans } from './fonts';
 import './globals.css';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
 import { Toaster } from '@/components/ui/sonner';
+import NavigationGuardProvider from '@/providers/NavigationGuardProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -142,7 +143,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${googleSans.variable} ${googleSansText.variable} ${productSans.variable} antialiased`}
       >
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <NavigationGuardProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </NavigationGuardProvider>
         <Toaster closeButton position="top-center" />
       </body>
     </html>

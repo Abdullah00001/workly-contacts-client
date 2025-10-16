@@ -3,15 +3,17 @@
 import { type FC } from 'react';
 import { TContactDetailsAvatar } from '../types/type';
 import Icon from '@/components/common/Icon';
+import { useRouter } from 'next/navigation';
 
 const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
   avatarUrl,
-  setIsEdit,
   firstName,
   lastName,
   companyName,
   jobTitle,
+  _id,
 }) => {
+  const router = useRouter();
   return (
     <div className="w-full flex gap-5 flex-col items-center justify-center mt-6 contact-details-avatar-container">
       <div
@@ -25,7 +27,7 @@ const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
             `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}`
           }
           alt="empty_avatar"
-          onClick={() => !avatarUrl && setIsEdit(true)}
+          onClick={() => !avatarUrl && router.push(`/person/${_id}?edit=1`)}
         />
         {!avatarUrl && (
           <div
@@ -36,7 +38,7 @@ const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
             }}
           >
             <div
-              onClick={() => setIsEdit(true)}
+              onClick={() => router.push(`/person/${_id}?edit=1`)}
               className="flex items-center justify-center bg-[#c2e7ff] rounded-full avatar-plus-inner"
               style={{
                 width: 'calc(25px + ((100vw - 320px)/448 * 37))',

@@ -4,6 +4,7 @@ import { type FC } from 'react';
 import { TContactSummary } from '../types/type';
 import Icon from '@/components/common/Icon';
 import { formatSmartDate } from '../helpers/date';
+import { useRouter } from 'next/navigation';
 
 const ContactSummary: FC<TContactSummary> = ({
   birthday,
@@ -12,8 +13,9 @@ const ContactSummary: FC<TContactSummary> = ({
   location,
   phone,
   updatedAt,
-  setIsEdit,
+  _id,
 }) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col gap-4 mt-6 px-6 pb-4 contact-summary-container">
       <div className="p-4 rounded-[16px] bg-[#f0f4f9] contact-details-info">
@@ -36,7 +38,7 @@ const ContactSummary: FC<TContactSummary> = ({
                 </span>
               ) : (
                 <span
-                  onClick={() => setIsEdit(true)}
+                  onClick={() => router.push(`/person/${_id}?edit=1`)}
                   className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
                 >
                   Add email
@@ -57,7 +59,7 @@ const ContactSummary: FC<TContactSummary> = ({
                 </span>
               ) : (
                 <span
-                  onClick={() => setIsEdit(true)}
+                  onClick={() => router.push(`/person/${_id}?edit=1`)}
                   className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
                 >
                   Add Phone
@@ -93,7 +95,7 @@ const ContactSummary: FC<TContactSummary> = ({
                 </span>
               ) : (
                 <span
-                  onClick={() => setIsEdit(true)}
+                  onClick={() => router.push(`/person/${_id}?edit=1`)}
                   className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
                 >
                   Add location
@@ -117,7 +119,7 @@ const ContactSummary: FC<TContactSummary> = ({
                   </>
                 ) : (
                   <span
-                    onClick={() => setIsEdit(true)}
+                    onClick={() => router.push(`/person/${_id}?edit=1`)}
                     className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
                   >
                     Add birthday

@@ -2,10 +2,12 @@ import { Dispatch, SetStateAction } from 'react';
 
 export type TContactDetailsPageProps = {
   params: Promise<{ objectId: string }>;
+  searchParams: Promise<{ edit?: string }>;
 };
 
 export type TContactDetailsProps = {
   objectId: string;
+  isEditMode?: boolean;
 };
 
 export type TContactDetails = {
@@ -47,31 +49,28 @@ export type TContactDetails = {
 };
 
 export type TContactDetailsInfoProps = {
-  setIsEdit: Dispatch<SetStateAction<boolean>>;
   details: TContactDetails;
 };
 
 export type TContactDetailsEditProps = {
-  setIsEdit: Dispatch<SetStateAction<boolean>>;
   details: TContactDetails;
 };
 
 export type TContactDetailInfoHeader = {
   details: TContactDetails;
-  setIsEdit: Dispatch<SetStateAction<boolean>>;
 };
 
 export type TContactDetailsAvatar = {
-  setIsEdit: Dispatch<SetStateAction<boolean>>;
   avatarUrl: string | null;
   firstName: string;
   lastName: string;
   companyName: string | null;
   jobTitle: string | null;
+  _id: string;
 };
 
 export type TContactSummary = {
-  setIsEdit: Dispatch<SetStateAction<boolean>>;
+  _id: string;
   birthday: {
     day: number | null;
     month: string;
@@ -102,7 +101,7 @@ export type TToggleFavoriteStatus = {
 export type TTrashModal = {
   singleId?: string;
   bulkId?: string[];
-  isDetailPage?:boolean;
+  isDetailPage?: boolean;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
