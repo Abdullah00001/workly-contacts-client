@@ -20,10 +20,7 @@ import { toast } from 'sonner';
 import { ToggleFavoriteStatus } from '../service/contact-detail-service';
 import TrashModal from '@/features/dashboard/components/TrashModal';
 
-const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
-  setIsEdit,
-  details,
-}) => {
+const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
   const [open, setOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -132,7 +129,7 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
         {isMobile ? (
           <div className="w-12 h-12 flex justify-center items-center">
             <div
-              onClick={() => setIsEdit(true)}
+              onClick={() => router.push(`/person/${details?._id}?edit=1`)}
               className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center"
             >
               <Icon
@@ -146,7 +143,7 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
           </div>
         ) : (
           <button
-            onClick={() => setIsEdit(true)}
+            onClick={() => router.push(`/person/${details?._id}?edit=1`)}
             className="h-10 cursor-pointer text-white bg-[#0b57d0] rounded-[24px] px-6 font-medium font-google-sans-text"
           >
             Edit
@@ -206,7 +203,12 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({
           </DropdownMenu>
         </div>
       </div>
-      <TrashModal isDetailPage={true} open={open} setOpen={setOpen} singleId={details?._id} />
+      <TrashModal
+        isDetailPage={true}
+        open={open}
+        setOpen={setOpen}
+        singleId={details?._id}
+      />
     </div>
   );
 };

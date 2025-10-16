@@ -9,10 +9,7 @@ const UpdateContactForm = lazy(
   () => import('@/features/update-contact/components/UpdateContactForm')
 );
 
-const ContactDetailsEdit: FC<TContactDetailsEditProps> = ({
-  setIsEdit,
-  details,
-}) => {
+const ContactDetailsEdit: FC<TContactDetailsEditProps> = ({ details }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [payload, setPayload] = useState<TUpdateContactDetails>({
     avatar: { publicId: null, url: null },

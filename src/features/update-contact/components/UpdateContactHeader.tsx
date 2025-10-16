@@ -5,8 +5,9 @@ import { useEffect, type FC, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { TUpdateContactHeader } from '../types/type';
 
-const UpdateContactHeader: FC = () => {
+const UpdateContactHeader: FC<TUpdateContactHeader> = ({}) => {
   const disabled = false;
   const router = useRouter();
   // const { isPending, mutate } = useMutation({

@@ -43,3 +43,5 @@ export type TUpdateFieldComponentProps = {
   payload: TUpdateContactDetails;
   setPayload: Dispatch<SetStateAction<TUpdateContactDetails>>;
 };
+
+export type TUpdateContactHeader = {};
