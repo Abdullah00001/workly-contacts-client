@@ -121,7 +121,7 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
             >
               {payload?.avatar?.publicId ? (
                 <Icon
-                  name="delete"
+                  name="edit"
                   size={24}
                   type="symbols"
                   variant="outlined"

@@ -1,7 +1,7 @@
 'use client';
 import Icon from '@/components/common/Icon';
 import { useRouter } from 'next/navigation';
-import { useEffect, type FC, type FormEvent } from 'react';
+import { useEffect, useState, type FC, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -14,7 +14,6 @@ const UpdateContactHeader: FC<TUpdateContactHeader> = ({
 }) => {
   const { hasUnsavedChanges, setUnsavedChanges, setNextRoute, setModalOpen } =
     navigationGuardStore();
-  const disabled = false;
   const fetchedData: TUpdateContactDetails = {
     avatar: details?.avatar,
     birthday: details?.birthday,
@@ -119,7 +118,8 @@ const UpdateContactHeader: FC<TUpdateContactHeader> = ({
         </div>
         <div className="flex justify-end items-center">
           <button
-            className={`h-10 px-6 cursor-pointer rounded-[24px] ${disabled ? 'bg-[#e4e4e4] text-[#9f9f9f]' : 'text-white bg-[#0b57d0]'}`}
+            disabled={!hasUnsavedChanges}
+            className={`h-10 px-6 rounded-[24px] ${!hasUnsavedChanges ? 'bg-[#e4e4e4] text-[#9f9f9f] cursor-not-allowed' : 'text-white bg-[#0b57d0] cursor-pointer'}`}
           >
             Save
           </button>
