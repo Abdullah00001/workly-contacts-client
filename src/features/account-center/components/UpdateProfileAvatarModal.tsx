@@ -153,7 +153,7 @@ const UpdateProfileAvatarModal: FC<TUpdateProfileAvatarModalProps> = ({
           type="file"
           accept="image/*"
           ref={fileInputRef}
-          className="hidden"
+          className={"hidden"}
           onChange={handleFileChange}
           disabled={isLoading}
         />

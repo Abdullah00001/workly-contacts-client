@@ -1,6 +1,6 @@
 'use client';
 import Icon from '@/components/common/Icon';
-import { useEffect, useRef, type FC } from 'react';
+import { useEffect, useRef, useState, type FC } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -9,11 +9,13 @@ import {
   RemoveContactAvatar,
   UploadContactAvatar,
 } from '@/features/create-contact/services/create-contact-service';
+import UpdateContactAvatarModal from './UpdateContactAvatarModal';
 
 const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
   payload,
   setPayload,
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
   const imageRef = useRef<HTMLInputElement>(null);
   const { isPending: uploadPending, mutate: upload } = useMutation({
     mutationFn: async (imagePayload: FormData) =>
@@ -101,7 +103,9 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
         <div className="create-contact-header-avatar-width-for-large-screen w-[100px] h-[100px] relative">
           <img
             onClick={() =>
-              !payload?.avatar?.publicId && imageRef.current?.click()
+              !payload?.avatar?.publicId
+                ? imageRef.current?.click()
+                : () => setOpen(true)
             }
             className="object-cover w-full h-full rounded-full cursor-pointer hover:opacity-80"
             src={
@@ -115,7 +119,7 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
               onClick={
                 !payload?.avatar?.publicId
                   ? () => imageRef.current?.click()
-                  : removeImage
+                  : () => setOpen(true)
               }
               className=" create-contact-header-avatar-plus-inner-for-large-screen w-[36px] h-[36px] flex items-center justify-center bg-[#0b57d0] rounded-full"
             >
@@ -150,6 +154,12 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
           />
         </div>
       </div>
+      <UpdateContactAvatarModal
+        open={open}
+        setOpen={setOpen}
+        payload={payload}
+        setPayload={setPayload}
+      />
     </div>
   );
 };

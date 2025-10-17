@@ -48,3 +48,10 @@ export type TUpdateContactHeader = {
   details: TContactDetails;
   payload: TUpdateContactDetails;
 };
+
+export type TUpdateContactAvatarModal = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  payload: TUpdateContactDetails;
+  setPayload: Dispatch<SetStateAction<TUpdateContactDetails>>;
+};
