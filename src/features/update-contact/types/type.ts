@@ -10,8 +10,8 @@ export type TUpdateContactDetails = {
   lastName: string;
   email: string | null;
   phone: {
-    countryCode: string;
-    number: string;
+    countryCode: string | null;
+    number: string | null;
   } | null;
   avatar: {
     url: string | null;
@@ -37,6 +37,8 @@ export type TUpdateContactDetails = {
 export type TUpdateContactForm = {
   payload: TUpdateContactDetails;
   setPayload: Dispatch<SetStateAction<TUpdateContactDetails>>;
+  newImage: File | null;
+  setNewImage: Dispatch<SetStateAction<File | null>>;
 };
 
 export type TUpdateFieldComponentProps = {
@@ -44,7 +46,26 @@ export type TUpdateFieldComponentProps = {
   setPayload: Dispatch<SetStateAction<TUpdateContactDetails>>;
 };
 
+export type TUpdateAvatarComponentProps = {
+  payload: TUpdateContactDetails;
+  setPayload: Dispatch<SetStateAction<TUpdateContactDetails>>;
+  newImage: File | null;
+  setNewImage: Dispatch<SetStateAction<File | null>>;
+};
+
 export type TUpdateContactHeader = {
   details: TContactDetails;
   payload: TUpdateContactDetails;
+  newImage: File | null;
+  setPayload: Dispatch<SetStateAction<TUpdateContactDetails>>;
+  setNewImage: Dispatch<SetStateAction<File | null>>;
+};
+
+export type TUpdateContactAvatarModal = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  payload: TUpdateContactDetails;
+  setPayload: Dispatch<SetStateAction<TUpdateContactDetails>>;
+  newImage: File | null;
+  setNewImage: Dispatch<SetStateAction<File | null>>;
 };

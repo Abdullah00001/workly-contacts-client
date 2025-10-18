@@ -1,70 +1,18 @@
 'use client';
 import Icon from '@/components/common/Icon';
-import { useEffect, useRef, type FC } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useEffect, useRef, useState, type FC } from 'react';
 import { toast } from 'sonner';
-import { AxiosError } from 'axios';
-import { TUpdateFieldComponentProps } from '../types/type';
-import {
-  RemoveContactAvatar,
-  UploadContactAvatar,
-} from '@/features/create-contact/services/create-contact-service';
+import { TUpdateAvatarComponentProps } from '../types/type';
+import UpdateContactAvatarModal from './UpdateContactAvatarModal';
 
-const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
+const UpdateContactAvatar: FC<TUpdateAvatarComponentProps> = ({
   payload,
   setPayload,
+  newImage,
+  setNewImage,
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
   const imageRef = useRef<HTMLInputElement>(null);
-  const { isPending: uploadPending, mutate: upload } = useMutation({
-    mutationFn: async (imagePayload: FormData) =>
-      await UploadContactAvatar(imagePayload),
-    onSuccess: (data) => {
-      setPayload((prev) => ({ ...prev, avatar: data?.image }));
-      toast('Photo uploaded', {
-        closeButton: false,
-        position: 'bottom-center',
-      });
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message, {
-          closeButton: false,
-          position: 'bottom-center',
-        });
-      }
-      toast.error('Photo upload failed,Try Again!', {
-        closeButton: false,
-        position: 'bottom-center',
-      });
-    },
-  });
-  const { isPending: removePending, mutate: remove } = useMutation({
-    mutationFn: async (publicId: string) => await RemoveContactAvatar(publicId),
-    onSuccess: (data) => {
-      setPayload((prev) => ({
-        ...prev,
-        avatar: { publicId: null, url: null },
-      }));
-      if (imageRef.current) imageRef.current.value = '';
-      toast('Photo removed', {
-        closeButton: false,
-        position: 'bottom-center',
-      });
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message, {
-          closeButton: false,
-          position: 'bottom-center',
-        });
-      }
-      toast.error('Photo remove failed,Try Again!', {
-        closeButton: false,
-        position: 'bottom-center',
-      });
-    },
-  });
-  const loading = uploadPending || removePending;
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -78,22 +26,12 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
       toast.error('Image size should be less than 5MB.');
       return;
     }
-    const imagePayload = new FormData();
-    imagePayload.append('image', file);
-    upload(imagePayload);
+    setNewImage(file);
+    setPayload((prev) => ({
+      ...prev,
+      avatar: { ...prev.avatar, url: URL.createObjectURL(file) },
+    }));
   };
-  const removeImage = () => {
-    if (loading) return;
-    remove(payload.avatar?.publicId as string);
-  };
-  useEffect(() => {
-    if (loading) {
-      toast('Working on photo...', {
-        closeButton: false,
-        position: 'bottom-center',
-      });
-    }
-  }, [loading]);
 
   return (
     <div className="flex-1 create-contact-header-avatar-container-for-large-screen">
@@ -101,7 +39,9 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
         <div className="create-contact-header-avatar-width-for-large-screen w-[100px] h-[100px] relative">
           <img
             onClick={() =>
-              !payload?.avatar?.publicId && imageRef.current?.click()
+              !payload?.avatar?.publicId && !newImage
+                ? imageRef.current?.click()
+                : setOpen(true)
             }
             className="object-cover w-full h-full rounded-full cursor-pointer hover:opacity-80"
             src={
@@ -113,15 +53,15 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
           <div className="absolute cursor-pointer create-contact-header-avatar-plus-outer-for-large-screen flex w-[42px] h-[42px] top-15 right-0 items-center justify-center bg-white rounded-full">
             <div
               onClick={
-                !payload?.avatar?.publicId
+                !payload?.avatar?.publicId && !newImage
                   ? () => imageRef.current?.click()
-                  : removeImage
+                  : () => setOpen(true)
               }
               className=" create-contact-header-avatar-plus-inner-for-large-screen w-[36px] h-[36px] flex items-center justify-center bg-[#0b57d0] rounded-full"
             >
-              {payload?.avatar?.publicId ? (
+              {payload?.avatar?.url ? (
                 <Icon
-                  name="delete"
+                  name="edit"
                   size={24}
                   type="symbols"
                   variant="outlined"
@@ -146,10 +86,17 @@ const UpdateContactAvatar: FC<TUpdateFieldComponentProps> = ({
             accept="image/*"
             className="hidden"
             onChange={(e) => !payload?.avatar?.publicId && handleUpload(e)}
-            disabled={loading}
           />
         </div>
       </div>
+      <UpdateContactAvatarModal
+        newImage={newImage}
+        setNewImage={setNewImage}
+        open={open}
+        setOpen={setOpen}
+        payload={payload}
+        setPayload={setPayload}
+      />
     </div>
   );
 };
