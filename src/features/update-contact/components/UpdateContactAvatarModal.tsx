@@ -12,15 +12,55 @@ import {
 import { TUpdateContactAvatarModal } from '../types/type';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { toast } from 'sonner';
 
 const UpdateContactAvatarModal: FC<TUpdateContactAvatarModal> = ({
   open,
   payload,
   setOpen,
   setPayload,
+  newImage,
+  setNewImage,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size should be less than 5MB.');
+      return;
+    }
+    setNewImage(file);
+    setPayload((prev) => ({
+      ...prev,
+      avatar: { ...prev.avatar, url: URL.createObjectURL(file) },
+    }));
+  };
+  const handleRemove = async () => {
+    if (newImage) {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      setNewImage(null);
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, url: null },
+      }));
+    }
+    if (payload?.avatar?.publicId && payload?.avatar?.url && !newImage) {
+      setPayload((prev) => ({
+        ...prev,
+        avatar: { ...prev.avatar, url: null },
+      }));
+    }
+  };
   return (
     <Dialog onOpenChange={setOpen} open={open} modal={true}>
       <DialogContent>
@@ -39,12 +79,6 @@ const UpdateContactAvatarModal: FC<TUpdateContactAvatarModal> = ({
                 {payload?.firstName.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            {/* Loading Overlay */}
-            {/* {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-background/80 backdrop-blur-sm">
-                <Loader2 className="size-8 animate-spin text-primary" />
-              </div>
-            )} */}
           </div>
           {/* Helper Text */}
           <p className="text-center text-xs text-muted-foreground">
@@ -54,12 +88,25 @@ const UpdateContactAvatarModal: FC<TUpdateContactAvatarModal> = ({
           </p>
         </div>
         <DialogFooter>
-          <Button className="flex-1" variant="default">
+          <Button
+            onClick={() => {
+              if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+              }
+              fileInputRef.current?.click();
+            }}
+            className="flex-1"
+            variant="default"
+          >
             <Edit className="size-4" />
             Change
           </Button>
 
-          <Button variant="destructive" className="flex-1">
+          <Button
+            onClick={handleRemove}
+            variant="destructive"
+            className="flex-1"
+          >
             <Trash2 className="size-4" />
             Remove
           </Button>
@@ -69,6 +116,7 @@ const UpdateContactAvatarModal: FC<TUpdateContactAvatarModal> = ({
           accept="image/*"
           ref={fileInputRef}
           className={'hidden'}
+          onChange={handleUpload}
         />
       </DialogContent>
     </Dialog>

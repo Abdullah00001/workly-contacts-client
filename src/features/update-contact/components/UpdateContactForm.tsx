@@ -10,11 +10,21 @@ import UpdateContactPhone from './UpdateContactPhone';
 import UpdateContactAddress from './UpdateContactAddress';
 import UpdateContactBirthday from './UpdateContactBirthday';
 
-const UpdateContactForm: FC<TUpdateContactForm> = ({ payload, setPayload }) => {
+const UpdateContactForm: FC<TUpdateContactForm> = ({
+  payload,
+  setPayload,
+  newImage,
+  setNewImage,
+}) => {
   return (
     <div className="mt-2 w-full pb-10">
       <div className="w-full flex flex-col gap-5">
-        <UpdateContactAvatar payload={payload} setPayload={setPayload} />
+        <UpdateContactAvatar
+          newImage={newImage}
+          setNewImage={setNewImage}
+          payload={payload}
+          setPayload={setPayload}
+        />
         <UpdateContactName payload={payload} setPayload={setPayload} />
         <UpdateContactJobInformation
           payload={payload}

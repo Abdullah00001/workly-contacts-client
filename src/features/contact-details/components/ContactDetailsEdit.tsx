@@ -28,14 +28,15 @@ const ContactDetailsEdit: FC<TContactDetailsEditProps> = ({ details }) => {
       streetAddress: null,
     },
     phone: {
-      countryCode: '',
-      number: '',
+      countryCode: null,
+      number: null,
     },
     worksAt: {
       companyName: null,
       jobTitle: null,
     },
   });
+  const [newImage, setNewImage] = useState<File | null>(null);
   useEffect(() => {
     setIsLoading(true);
     const {
@@ -63,12 +64,23 @@ const ContactDetailsEdit: FC<TContactDetailsEditProps> = ({ details }) => {
   return (
     <div className="h-full w-full">
       <div className="create-contact-header-width-for-large-screen w-full h-full">
-        <UpdateContactHeader details={details} payload={payload} />
+        <UpdateContactHeader
+          setNewImage={setNewImage}
+          setPayload={setPayload}
+          newImage={newImage}
+          details={details}
+          payload={payload}
+        />
         <Suspense fallback={<UpdateContactFormSkeleton />}>
           {isLoading ? (
             <UpdateContactFormSkeleton />
           ) : (
-            <UpdateContactForm payload={payload} setPayload={setPayload} />
+            <UpdateContactForm
+              newImage={newImage}
+              setNewImage={setNewImage}
+              payload={payload}
+              setPayload={setPayload}
+            />
           )}
         </Suspense>
       </div>
