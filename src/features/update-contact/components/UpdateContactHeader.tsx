@@ -75,7 +75,7 @@ const UpdateContactHeader: FC<TUpdateContactHeader> = ({
           },
         });
         setNewImage(null);
-        toast('Contact Created', {
+        toast('Contact details updated', {
           closeButton: false,
           position: 'bottom-center',
         });
@@ -88,7 +88,7 @@ const UpdateContactHeader: FC<TUpdateContactHeader> = ({
             position: 'bottom-center',
           });
         }
-        toast.error('Contact update failed,Try Again!', {
+        toast.error('Contact details update failed,Try Again!', {
           closeButton: false,
           position: 'bottom-center',
         });
@@ -128,7 +128,7 @@ const UpdateContactHeader: FC<TUpdateContactHeader> = ({
           },
         });
         setNewImage(null);
-        toast('Contact Created', {
+        toast('Contact details updated', {
           closeButton: false,
           position: 'bottom-center',
         });
@@ -141,7 +141,7 @@ const UpdateContactHeader: FC<TUpdateContactHeader> = ({
             position: 'bottom-center',
           });
         }
-        toast.error('Contact update failed,Try Again!', {
+        toast.error('Contact details update failed,Try Again!', {
           closeButton: false,
           position: 'bottom-center',
         });

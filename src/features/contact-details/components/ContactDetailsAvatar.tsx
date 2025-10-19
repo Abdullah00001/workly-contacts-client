@@ -61,12 +61,14 @@ const ContactDetailsAvatar: FC<TContactDetailsAvatar> = ({
           {firstName} {lastName}
         </h1>
         <div className="flex justify-center items-center flex-wrap">
-          {companyName && jobTitle && (
+          {(companyName || jobTitle) && (
             <>
               <span className="text-4 font-google-sans text-[#1f1f1f]">
                 {jobTitle}
               </span>
-              <span className="px-1 text-[#1f1f1f]">•</span>
+              {companyName && jobTitle && (
+                <span className="px-1 text-[#1f1f1f]">•</span>
+              )}
               <span className="text-4 font-google-sans text-[#1f1f1f]">
                 {companyName}
               </span>

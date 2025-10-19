@@ -3,7 +3,7 @@ import Icon from '@/components/common/Icon';
 import { useRouter } from 'next/navigation';
 import { useEffect, type FC, type FormEvent } from 'react';
 import { TContact, TFieldComponentProps } from '../types/type';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CreateContact } from '../services/create-contact-service';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -14,6 +14,7 @@ const CreateContactHeader: FC<TFieldComponentProps> = ({
   payload,
   setPayload,
 }) => {
+  const queryClient = useQueryClient();
   const { setUnsavedChanges, setNextRoute, setModalOpen } =
     navigationGuardStore();
   const disabled = payload.firstName === '' && payload.lastName === '';
@@ -22,6 +23,7 @@ const CreateContactHeader: FC<TFieldComponentProps> = ({
   const { isPending, mutate } = useMutation({
     mutationFn: async (payload: TContact) => await CreateContact(payload),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
       setPayload({
         avatar: { publicId: null, url: null },
         birthday: {
@@ -53,7 +55,7 @@ const CreateContactHeader: FC<TFieldComponentProps> = ({
       });
       setUnsavedChanges(false);
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push(`/person/${data._id}`);
       }, 1000);
     },
     onError: (error) => {
