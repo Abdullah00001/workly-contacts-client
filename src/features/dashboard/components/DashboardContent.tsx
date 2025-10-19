@@ -11,6 +11,7 @@ const DashboardContent: FC<TLayout> = ({ children }) => {
   const isContactDetailsPage = pathName.startsWith('/person/');
   const isCreateContactPage = pathName.startsWith('/new');
   const isProfilePage = pathName.startsWith('/me');
+  const isTrashPage = pathName.startsWith('/trash');
   return (
     <>
       {/* Mobile */}
@@ -18,22 +19,28 @@ const DashboardContent: FC<TLayout> = ({ children }) => {
         <div className="bg-[#ffffff] w-full h-[calc(100%-14px)] rounded-2xl overflow-auto">
           {children}
         </div>
-        {!isContactDetailsPage && !isCreateContactPage && !isProfilePage && (
-          <div className="fixed block lg:hidden bottom-14 right-4">
-            <CreateContactSmallButton />
-          </div>
-        )}
+        {!isContactDetailsPage &&
+          !isCreateContactPage &&
+          !isProfilePage &&
+          !isTrashPage && (
+            <div className="fixed block lg:hidden bottom-14 right-4">
+              <CreateContactSmallButton />
+            </div>
+          )}
       </main>
       {/* Tablet */}
       <main className="hidden md:block lg:hidden md:w-full md:flex-1">
         <div className="bg-[#ffffff] w-full h-[calc(100%-48px)] rounded-2xl overflow-auto">
           {children}
         </div>
-        {!isContactDetailsPage && !isCreateContactPage && !isProfilePage && (
-          <div className="fixed block lg:hidden bottom-14 right-4 md:left-[90%] md:top-[85%]">
-            <CreateContactSmallButton />
-          </div>
-        )}
+        {!isContactDetailsPage &&
+          !isCreateContactPage &&
+          !isProfilePage &&
+          !isTrashPage && (
+            <div className="fixed block lg:hidden bottom-14 right-4 md:left-[90%] md:top-[85%]">
+              <CreateContactSmallButton />
+            </div>
+          )}
       </main>
       {/* Desktop */}
       <main
