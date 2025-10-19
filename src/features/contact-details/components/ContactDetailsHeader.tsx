@@ -112,10 +112,7 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
               />
             </div>
           ) : (
-            <div
-              onClick={handleFavoriteToggle}
-              className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center"
-            >
+            <div className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
               <Icon
                 name="star_border"
                 size={22}

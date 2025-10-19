@@ -3,7 +3,7 @@ import { TContactDetailsPageProps } from '@/features/contact-details/types/type'
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact Details | Workly Contacts',
+  title: 'Contact Details',
   description:
     'View, edit, and manage detailed information about your contacts on Workly Contacts. Keep all your professional and personal connections organized in one place.',
   keywords: [

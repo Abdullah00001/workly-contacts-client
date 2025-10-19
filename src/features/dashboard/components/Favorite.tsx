@@ -2,15 +2,15 @@
 import ContactTable from '@/components/common/ContactTable';
 import { useQuery } from '@tanstack/react-query';
 import type { FC } from 'react';
-import { RetrieveContacts } from '../services/contacts-service';
 import WorklyLoader from '@/components/common/WorklyLoader';
 import EmptyContact from '@/components/common/EmptyContact';
 import { Button } from '@/components/ui/button';
+import { RetrieveFavorites } from '../services/contacts-service';
 
-const Contacts: FC = () => {
+const Favorite: FC = () => {
   const { isPending, data, error, refetch } = useQuery({
-    queryKey: ['contacts'],
-    queryFn: RetrieveContacts,
+    queryKey: ['favorites'],
+    queryFn: RetrieveFavorites,
   });
   if (isPending && !error)
     return (
@@ -24,7 +24,7 @@ const Contacts: FC = () => {
     return (
       <div className="flex flex-col justify-center items-center h-screen space-y-4">
         <h2 className="font-google-sans text-xl text-[#d32f2f] font-medium">
-          Failed to load contacts
+          Failed to load favorites
         </h2>
         <p className="font-google-sans-text text-sm text-[#5f6368]">
           {error instanceof Error
@@ -44,7 +44,7 @@ const Contacts: FC = () => {
     <>
       <div className="pl-2 pt-3 flex gap-2 items-center justify-start">
         <h1 className="font-google-sans text-[#444746] text-2xl font-normal">
-          Contacts
+          Favorite
         </h1>
         <span className="font-google-sans-text text-sm font-medium text-[#444746]">
           {!isPending && `(${data?.length})`}
@@ -56,4 +56,4 @@ const Contacts: FC = () => {
   );
 };
 
-export default Contacts;
+export default Favorite;

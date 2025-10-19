@@ -39,7 +39,7 @@ const ContactSummary: FC<TContactSummary> = ({
               ) : (
                 <span
                   onClick={() => router.push(`/person/${_id}?edit=1`)}
-                  className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
+                  className="text-[#0b57d0] font-normal font-google-sans-text text-[14px] cursor-pointer"
                 >
                   Add email
                 </span>
@@ -60,7 +60,7 @@ const ContactSummary: FC<TContactSummary> = ({
               ) : (
                 <span
                   onClick={() => router.push(`/person/${_id}?edit=1`)}
-                  className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
+                  className="text-[#0b57d0] font-normal font-google-sans-text text-[14px] cursor-pointer"
                 >
                   Add Phone
                 </span>
@@ -96,7 +96,7 @@ const ContactSummary: FC<TContactSummary> = ({
               ) : (
                 <span
                   onClick={() => router.push(`/person/${_id}?edit=1`)}
-                  className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
+                  className="text-[#0b57d0] font-normal font-google-sans-text text-[14px] cursor-pointer"
                 >
                   Add location
                 </span>
@@ -120,7 +120,7 @@ const ContactSummary: FC<TContactSummary> = ({
                 ) : (
                   <span
                     onClick={() => router.push(`/person/${_id}?edit=1`)}
-                    className="text-[#0b57d0] font-normal font-google-sans-text text-[14px]"
+                    className="text-[#0b57d0] font-normal font-google-sans-text text-[14px] cursor-pointer"
                   >
                     Add birthday
                   </span>

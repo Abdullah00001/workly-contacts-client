@@ -4,6 +4,7 @@ import {
   Dispatch,
   MouseEvent,
   SetStateAction,
+  useEffect,
   useState,
   type FC,
 } from 'react';
@@ -15,6 +16,14 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
+import {
+  TContactDetails,
+  TToggleFavoriteStatus,
+} from '@/features/contact-details/types/type';
+import { ToggleFavoriteStatus } from '@/features/contact-details/service/contact-detail-service';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type TContactTableRow = {
   contact: TContacts;
@@ -27,6 +36,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
   selectedContacts,
   setSelectContact,
 }) => {
+  const queryClient = useQueryClient();
   const {
     _id,
     avatar,
@@ -42,7 +52,6 @@ const ContactTableRow: FC<TContactTableRow> = ({
   const isSelected = selectedContacts.includes(_id);
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const [isRowHover, setIsRowHover] = useState<boolean>(false);
-  const [favorite, setFavorite] = useState<boolean>(false);
   const [isMoreActionOpen, setIsMoreActionOpen] = useState<boolean>(false);
   const router = useRouter();
 
@@ -74,7 +83,46 @@ const ContactTableRow: FC<TContactTableRow> = ({
   const onChildMouseLeave = () => {
     setIsChildHover(false);
   };
-
+  const { mutate: favoriteToggle, isPending: favoriteTogglePending } =
+    useMutation({
+      mutationFn: async (payload: TToggleFavoriteStatus) =>
+        await ToggleFavoriteStatus(payload),
+      onSuccess: (data: TContactDetails) => {
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        queryClient.invalidateQueries({ queryKey: ['favorites'] });
+        queryClient.setQueryData(['favorites'], data);
+        if (data?.isFavorite === false)
+          toast(`${data?.firstName} ${data?.lastName} removed from contact`, {
+            closeButton: false,
+            position: 'bottom-center',
+          });
+        if (data?.isFavorite === true)
+          toast(`Added ${data?.firstName} ${data?.lastName} to favorites`, {
+            closeButton: false,
+            position: 'bottom-center',
+          });
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError)
+          toast.error(error.response?.data?.message, {
+            closeButton: false,
+            position: 'bottom-center',
+          });
+        toast.error('Unwanted error occurred,Try Again!');
+      },
+    });
+  const handleToggleFavorite = () => {
+    favoriteToggle({ id: _id, payload: { isFavorite: !isFavorite } });
+  };
+  const loading = favoriteTogglePending;
+  useEffect(() => {
+    if (loading) {
+      toast(`Working...`, {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    }
+  }, [loading]);
   return (
     <div
       onMouseEnter={onRowMouseEnter}
@@ -168,7 +216,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
             onMouseLeave={onChildMouseLeave}
             onClick={(e) => {
               e.stopPropagation();
-              setFavorite((prev) => !prev);
+              handleToggleFavorite();
             }}
             className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
           >

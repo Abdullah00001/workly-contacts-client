@@ -2,7 +2,7 @@ import CreateContact from '@/features/create-contact/components/CreateContact';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Create New Contact | Workly Contacts',
+  title: 'Create New Contact',
   description:
     'Add a new contact to your Workly Contacts account quickly and easily. Manage your contacts efficiently with our intuitive platform.',
   keywords: [
