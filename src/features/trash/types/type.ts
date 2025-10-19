@@ -20,3 +20,7 @@ export type TTrashTableRow = {
   selectedContacts: string[];
   setSelectContact: Dispatch<SetStateAction<string[]>>;
 };
+
+export type TEmptyTrash = {
+  trash: TTrash[];
+};

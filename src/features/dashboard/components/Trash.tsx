@@ -2,6 +2,7 @@
 import EmptyContact from '@/components/common/EmptyContact';
 import WorklyLoader from '@/components/common/WorklyLoader';
 import { Button } from '@/components/ui/button';
+import EmptyTrash from '@/features/trash/components/EmptyTrash';
 import TrashTable from '@/features/trash/components/TrashTable';
 import { RetrieveTrash } from '@/features/trash/services/trash-service';
 import { useQuery } from '@tanstack/react-query';
@@ -40,25 +41,10 @@ const Trash: FC = () => {
         </Button>
       </div>
     );
-  console.log(data);
   return (
     <>
       <div className="px-4">
-        <div className="w-full flex items-center justify-start p-1 bg-[#e1e3e1]">
-          <div className="py-[10px] pl-5 pr-3">
-            <p className="text-[#444746] text-sm font-google-sans-text">
-              Contacts that have been in Trash more than 30 days will be deleted
-              forever
-            </p>
-          </div>
-          <div className="h-[48px] flex justify-center items-center sm:flex-shrink-0">
-            <div className="h-10 flex justify-center items-center">
-              <button className="text-sm whitespace-nowrap cursor-pointer hover:bg-[#0b57d012] text-center w-full h-full p-3 rounded-full font-google-sans-text font-medium text-[#0b57d0]">
-                Empty Trash now
-              </button>
-            </div>
-          </div>
-        </div>
+        <EmptyTrash trash={data} />
       </div>
       <div className="px-4">
         <div className="pl-2 pt-3 flex gap-2 items-center justify-start">

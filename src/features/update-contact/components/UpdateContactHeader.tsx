@@ -1,13 +1,12 @@
 'use client';
 import Icon from '@/components/common/Icon';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, type FC, type FormEvent } from 'react';
+import { useEffect, type FC, type FormEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import { TUpdateContactDetails, TUpdateContactHeader } from '../types/type';
 import { navigationGuardStore } from '@/stores/navigation-guard-store';
-import { TContact } from '@/features/create-contact/types/type';
 import {
   UpdateContactInfoForm,
   UpdateContactInfoText,
