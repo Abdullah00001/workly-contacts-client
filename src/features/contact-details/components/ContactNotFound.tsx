@@ -18,8 +18,8 @@ const ContactNotFound = () => {
 
         {/* Description */}
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          We couldn{`'`}t find the contact you{`'`}re looking for. It may have been
-          deleted, moved, or the link might be incorrect.
+          We couldn{`'`}t find the contact you{`'`}re looking for. It may have
+          been deleted, moved, or the link might be incorrect.
         </p>
 
         {/* Actions */}

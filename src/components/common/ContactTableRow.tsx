@@ -4,6 +4,7 @@ import {
   Dispatch,
   MouseEvent,
   SetStateAction,
+  startTransition,
   useEffect,
   useState,
   type FC,
@@ -11,11 +12,6 @@ import {
 import { TContacts } from '@/components/common/ContactTable';
 import Icon from '@/components/common/Icon';
 import { useRouter } from 'next/navigation';
-import MoreActionModal from '@/components/common/MoreActionModal';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import {
@@ -24,6 +20,7 @@ import {
 } from '@/features/contact-details/types/type';
 import { ToggleFavoriteStatus } from '@/features/contact-details/service/contact-detail-service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import MoreActionDropDown from './MoreActionDropdown';
 
 type TContactTableRow = {
   contact: TContacts;
@@ -65,7 +62,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
   };
   const handleMoreActionsClick = (e: MouseEvent) => {
     e.stopPropagation();
-    setIsMoreActionOpen(!isMoreActionOpen);
+    setIsMoreActionOpen(true);
   };
 
   const onRowMouseEnter = () => {
@@ -124,158 +121,149 @@ const ContactTableRow: FC<TContactTableRow> = ({
     }
   }, [loading]);
   return (
-    <div
-      onMouseEnter={onRowMouseEnter}
-      onMouseLeave={onRowMouseLeave}
-      onClick={() => router.push(`/person/${_id}`)}
-      className={`flex rounded-sm px-2 py-[5px] gap-2 items-center justify-start ${
-        isSelected && 'bg-[#d3e3fd] hover:bg-[#0b57d035]'
-      } ${isChildHover ? '' : 'hover:bg-[#0b57d014]'} cursor-pointer`}
-    >
-      <div className="flex-1 flex gap-5 items-center justify-start">
-        <div className="w-10 h-10">
-          {isSelected ? (
-            <div
-              onMouseEnter={onChildMouseEnter}
-              onMouseLeave={onChildMouseLeave}
-              onClick={(e) => e.stopPropagation()}
-              className={`w-full h-full flex items-center justify-center rounded-full hover:bg-[#0b57d030]`}
-            >
-              <input
-                onChange={handleSelect}
-                checked={isSelected}
-                type="checkbox"
-                className="cursor-pointer w-4.5 h-4.5"
-              />
-            </div>
-          ) : isRowHover ? (
-            <div
-              onMouseEnter={onChildMouseEnter}
-              onMouseLeave={onChildMouseLeave}
-              onClick={(e) => e.stopPropagation()}
-              className={`w-full h-full flex items-center justify-center rounded-full hover:bg-gray-200`}
-            >
-              <input
-                onChange={handleSelect}
-                checked={isSelected}
-                type="checkbox"
-                className="cursor-pointer w-4.5 h-4.5"
-              />
-            </div>
-          ) : (
-            <div
-              onClick={handleSelect}
-              className={`flex items-center justify-center`}
-            >
-              <img
-                src={
-                  avatar.url
-                    ? avatar.url
-                    : `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}`
-                }
-                alt="Avatar"
-                className="w-9 h-9 cursor-pointer rounded-full"
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal">
-          {firstName} {lastName}
-        </div>
-      </div>
-      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden sm:block">
-        {email}
-      </div>
-      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden phone-field-md phone-field-lg">
-        {phone.number}
-      </div>
-      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden job-field-lg overflow-hidden">
-        {worksAt?.jobTitle &&
-          ((worksAt?.jobTitle).length > 17
-            ? worksAt.jobTitle.slice(0, 16) + '...'
-            : worksAt.jobTitle)}
-      </div>
-      <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg">
-        {location?.streetAddress &&
-          ((location?.streetAddress).length > 17
-            ? location.streetAddress.slice(0, 16) + '...'
-            : location.streetAddress)}
-      </div>
-      <div className="flex-1 w-[170px] hidden sm:block">
-        <div
-          className={`flex items-center justify-end ${
-            isMoreActionOpen
-              ? 'visible'
-              : isRowHover
-                ? 'visible'
-                : 'lg:invisible'
-          }`}
-        >
-          <button
-            onMouseEnter={onChildMouseEnter}
-            onMouseLeave={onChildMouseLeave}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleToggleFavorite();
-            }}
-            className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
-          >
-            {isFavorite ? (
-              <Icon
-                name={'star'}
-                variant="filled"
-                className=" text-[#0b57d0]"
-                type="icons"
-                size={20}
-              />
+    <>
+      <div
+        onMouseEnter={onRowMouseEnter}
+        onMouseLeave={onRowMouseLeave}
+        onClick={() => router.push(`/person/${_id}`)}
+        className={`flex rounded-sm px-2 py-[5px] gap-2 items-center justify-start ${
+          isSelected && 'bg-[#d3e3fd] hover:bg-[#0b57d035]'
+        } ${isChildHover ? '' : 'hover:bg-[#0b57d014]'} cursor-pointer`}
+      >
+        <div className="flex-1 flex gap-5 items-center justify-start">
+          <div className="w-10 h-10">
+            {isSelected ? (
+              <div
+                onMouseEnter={onChildMouseEnter}
+                onMouseLeave={onChildMouseLeave}
+                onClick={(e) => e.stopPropagation()}
+                className={`w-full h-full flex items-center justify-center rounded-full hover:bg-[#0b57d030]`}
+              >
+                <input
+                  onChange={handleSelect}
+                  checked={isSelected}
+                  type="checkbox"
+                  className="cursor-pointer w-4.5 h-4.5"
+                />
+              </div>
+            ) : isRowHover ? (
+              <div
+                onMouseEnter={onChildMouseEnter}
+                onMouseLeave={onChildMouseLeave}
+                onClick={(e) => e.stopPropagation()}
+                className={`w-full h-full flex items-center justify-center rounded-full hover:bg-gray-200`}
+              >
+                <input
+                  onChange={handleSelect}
+                  checked={isSelected}
+                  type="checkbox"
+                  className="cursor-pointer w-4.5 h-4.5"
+                />
+              </div>
             ) : (
-              <Icon
-                name={'star_outline'}
-                variant="outlined"
-                className=" text-[#444746]"
-                type="icons"
-                size={20}
-              />
+              <div
+                onClick={handleSelect}
+                className={`flex items-center justify-center`}
+              >
+                <img
+                  src={
+                    avatar.url
+                      ? avatar.url
+                      : `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}`
+                  }
+                  alt="Avatar"
+                  className="w-9 h-9 cursor-pointer rounded-full"
+                />
+              </div>
             )}
-          </button>
-          <button
-            onMouseEnter={onChildMouseEnter}
-            onMouseLeave={onChildMouseLeave}
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/person/${_id}?edit=1`);
-            }}
-            className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
+          </div>
+          <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal">
+            {firstName} {lastName}
+          </div>
+        </div>
+        <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden sm:block">
+          {email}
+        </div>
+        <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden phone-field-md phone-field-lg">
+          {phone.number}
+        </div>
+        <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden job-field-lg overflow-hidden">
+          {worksAt?.jobTitle &&
+            ((worksAt?.jobTitle).length > 17
+              ? worksAt.jobTitle.slice(0, 16) + '...'
+              : worksAt.jobTitle)}
+        </div>
+        <div className="flex-1 text-[#1F1F1F] text-sm font-google-sans-text font-normal hidden address-field-lg">
+          {location?.streetAddress &&
+            ((location?.streetAddress).length > 17
+              ? location.streetAddress.slice(0, 16) + '...'
+              : location.streetAddress)}
+        </div>
+        <div className="flex-1 w-[170px] hidden sm:block">
+          <div
+            className={`flex items-center justify-end ${
+              isMoreActionOpen
+                ? 'visible'
+                : isRowHover
+                  ? 'visible'
+                  : 'lg:invisible'
+            }`}
           >
-            <Icon
-              name={'edit'}
-              variant="outlined"
-              className=" text-[#444746]"
-              type="icons"
-              size={20}
-            />
-          </button>
-          <DropdownMenu
-            open={isMoreActionOpen}
-            onOpenChange={setIsMoreActionOpen}
-          >
-            <DropdownMenuTrigger
-              onClick={handleMoreActionsClick}
+            <button
+              onMouseEnter={onChildMouseEnter}
+              onMouseLeave={onChildMouseLeave}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggleFavorite();
+              }}
+              className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
+            >
+              {isFavorite ? (
+                <Icon
+                  name={'star'}
+                  variant="filled"
+                  className=" text-[#0b57d0]"
+                  type="icons"
+                  size={20}
+                />
+              ) : (
+                <Icon
+                  name={'star_outline'}
+                  variant="outlined"
+                  className=" text-[#444746]"
+                  type="icons"
+                  size={20}
+                />
+              )}
+            </button>
+            <button
+              onMouseEnter={onChildMouseEnter}
+              onMouseLeave={onChildMouseLeave}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/person/${_id}?edit=1`);
+              }}
               className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} w-[40px] h-[40px] flex items-center justify-center  cursor-pointer rounded-full `}
             >
               <Icon
-                name={'more_vert'}
+                name={'edit'}
                 variant="outlined"
                 className=" text-[#444746]"
                 type="icons"
                 size={20}
               />
-            </DropdownMenuTrigger>
-            <MoreActionModal />
-          </DropdownMenu>
+            </button>
+            <MoreActionDropDown
+              isMoreActionOpen={isMoreActionOpen}
+              setIsMoreActionOpen={setIsMoreActionOpen}
+              handleMoreActionsClick={handleMoreActionsClick}
+              contact={contact}
+              isSelected={isSelected}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

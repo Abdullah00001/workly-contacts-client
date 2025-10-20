@@ -34,6 +34,7 @@ const TrashModal: FC<TTrashModal> = ({
     mutationFn: async (payload: string) => await SingleTrash(payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['contacts', singleId] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       queryClient.invalidateQueries({ queryKey: ['trash'] });
       toast(`1 contact moved to trash`, {
@@ -91,7 +92,11 @@ const TrashModal: FC<TTrashModal> = ({
   }, [loading]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        onPointerUp={(e) => e.stopPropagation()}
+      >
         <DialogHeader>
           <DialogTitle>
             {singleId ? 'Delete from contacts?' : 'Delete selected contacts?'}
@@ -104,9 +109,17 @@ const TrashModal: FC<TTrashModal> = ({
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button>Cancel</Button>
+            <Button onClick={(e) => e.stopPropagation()}>Cancel</Button>
           </DialogClose>
-          <Button onClick={handleTrash}>Move to trash</Button>
+          <Button
+            disabled={loading}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent click from bubbling to row
+              handleTrash();
+            }}
+          >
+            Move to trash
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

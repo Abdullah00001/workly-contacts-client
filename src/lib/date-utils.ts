@@ -79,3 +79,56 @@ export function getMonthAndDayFromISO(isoDate: string): string {
 
   return date.toLocaleDateString('en-US', options);
 }
+
+/**
+ * Format a given ISO date string into a readable format.
+ *
+ * Examples:
+ *  - "2025-10-19T19:07:00Z" (today) → "Today, 7:07 PM"
+ *  - "2025-06-05T09:30:00Z" → "June 5"
+ *  - "2025-08-05T09:30:00Z" → "Aug 5"
+ *  - "2025-01-10T09:30:00Z" → "Jan 10"
+ */
+export function formatTrashAtDate(isoString: string): string {
+  const date = new Date(isoString);
+  const now = new Date();
+
+  // Check if it's today
+  const isToday =
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear();
+
+  if (isToday) {
+    // Format time like "7:07 PM"
+    const timeString = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+    return `Today, ${timeString}`;
+  }
+
+  const fullMonthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  const month = fullMonthNames[date.getMonth()];
+  const day = date.getDate();
+
+  // If month name length is 4 (June, July), keep full name
+  // Otherwise, take first 3 letters
+  const displayMonth = month.length === 4 ? month : month.slice(0, 3);
+
+  return `${displayMonth} ${day}`;
+}
