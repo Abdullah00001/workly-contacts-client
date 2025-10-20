@@ -1,18 +1,46 @@
 'use client';
 
-import { ChangeEvent, useState, MouseEvent, type FC } from 'react';
+import { ChangeEvent, useState, MouseEvent, type FC, useEffect } from 'react';
 import { TTrashTableRow } from '../types/type';
 import { formatTrashAtDate } from '@/lib/date-utils';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { RecoverOneTrashItem } from '../services/trash-service';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 const TrashTableRow: FC<TTrashTableRow> = ({
   selectedContacts,
   setSelectContact,
   trash,
 }) => {
+  const queryClient = useQueryClient();
   const { _id, avatar, firstName, isTrashed, lastName, trashedAt } = trash;
   const isSelected = selectedContacts.includes(_id);
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const [isRowHover, setIsRowHover] = useState<boolean>(false);
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: string) => await RecoverOneTrashItem(payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      toast('1 contact recovered', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message, {
+          closeButton: false,
+          position: 'bottom-center',
+        });
+      }
+      toast.error('Empty One Trash Operation failed,Try Again!', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    },
+  });
   const handleSelect = (e: ChangeEvent<HTMLInputElement> | MouseEvent) => {
     e.stopPropagation();
     setSelectContact((prev) =>
@@ -36,6 +64,14 @@ const TrashTableRow: FC<TTrashTableRow> = ({
   const onChildMouseLeave = () => {
     setIsChildHover(false);
   };
+  useEffect(() => {
+    if (isPending) {
+      toast('Working...', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    }
+  }, [isPending]);
   return (
     <div
       onMouseEnter={onRowMouseEnter}
@@ -112,6 +148,7 @@ const TrashTableRow: FC<TTrashTableRow> = ({
             onMouseLeave={onChildMouseLeave}
             onClick={(e) => {
               e.stopPropagation();
+              mutate(trash._id);
             }}
             className={`${isSelected ? 'hover:bg-[#0b57d030]' : 'hover:bg-gray-200'} h-10 p-3 text-[#0b57d0] font-google-sans-text text-sm font-medium rounded-[28px] cursor-pointer`}
           >

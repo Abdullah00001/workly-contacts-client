@@ -1,5 +1,5 @@
 'use client';
-import { useState, type FC } from 'react';
+import { startTransition, useState, type FC } from 'react';
 import Icon from '@/components/common/Icon';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 import ContactTableRow from '@/components/common/ContactTableRow';
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import TrashModal from '@/features/dashboard/components/TrashModal';
 
 export type TContacts = {
   _id: string;
@@ -39,6 +40,8 @@ type TContactTableProps = {
 };
 
 const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const { toggleExportModal, togglePrintModal } = useImportExportModalStore();
   const [selectedContacts, setSelectContact] = useState<string[]>([]);
   const handleSelectAll = () => {
@@ -47,6 +50,18 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
 
   const handleSelectNone = () => {
     setSelectContact([]);
+  };
+  const handleOpenTrashModal = () => {
+    // First, close the dropdown immediately
+    setDropdownOpen(false);
+
+    // Then defer the modal opening to next tick
+    // This breaks the focus trap cycle
+    startTransition(() => {
+      setTimeout(() => {
+        setOpen(true);
+      }, 0);
+    });
   };
   return (
     <div className="flex flex-col gap-2">
@@ -83,13 +98,13 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[130px] ml-[70px] lg:ml-[110px] bg-white border border-gray-200  shadow-lg  px-0 rounded-none py-2">
                 <DropdownMenuItem
-                  onClick={handleSelectAll}
+                  onSelect={handleSelectAll}
                   className="w-full text-left px-4 py-2 text-[16px] !text-[#1F1F1F] hover:!bg-gray-200 cursor-pointer rounded-none"
                 >
                   All
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={handleSelectNone}
+                  onSelect={handleSelectNone}
                   className="w-full  text-left px-4 py-2 text-[16px] !text-[#1F1F1F] hover:!bg-gray-200 cursor-pointer rounded-none"
                 >
                   None
@@ -149,7 +164,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
-            <DropdownMenu>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
               <DropdownMenuTrigger
                 className={`w-[45px] h-[45px] flex items-center justify-center  cursor-pointer rounded-full hover:bg-[#0b57d030]`}
               >
@@ -164,7 +179,14 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
               <DropdownMenuContent
                 className={`w-[180px] mr-8 lg:mr-[50px] bg-white border border-gray-200  shadow-lg  px-0 rounded-none py-2`}
               >
-                <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setDropdownOpen(false);
+                    togglePrintModal();
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
+                >
                   <Icon
                     name="print"
                     variant="filled"
@@ -174,7 +196,14 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
                   />
                   Print
                 </DropdownMenuItem>
-                <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setDropdownOpen(false);
+                    toggleExportModal();
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
+                >
                   <Icon
                     name="file_upload"
                     variant="outlined"
@@ -184,7 +213,14 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
                   />
                   Export
                 </DropdownMenuItem>
-                <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    // Prevent default dropdown close behavior
+                    e.preventDefault();
+                    handleOpenTrashModal();
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
+                >
                   <Icon
                     name="delete"
                     variant="outlined"
@@ -260,6 +296,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
           ))}
         </div>
       </div>
+      <TrashModal open={open} setOpen={setOpen} bulkId={selectedContacts} />
     </div>
   );
 };

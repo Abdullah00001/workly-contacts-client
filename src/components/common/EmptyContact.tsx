@@ -42,7 +42,7 @@ const EmptyContact: React.FC<EmptyStateProps> = ({ type }) => {
           actions: (
             <div className="flex items-center w-full gap-2 justify-center">
               <button
-                onClick={() => router.push('/contacts/new')}
+                onClick={() => router.push('/new')}
                 className="flex items-center cursor-pointer justify-center gap-2 px-2 py-2 text-[#0b57d0] rounded-[24px] hover:bg-[#dbeafe] transition-colors font-google-sans-text text-sm font-medium"
               >
                 <Icon name="person" size={18} variant="outlined" type="icons" />

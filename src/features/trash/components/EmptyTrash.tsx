@@ -1,3 +1,4 @@
+'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, type FC } from 'react';
 import { EmptyTrashContacts } from '../services/trash-service';

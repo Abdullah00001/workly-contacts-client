@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { TTrashTable } from '../types/type';
 import {
   DropdownMenu,
@@ -8,19 +8,97 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import Icon from '@/components/common/Icon';
 import TrashTableRow from './TrashTableRow';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  EmptyManyTrashItems,
+  RecoverManyTrashItem,
+} from '../services/trash-service';
 
 const TrashTable: FC<TTrashTable> = ({ trash }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const [selectedContacts, setSelectContact] = useState<string[]>([]);
   const handleSelectAll = () => {
     setSelectContact(trash.map(({ _id }) => _id as string));
   };
-
   const handleSelectNone = () => {
     setSelectContact([]);
   };
-  console.log(trash);
+  const { mutate: recoverMany, isPending: recoverManyPending } = useMutation({
+    mutationFn: async (payload: string[]) =>
+      await RecoverManyTrashItem(payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      setSelectContact([]);
+      toast('1 contact recovered', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message, {
+          closeButton: false,
+          position: 'bottom-center',
+        });
+      }
+      toast.error('Empty One Trash Operation failed,Try Again!', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    },
+  });
+  const { mutate: deleteMany, isPending: deleteManyPending } = useMutation({
+    mutationFn: async (payload: string[]) => await EmptyManyTrashItems(payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['trash'] });
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      setSelectContact([]);
+      toast(
+        `${selectedContacts.length} contacts have been permanently deleted`,
+        {
+          closeButton: false,
+          position: 'bottom-center',
+        }
+      );
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message, {
+          closeButton: false,
+          position: 'bottom-center',
+        });
+      }
+      toast.error('Empty One Trash Operation failed,Try Again!', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    },
+  });
+  const loading = recoverManyPending || deleteManyPending;
+  useEffect(() => {
+    if (loading) {
+      toast('Working...', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    }
+  }, [loading]);
   return (
     <div className="flex flex-col gap-2">
       {selectedContacts.length > 0 ? (
@@ -91,10 +169,22 @@ const TrashTable: FC<TTrashTable> = ({ trash }) => {
                 <DropdownMenuContent
                   className={`w-[180px] mr-8 lg:mr-[50px] bg-white border border-gray-200  shadow-lg  px-0 rounded-none py-2`}
                 >
-                  <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpen(true);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
+                  >
                     Delete forever
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      recoverMany(selectedContacts);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
+                  >
                     Recover
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -105,6 +195,7 @@ const TrashTable: FC<TTrashTable> = ({ trash }) => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
+                    setOpen(true);
                   }}
                   className={`hover:bg-[#0b57d030] h-10 p-3 text-[#0b57d0] font-google-sans-text text-sm font-medium rounded-[28px] cursor-pointer`}
                 >
@@ -113,6 +204,7 @@ const TrashTable: FC<TTrashTable> = ({ trash }) => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
+                    recoverMany(selectedContacts);
                   }}
                   className={`hover:bg-[#0b57d030] h-10 p-3 text-[#0b57d0] font-google-sans-text text-sm font-medium rounded-[28px] cursor-pointer`}
                 >
@@ -153,6 +245,31 @@ const TrashTable: FC<TTrashTable> = ({ trash }) => {
           ))}
         </div>
       </div>
+      <Dialog modal={true} open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-[24px] font-normal font-google-sans text-[#1f1f1f]">
+              Delete forever?
+            </DialogTitle>
+            <DialogDescription>This can't be undone</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button className="cursor-pointer">Cancel</Button>
+            </DialogClose>
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                deleteMany(selectedContacts);
+                setOpen(false);
+              }}
+              className="cursor-pointer"
+            >
+              Empty Trash
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
