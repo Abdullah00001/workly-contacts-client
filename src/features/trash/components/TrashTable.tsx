@@ -251,7 +251,7 @@ const TrashTable: FC<TTrashTable> = ({ trash }) => {
             <DialogTitle className="text-[24px] font-normal font-google-sans text-[#1f1f1f]">
               Delete forever?
             </DialogTitle>
-            <DialogDescription>This can't be undone</DialogDescription>
+            <DialogDescription>This can{`'`}t be undone</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
