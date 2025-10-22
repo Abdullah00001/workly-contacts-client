@@ -63,6 +63,7 @@ const TrashModal: FC<TTrashModal> = ({
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       queryClient.invalidateQueries({ queryKey: ['trash'] });
+      setSelectContact([]);
       toast(`${bulkId?.length} contact moved to trash`, {
         closeButton: false,
         position: 'bottom-center',

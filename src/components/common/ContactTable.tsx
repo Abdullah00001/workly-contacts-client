@@ -296,7 +296,12 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
           ))}
         </div>
       </div>
-      <TrashModal open={open} setOpen={setOpen} bulkId={selectedContacts} />
+      <TrashModal
+        setSelectContact={setSelectContact}
+        open={open}
+        setOpen={setOpen}
+        bulkId={selectedContacts}
+      />
     </div>
   );
 };
