@@ -1,14 +1,29 @@
 'use client';
 import Icon from '@/components/common/Icon';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { ChangeEvent, useRef, useState, type FC } from 'react';
+import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
+import { ImportContacts } from '../services/contacts-service';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const ImportModal: FC = () => {
-  const { toggleImportModal } = useImportExportModalStore();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { toggleImportModal, setImportModalOpen } = useImportExportModalStore();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: FormData) => await ImportContacts(payload),
+    onSuccess: (data) => {
+      toast('All done', { closeButton: false, position: 'bottom-center' });
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      router.push('/dashboard');
+      setImportModalOpen(false);
+    },
+    onError: (error) => {},
+  });
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -24,6 +39,18 @@ const ImportModal: FC = () => {
   const openFileDialog = () => {
     fileInputRef.current?.click();
   };
+  const handleImportClick = () => {
+    if (selectedFile) {
+      const payload: FormData = new FormData();
+      payload.append('docsFile', selectedFile);
+      mutate(payload);
+    }
+  };
+  useEffect(() => {
+    if (isPending) {
+      toast('Working...', { closeButton: false, position: 'bottom-center' });
+    }
+  }, [isPending]);
   return (
     <div
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
@@ -105,8 +132,9 @@ const ImportModal: FC = () => {
               Cancel
             </button>
             <button
-              disabled={!selectedFile}
-              className={` px-4 py-2 rounded-[16px] font-google-sans text-sm font-medium text-center  ${selectedFile ? 'hover:bg-[rgba(11,87,208,0.08)] text-[#0b57d0] cursor-pointer' : 'text-[#1f1f1f] opacity-65'}`}
+              onClick={handleImportClick}
+              disabled={!selectedFile || isPending}
+              className={` px-4 py-2 rounded-[16px] font-google-sans text-sm font-medium text-center  ${selectedFile && !isPending ? 'hover:bg-[rgba(11,87,208,0.08)] text-[#0b57d0] cursor-pointer' : 'text-[#1f1f1f] opacity-65'}`}
             >
               Import
             </button>

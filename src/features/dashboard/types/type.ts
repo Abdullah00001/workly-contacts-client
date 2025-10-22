@@ -6,5 +6,6 @@ export type TMoreActionDropDown = {
   isSelected: boolean;
   isMoreActionOpen: boolean;
   setIsMoreActionOpen: Dispatch<SetStateAction<boolean>>;
+  setSelectContact: Dispatch<SetStateAction<string[]>>;
   handleMoreActionsClick: (e: MouseEvent) => void;
 };

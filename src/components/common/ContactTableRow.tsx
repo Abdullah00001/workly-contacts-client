@@ -254,6 +254,7 @@ const ContactTableRow: FC<TContactTableRow> = ({
               />
             </button>
             <MoreActionDropDown
+              setSelectContact={setSelectContact}
               isMoreActionOpen={isMoreActionOpen}
               setIsMoreActionOpen={setIsMoreActionOpen}
               handleMoreActionsClick={handleMoreActionsClick}

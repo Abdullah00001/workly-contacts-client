@@ -27,6 +27,7 @@ const TrashModal: FC<TTrashModal> = ({
   setOpen,
   singleId,
   isDetailPage,
+  setSelectContact,
 }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -41,6 +42,7 @@ const TrashModal: FC<TTrashModal> = ({
         closeButton: false,
         position: 'bottom-center',
       });
+      setSelectContact([]);
       if (isDetailPage) router.push('/dashboard');
       setOpen(false);
       return;

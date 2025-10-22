@@ -17,6 +17,7 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
   handleMoreActionsClick,
   isMoreActionOpen,
   setIsMoreActionOpen,
+  setSelectContact,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const { _id } = contact;
@@ -118,7 +119,12 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
-      <TrashModal open={open} setOpen={setOpen} singleId={_id} />
+      <TrashModal
+        setSelectContact={setSelectContact}
+        open={open}
+        setOpen={setOpen}
+        singleId={_id}
+      />
     </div>
   );
 };
