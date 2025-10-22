@@ -104,5 +104,5 @@ export type TTrashModal = {
   isDetailPage?: boolean;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  setSelectContact: Dispatch<SetStateAction<string[]>>;
+  setSelectContact?: Dispatch<SetStateAction<string[]>>;
 };

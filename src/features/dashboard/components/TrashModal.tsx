@@ -42,7 +42,7 @@ const TrashModal: FC<TTrashModal> = ({
         closeButton: false,
         position: 'bottom-center',
       });
-      setSelectContact([]);
+      if (setSelectContact) setSelectContact([]);
       if (isDetailPage) router.push('/dashboard');
       setOpen(false);
       return;
@@ -63,7 +63,7 @@ const TrashModal: FC<TTrashModal> = ({
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       queryClient.invalidateQueries({ queryKey: ['trash'] });
-      setSelectContact([]);
+      if (setSelectContact) setSelectContact([]);
       toast(`${bulkId?.length} contact moved to trash`, {
         closeButton: false,
         position: 'bottom-center',
