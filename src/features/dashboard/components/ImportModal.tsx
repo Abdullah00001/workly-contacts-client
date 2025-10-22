@@ -37,7 +37,12 @@ const ImportModal: FC = () => {
           <p className="my-5 text-[#444746] text-sm font-google-sans font-normal ">
             To get started, select a file. <br /> Use a CSV or vCard format or
             our{' '}
-            <Link className="text-[#0b57d0]" href={'#'}>
+            <Link
+              className="text-[#0b57d0]"
+              href={
+                'https://docs.google.com/spreadsheets/d/1-rexrA7Dt6D26IBAvbDzcwykV9cUcp2laOiqJ6tf6c4/edit?gid=703932592#gid=703932592'
+              }
+            >
               template
             </Link>
             .

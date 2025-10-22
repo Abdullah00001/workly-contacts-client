@@ -12,7 +12,7 @@ export type TUpdateContactDetails = {
   phone: {
     countryCode: string | null;
     number: string | null;
-  } | null;
+  };
   avatar: {
     url: string | null;
     publicId: string | null;

@@ -125,7 +125,7 @@ const CreateContactBirthday: FC<TFieldComponentProps> = ({ setPayload }) => {
               <div>
                 <input
                   onChange={(e) => handleBirthdayChange('year', e.target.value)}
-                  placeholder="Year"
+                  placeholder="Year (optional)"
                   className="w-full h-10 px-4 rounded-[4px] border border-[#747775] outline-0 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield"
                   type="number"
                   name="year"
@@ -190,7 +190,7 @@ const CreateContactBirthday: FC<TFieldComponentProps> = ({ setPayload }) => {
               />
               <input
                 onChange={(e) => handleBirthdayChange('year', e.target.value)}
-                placeholder="Year"
+                placeholder="Year (optional)"
                 className="w-full p-4 rounded-[4px] h-full border border-[#747775] outline-0 appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield"
                 type="number"
                 name="year"
