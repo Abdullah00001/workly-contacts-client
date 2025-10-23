@@ -1,6 +1,17 @@
 import { create } from 'zustand';
 
+type TFileValidationError = {
+  row?: number;
+  field: string;
+  message: string;
+  card?: number;
+};
+
 export type TImportSnackbarStore = {
+  errorMessage: string;
+  setErrorMessage: (payload: string) => void;
+  errors: TFileValidationError[];
+  setErrors: (payload: TFileValidationError[]) => void;
   openImportSnackbar: boolean;
   isPending: boolean;
   fileName: string;
@@ -13,6 +24,10 @@ export type TImportSnackbarStore = {
 export const useImportSnackbarStore = create<TImportSnackbarStore>((set) => ({
   isPending: false,
   fileName: '',
+  errorMessage: '',
+  errors: [],
+  setErrors: (payload) => set({ errors: payload }),
+  setErrorMessage: (payload) => set({ errorMessage: payload }),
   setFileName: (payload) => set({ fileName: payload }),
   setIsPending: (open) => set({ isPending: open }),
   openImportSnackbar: false,

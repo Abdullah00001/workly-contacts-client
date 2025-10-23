@@ -8,10 +8,16 @@ import { ImportContacts } from '../services/contacts-service';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useImportSnackbarStore } from '@/stores/import-sncakbar-store';
+import { AxiosError } from 'axios';
 
 const ImportModal: FC = () => {
-  const { setFileName, setIsPending, setOpenImportSnackbar } =
-    useImportSnackbarStore();
+  const {
+    setFileName,
+    setIsPending,
+    setOpenImportSnackbar,
+    setErrors,
+    setErrorMessage,
+  } = useImportSnackbarStore();
   const queryClient = useQueryClient();
   const router = useRouter();
   const { toggleImportModal, setImportModalOpen } = useImportExportModalStore();
@@ -25,7 +31,14 @@ const ImportModal: FC = () => {
       router.push('/dashboard');
       setImportModalOpen(false);
     },
-    onError: (error) => {},
+    onError: (error) => {
+      setIsPending(false);
+      if (error instanceof AxiosError) {
+        const err = error.response?.data;
+        setErrorMessage(err?.message);
+        setErrors(err?.errors);
+      }
+    },
   });
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,6 +56,11 @@ const ImportModal: FC = () => {
     fileInputRef.current?.click();
   };
   const handleImportClick = () => {
+    setFileName('');
+    setIsPending(false);
+    setOpenImportSnackbar(false);
+    setErrors([]);
+    setErrorMessage('');
     if (selectedFile) {
       const payload: FormData = new FormData();
       payload.append('docsFile', selectedFile);
