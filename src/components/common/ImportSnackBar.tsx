@@ -57,14 +57,31 @@ const ImportSnackBar: FC = () => {
               ) : (
                 <div className="flex justify-between items-center">
                   <div className="flex justify-start items-center gap-3">
-                    <Icon
-                      name="check_circle"
-                      size={24}
-                      variant="outlined"
-                      type="icons"
-                      className="text-[#f2f2f2]"
-                    />
-                    <span className="text-[#f2f2f2] text-sm">All done</span>
+                    {errorMessage && errors.length === 0 ? (
+                      <>
+                        <Icon
+                          name="warning"
+                          size={24}
+                          variant="outlined"
+                          type="icons"
+                          className="text-[#f2f2f2]"
+                        />
+                        <span className="text-[#f2f2f2] text-sm">
+                          {errorMessage}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Icon
+                          name="check_circle"
+                          size={24}
+                          variant="outlined"
+                          type="icons"
+                          className="text-[#f2f2f2]"
+                        />
+                        <span className="text-[#f2f2f2] text-sm">All done</span>
+                      </>
+                    )}
                   </div>
                   <button
                     className="cursor-pointer"

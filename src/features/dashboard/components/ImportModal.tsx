@@ -38,6 +38,8 @@ const ImportModal: FC = () => {
         setErrorMessage(err?.message);
         setErrors(err?.errors);
       }
+      setErrorMessage('Unexpected Error Occurred, Try Again!');
+      setErrors([]);
     },
   });
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
