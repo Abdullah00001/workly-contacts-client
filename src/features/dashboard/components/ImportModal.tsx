@@ -7,8 +7,11 @@ import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
 import { ImportContacts } from '../services/contacts-service';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useImportSnackbarStore } from '@/stores/import-sncakbar-store';
 
 const ImportModal: FC = () => {
+  const { setFileName, setIsPending, setOpenImportSnackbar } =
+    useImportSnackbarStore();
   const queryClient = useQueryClient();
   const router = useRouter();
   const { toggleImportModal, setImportModalOpen } = useImportExportModalStore();
@@ -17,7 +20,7 @@ const ImportModal: FC = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: FormData) => await ImportContacts(payload),
     onSuccess: (data) => {
-      toast('All done', { closeButton: false, position: 'bottom-center' });
+      setIsPending(false);
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
       router.push('/dashboard');
       setImportModalOpen(false);
@@ -44,11 +47,15 @@ const ImportModal: FC = () => {
       const payload: FormData = new FormData();
       payload.append('docsFile', selectedFile);
       mutate(payload);
+      setFileName(selectedFile.name);
+      setIsPending(true);
+      setOpenImportSnackbar(true);
+      setImportModalOpen(false);
     }
   };
   useEffect(() => {
     if (isPending) {
-      toast('Working...', { closeButton: false, position: 'bottom-center' });
+      setIsPending(isPending);
     }
   }, [isPending]);
   return (

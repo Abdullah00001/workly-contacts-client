@@ -4,8 +4,11 @@ import { FC } from 'react';
 import { useSidebarStore } from '@/stores/sidebar-store';
 import CreateContactSmallButton from '@/features/dashboard/components/CreateContactSmallButton';
 import { usePathname } from 'next/navigation';
+import ImportSnackBar from '@/components/common/ImportSnackBar';
+import { useImportSnackbarStore } from '@/stores/import-sncakbar-store';
 
 const DashboardContent: FC<TLayout> = ({ children }) => {
+  const { openImportSnackbar } = useImportSnackbarStore();
   const { isOpen } = useSidebarStore();
   const pathName = usePathname();
   const isContactDetailsPage = pathName.startsWith('/person/');
@@ -19,6 +22,11 @@ const DashboardContent: FC<TLayout> = ({ children }) => {
         <div className="bg-[#ffffff] w-full h-[calc(100%-14px)] rounded-2xl overflow-auto">
           {children}
         </div>
+        {openImportSnackbar && (
+          <div className="fixed z-50 bottom-[6%] right-[3%] sm:bottom-[5%] sm:right-[28%]">
+            <ImportSnackBar />
+          </div>
+        )}
         {!isContactDetailsPage &&
           !isCreateContactPage &&
           !isProfilePage &&
@@ -33,6 +41,11 @@ const DashboardContent: FC<TLayout> = ({ children }) => {
         <div className="bg-[#ffffff] w-full h-[calc(100%-48px)] rounded-2xl overflow-auto">
           {children}
         </div>
+        {openImportSnackbar && (
+          <div className="fixed bottom-[5%] right-[34%]">
+            <ImportSnackBar />
+          </div>
+        )}
         {!isContactDetailsPage &&
           !isCreateContactPage &&
           !isProfilePage &&
@@ -52,6 +65,11 @@ const DashboardContent: FC<TLayout> = ({ children }) => {
         <div className="w-[calc(100%-16px)] h-[calc(100%-24px)] bg-[#ffffff] rounded-2xl overflow-auto">
           {children}
         </div>
+        {openImportSnackbar && (
+          <div className="fixed bottom-12 right-14 lg:bottom-10 lg:right-10">
+            <ImportSnackBar />
+          </div>
+        )}
       </main>
     </>
   );
