@@ -16,8 +16,7 @@ const ModalHolders: FC = () => {
   const { isFeedbackModalOpen } = useFeedbackModalStore();
   const { isCreateLabelModalOpen, isRenameLabelModalOpen } =
     useLabelModalStore();
-  const { isExportModalOpen, isImportModalOpen, } =
-    useImportExportModalStore();
+  const { isExportModalOpen, isImportModalOpen } = useImportExportModalStore();
   return (
     <>
       {isLogoutModalOpen && <LogoutModal />}
