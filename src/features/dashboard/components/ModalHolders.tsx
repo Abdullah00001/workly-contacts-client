@@ -16,7 +16,7 @@ const ModalHolders: FC = () => {
   const { isFeedbackModalOpen } = useFeedbackModalStore();
   const { isCreateLabelModalOpen, isRenameLabelModalOpen } =
     useLabelModalStore();
-  const { isExportModalOpen, isImportModalOpen, isPrintModalOpen } =
+  const { isExportModalOpen, isImportModalOpen, } =
     useImportExportModalStore();
   return (
     <>
@@ -26,7 +26,6 @@ const ModalHolders: FC = () => {
         (isRenameLabelModalOpen && <LabelModal />)}
       {isImportModalOpen && <ImportModal />}
       {isExportModalOpen && <ExportModal />}
-      {isPrintModalOpen && <PrintModal />}
     </>
   );
 };

@@ -9,3 +9,11 @@ export type TMoreActionDropDown = {
   setSelectContact: Dispatch<SetStateAction<string[]>>;
   handleMoreActionsClick: (e: MouseEvent) => void;
 };
+
+export type TPrintModal = {
+  selectedContacts: string[];
+  setSelectContact: Dispatch<SetStateAction<string[]>>;
+  allContacts: string[];
+  printModalOpen: boolean;
+  setPrintModalOpen: Dispatch<SetStateAction<boolean>>;
+};
