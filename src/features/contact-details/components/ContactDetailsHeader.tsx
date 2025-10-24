@@ -62,6 +62,235 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
         toast.error('Unwanted error occurred,Try Again!');
       },
     });
+  const handlePrint = () => {
+    const { birthday, email, firstName, lastName, location, phone, worksAt } =
+      details;
+    const data = [
+      { birthday, email, firstName, lastName, location, phone, worksAt },
+    ];
+    const printWindow = window.open('', '_blank');
+
+    if (printWindow) {
+      const htmlContent = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Print Contacts</title>
+              <style>
+                @media print {
+                  @page {
+                    margin: 15mm;
+                    size: A4;
+                  }
+                  body {
+                    margin: 0;
+                    padding: 0;
+                  }
+                }
+                * {
+                  box-sizing: border-box;
+                }
+                body {
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                  line-height: 1.6;
+                  color: #1f1f1f;
+                  padding: 20px;
+                  background: #fff;
+                }
+                .print-header {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-start;
+                  margin-bottom: 30px;
+                  padding-bottom: 15px;
+                  border-bottom: 2px solid #333;
+                }
+                .print-date {
+                  color: #666;
+                  font-size: 12px;
+                  text-align: right;
+                }
+                .contact-count {
+                  color: #666;
+                  font-size: 14px;
+                  font-weight: 500;
+                }
+                .contacts-list {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 30px;
+                }
+                .contact {
+                  padding: 20px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  page-break-inside: avoid;
+                  background: #fff;
+                }
+                .contact-name {
+                  font-size: 18px;
+                  font-weight: 600;
+                  color: #1f1f1f;
+                  margin-bottom: 4px;
+                }
+                .contact-job {
+                  font-size: 14px;
+                  color: #666;
+                  margin-bottom: 16px;
+                  font-weight: 500;
+                }
+                .contact-info {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                }
+                .info-row {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 4px;
+                }
+                .info-label {
+                  font-weight: 600;
+                  color: #333;
+                  font-size: 12px;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                }
+                .info-value {
+                  color: #1f1f1f;
+                  font-size: 14px;
+                  line-height: 1.4;
+                }
+                h1 {
+                  font-size: 24px;
+                  font-weight: 600;
+                  margin: 0;
+                  color: #1f1f1f;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="print-header">
+                <div>
+                  <h1>Contacts</h1>
+                  <div class="contact-count">${data.length} contact${data.length !== 1 ? 's' : ''}</div>
+                </div>
+                <div class="print-date">
+                  ${new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  })}
+                  <br />
+                  ${new Date().toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </div>
+              </div>
+
+              <div class="contacts-list">
+                ${data
+                  .map((contact: any) => {
+                    const jobInfo =
+                      contact.worksAt?.jobTitle || contact.worksAt?.companyName
+                        ? `${contact.worksAt?.jobTitle || ''}${
+                            contact.worksAt?.jobTitle &&
+                            contact.worksAt?.companyName
+                              ? ', '
+                              : ''
+                          }${contact.worksAt?.companyName || ''}`
+                        : '';
+
+                    const addressParts = [];
+                    if (contact.location?.streetAddress)
+                      addressParts.push(contact.location.streetAddress);
+                    if (contact.location?.city)
+                      addressParts.push(contact.location.city);
+                    if (contact.location?.country)
+                      addressParts.push(contact.location.country);
+                    if (contact.location?.postCode)
+                      addressParts.push(contact.location.postCode);
+                    const fullAddress = addressParts.join(', ');
+
+                    const birthdayText =
+                      contact.birthday?.month && contact.birthday?.day
+                        ? `${contact.birthday.month} ${contact.birthday.day}${
+                            contact.birthday.year
+                              ? ', ' + contact.birthday.year
+                              : ''
+                          }`
+                        : '';
+
+                    return `
+                      <div class="contact">
+                        <div class="contact-name">${contact.firstName || ''} ${contact.lastName || ''}</div>
+                        ${jobInfo ? `<div class="contact-job">${jobInfo}</div>` : ''}
+                        
+                        <div class="contact-info">
+                          ${
+                            contact.email
+                              ? `
+                            <div class="info-row">
+                              <div class="info-label">Email</div>
+                              <div class="info-value">${contact.email}</div>
+                            </div>
+                          `
+                              : ''
+                          }
+                          
+                          ${
+                            contact.phone?.number
+                              ? `
+                            <div class="info-row">
+                              <div class="info-label">Phone</div>
+                              <div class="info-value">${contact.phone.countryCode || ''} ${contact.phone.number}</div>
+                            </div>
+                          `
+                              : ''
+                          }
+                          
+                          ${
+                            fullAddress
+                              ? `
+                            <div class="info-row">
+                              <div class="info-label">Address</div>
+                              <div class="info-value">${fullAddress}</div>
+                            </div>
+                          `
+                              : ''
+                          }
+                          
+                          ${
+                            birthdayText
+                              ? `
+                            <div class="info-row">
+                              <div class="info-label">Birthday</div>
+                              <div class="info-value">${birthdayText}</div>
+                            </div>
+                          `
+                              : ''
+                          }
+                        </div>
+                      </div>
+                    `;
+                  })
+                  .join('')}
+              </div>
+            </body>
+          </html>
+        `;
+
+      printWindow.document.body.innerHTML = htmlContent;
+      printWindow.document.close();
+
+      // Wait for content to load, then print
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 500);
+    }
+  };
   const handleFavoriteToggle = () => {
     favoriteToggle({
       id: details?._id,
@@ -176,7 +405,10 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
             <DropdownMenuContent
               className={`absolute right-0 w-[180px] mr-2 lg:mr-[10px] bg-white border border-gray-200  shadow-lg  px-0 rounded-[8px] py-2`}
             >
-              <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+              <DropdownMenuItem
+                onClick={handlePrint}
+                className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
+              >
                 <Icon
                   name="print"
                   variant="filled"
