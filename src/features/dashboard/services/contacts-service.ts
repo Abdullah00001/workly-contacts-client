@@ -46,3 +46,13 @@ export async function ExportContacts(contactIds: string[]) {
     throw new Error('Unknown error occurred,Please Try Again');
   }
 }
+
+export async function ExportSingleContacts(contactId: string) {
+  try {
+    const response = await axiosClient.get(`/contacts/export/${contactId}`);
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred,Please Try Again');
+  }
+}
