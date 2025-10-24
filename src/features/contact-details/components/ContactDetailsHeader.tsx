@@ -19,8 +19,12 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 import { ToggleFavoriteStatus } from '../service/contact-detail-service';
 import TrashModal from '@/features/dashboard/components/TrashModal';
+import SingleExportModal from '@/features/dashboard/components/SingleExportModal';
 
 const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [singleExportModalOpen, setSingleExportModalOpen] =
+    useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -392,7 +396,7 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
           </div>
         </div>
         <div className="w-12 h-12 flex justify-center items-center">
-          <DropdownMenu>
+          <DropdownMenu onOpenChange={setDropdownOpen} open={dropdownOpen}>
             <DropdownMenuTrigger className="h-10 w-10 rounded-full cursor-pointer hover:bg-[#44474616] transition-colors flex items-center justify-center">
               <Icon
                 name="more_vert"
@@ -418,7 +422,14 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
                 />
                 Print
               </DropdownMenuItem>
-              <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none">
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSingleExportModalOpen(true);
+                  setDropdownOpen(false);
+                }}
+                className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
+              >
                 <Icon
                   name="file_upload"
                   variant="outlined"
@@ -432,6 +443,11 @@ const ContactDetailsHeader: FC<TContactDetailInfoHeader> = ({ details }) => {
           </DropdownMenu>
         </div>
       </div>
+      <SingleExportModal
+        contactId={details?._id}
+        setSingleExportModalOpen={setSingleExportModalOpen}
+        singleExportModalOpen={singleExportModalOpen}
+      />
       <TrashModal
         isDetailPage={true}
         open={open}
