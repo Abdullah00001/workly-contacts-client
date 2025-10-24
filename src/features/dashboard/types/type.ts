@@ -8,6 +8,8 @@ export type TMoreActionDropDown = {
   setIsMoreActionOpen: Dispatch<SetStateAction<boolean>>;
   setSelectContact: Dispatch<SetStateAction<string[]>>;
   handleMoreActionsClick: (e: MouseEvent) => void;
+  singleExportModalOpen: boolean;
+  setSingleExportModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export type TPrintModal = {
@@ -24,6 +26,12 @@ export type TMultiExportModal = {
   allContacts: string[];
   multiExportModalOpen: boolean;
   setMultiExportModalOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export type TSingleExportModal = {
+  contactId: string;
+  singleExportModalOpen: boolean;
+  setSingleExportModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export interface Contact {

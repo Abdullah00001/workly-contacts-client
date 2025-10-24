@@ -14,6 +14,7 @@ import { useMutation } from '@tanstack/react-query';
 import { ExportSingleContacts } from '@/features/dashboard/services/contacts-service';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import SingleExportModal from '@/features/dashboard/components/SingleExportModal';
 
 const MoreActionDropDown: FC<TMoreActionDropDown> = ({
   contact,
@@ -22,6 +23,8 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
   isMoreActionOpen,
   setIsMoreActionOpen,
   setSelectContact,
+  setSingleExportModalOpen,
+  singleExportModalOpen,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const { _id } = contact;
@@ -314,7 +317,14 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
               />
               Print
             </DropdownMenuItem>
-            <DropdownMenuItem className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer">
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.preventDefault();
+                setSingleExportModalOpen(true);
+                setIsMoreActionOpen(false);
+              }}
+              className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer"
+            >
               <Icon
                 name="file_upload"
                 variant="outlined"
@@ -376,6 +386,11 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
+      <SingleExportModal
+        contactId={contact?._id}
+        setSingleExportModalOpen={setSingleExportModalOpen}
+        singleExportModalOpen={singleExportModalOpen}
+      />
       <TrashModal
         setSelectContact={setSelectContact}
         open={open}

@@ -24,7 +24,6 @@ const ModalHolders: FC = () => {
       {(isCreateLabelModalOpen && <LabelModal />) ||
         (isRenameLabelModalOpen && <LabelModal />)}
       {isImportModalOpen && <ImportModal />}
-      {isExportModalOpen && <ExportModal />}
     </>
   );
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useState, type FC } from 'react';
+import { ChangeEvent, useEffect, useState, type FC } from 'react';
 import {
   Dialog,
   DialogClose,
@@ -10,30 +10,88 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { TSingleExportModal } from '../types/type';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
+import { exportToCSV, exportToJSON, exportToVCard } from '../helper/helper';
+import { ExportSingleContacts } from '../services/contacts-service';
+import { useMutation } from '@tanstack/react-query';
 
 type TExportType = 'csv' | 'vcard' | 'json';
 
-const ExportModal: FC = () => {
+const SingleExportModal: FC<TSingleExportModal> = ({
+  contactId,
+  setSingleExportModalOpen,
+  singleExportModalOpen,
+}) => {
   const [selectedFormat, setSelectedFormat] = useState<TExportType>('csv');
   const selectFormat = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedFormat(e.target.value as TExportType);
   };
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: string) => ExportSingleContacts(payload),
+    onSuccess: (data) => {
+      try {
+        switch (selectedFormat) {
+          case 'csv':
+            exportToCSV(data);
+            break;
+          case 'vcard':
+            exportToVCard(data);
+            break;
+          case 'json':
+            exportToJSON(data);
+            break;
+        }
+
+        toast.success(`Contact exported as ${selectedFormat.toUpperCase()}`, {
+          closeButton: false,
+          position: 'bottom-center',
+        });
+
+        // Close modal and reset selection
+        setSingleExportModalOpen(false);
+      } catch (error) {
+        toast.error('Failed to export contacts', {
+          closeButton: false,
+          position: 'bottom-center',
+        });
+      }
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        const err = error.response?.data;
+        toast(err, { closeButton: false, position: 'bottom-center' });
+        return;
+      }
+      toast('Unknown error occurred, Try Again!', {
+        closeButton: false,
+        position: 'bottom-center',
+      });
+    },
+  });
+  const handleExport = () => {
+    mutate(contactId);
+  };
+  useEffect(() => {
+    if (isPending) {
+      toast('Working...', { closeButton: false, position: 'bottom-center' });
+    }
+  }, [isPending]);
   return (
-    <div
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-      className="fixed inset-0 flex items-center justify-center p-5 md:p-0"
+    <Dialog
+      modal={true}
+      open={singleExportModalOpen}
+      onOpenChange={setSingleExportModalOpen}
     >
-      <div className="bg-white rounded-[18px] w-[348px] px-6 py-5 shadow-lg ">
-        <h2 className="text-[1.5rem] font-normal font-google-sans text-[#1f1f1f]">
-          Export contacts
-        </h2>
-        <div className="mt-4">
+      <DialogContent className="bg-white rounded-[18px] w-[348px] px-6 py-5 shadow-lg ">
+        <DialogHeader>
+          <DialogTitle className="text-[1.5rem] font-normal font-google-sans text-[#1f1f1f]">
+            Export contacts
+          </DialogTitle>
+          <DialogDescription />
+        </DialogHeader>
+        <div>
           <p className="font-medium text-xs font-google-sans-text text-[#444746]">
             Export as
           </p>
@@ -70,19 +128,22 @@ const ExportModal: FC = () => {
             ))}
           </div>
         </div>
-        <div className="flex justify-end items-center mt-6 gap-1">
-          <button className="text-[#0b57d0] px-4 py-2 rounded-[16px] cursor-pointer font-google-sans text-sm font-medium text-center hover:bg-[rgba(11,87,208,0.08)]">
-            Cancel
-          </button>
+        <DialogFooter>
+          <DialogClose asChild>
+            <button className="text-[#0b57d0] px-4 py-2 rounded-[16px] cursor-pointer font-google-sans text-sm font-medium text-center hover:bg-[rgba(11,87,208,0.08)]">
+              Cancel
+            </button>
+          </DialogClose>
           <button
+            onClick={handleExport}
             className={` px-4 py-2 rounded-[16px] font-google-sans text-sm font-medium text-center  hover:bg-[rgba(11,87,208,0.08)] text-[#0b57d0] cursor-pointer`}
           >
             Export
           </button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default ExportModal;
+export default SingleExportModal;
