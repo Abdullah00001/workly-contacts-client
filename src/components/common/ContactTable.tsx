@@ -1,7 +1,6 @@
 'use client';
 import { startTransition, useState, type FC } from 'react';
 import Icon from '@/components/common/Icon';
-import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 import ContactTableRow from '@/components/common/ContactTableRow';
 import {
   DropdownMenu,
@@ -11,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import TrashModal from '@/features/dashboard/components/TrashModal';
 import PrintModal from '@/features/dashboard/components/PrintModal';
+import MultiExportModal from '@/features/dashboard/components/MultiExportModal';
 
 export type TContacts = {
   _id: string;
@@ -43,8 +43,8 @@ type TContactTableProps = {
 const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [printModalOpen, setPrintModalOpen] = useState<boolean>(false);
+  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-  const { toggleExportModal, togglePrintModal } = useImportExportModalStore();
   const [selectedContacts, setSelectContact] = useState<string[]>([]);
   const handleSelectAll = () => {
     setSelectContact(contacts.map(({ _id }) => _id as string));
@@ -206,7 +206,11 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
                   onSelect={(e) => {
                     e.preventDefault();
                     setDropdownOpen(false);
-                    toggleExportModal();
+                    startTransition(() => {
+                      setTimeout(() => {
+                        setExportModalOpen(true);
+                      }, 0);
+                    });
                   }}
                   className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer rounded-none"
                 >
@@ -271,7 +275,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
               />
             </button>
             <button
-              onClick={() => toggleExportModal()}
+              onClick={() => setExportModalOpen(true)}
               className="w-[45px] h-[45px] flex items-center justify-center hover:bg-[#f5f5f5] cursor-pointer rounded-full"
             >
               <Icon
@@ -308,6 +312,13 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
         printModalOpen={printModalOpen}
         setPrintModalOpen={setPrintModalOpen}
         setSelectContact={setSelectContact}
+      />
+      <MultiExportModal
+        allContacts={contacts.map(({ _id }) => _id)}
+        selectedContacts={selectedContacts}
+        setSelectContact={setSelectContact}
+        multiExportModalOpen={exportModalOpen}
+        setMultiExportModalOpen={setExportModalOpen}
       />
       <TrashModal
         setSelectContact={setSelectContact}

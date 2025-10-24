@@ -8,7 +8,7 @@ import { useLabelModalStore } from '@/stores/label-modal-store';
 import LabelModal from '@/features/dashboard/components/LabelModal';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 import ImportModal from '@/features/dashboard/components/ImportModal';
-import ExportModal from '@/features/dashboard/components/ExportModal';
+import ExportModal from '@/features/dashboard/components/MultiExportModal';
 import PrintModal from '@/features/dashboard/components/PrintModal';
 
 const ModalHolders: FC = () => {

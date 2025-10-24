@@ -1,12 +1,25 @@
 'use client';
 
-import { useImportExportModalStore } from '@/stores/import-export-modal-store';
 import { ChangeEvent, useState, type FC } from 'react';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 type TExportType = 'csv' | 'vcard' | 'json';
 
 const ExportModal: FC = () => {
-  const { toggleExportModal } = useImportExportModalStore();
   const [selectedFormat, setSelectedFormat] = useState<TExportType>('csv');
   const selectFormat = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedFormat(e.target.value as TExportType);
@@ -58,10 +71,7 @@ const ExportModal: FC = () => {
           </div>
         </div>
         <div className="flex justify-end items-center mt-6 gap-1">
-          <button
-            onClick={() => toggleExportModal()}
-            className="text-[#0b57d0] px-4 py-2 rounded-[16px] cursor-pointer font-google-sans text-sm font-medium text-center hover:bg-[rgba(11,87,208,0.08)]"
-          >
+          <button className="text-[#0b57d0] px-4 py-2 rounded-[16px] cursor-pointer font-google-sans text-sm font-medium text-center hover:bg-[rgba(11,87,208,0.08)]">
             Cancel
           </button>
           <button
