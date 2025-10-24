@@ -21,6 +21,7 @@ import {
 import { ToggleFavoriteStatus } from '@/features/contact-details/service/contact-detail-service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import MoreActionDropDown from './MoreActionDropdown';
+import SingleExportModal from '@/features/dashboard/components/SingleExportModal';
 
 type TContactTableRow = {
   contact: TContacts;
@@ -48,6 +49,8 @@ const ContactTableRow: FC<TContactTableRow> = ({
   } = contact as TContacts;
   const isSelected = selectedContacts.includes(_id);
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
+  const [singleExportModalOpen, setSingleExportModalOpen] =
+    useState<boolean>(false);
   const [isRowHover, setIsRowHover] = useState<boolean>(false);
   const [isMoreActionOpen, setIsMoreActionOpen] = useState<boolean>(false);
   const router = useRouter();
@@ -254,6 +257,9 @@ const ContactTableRow: FC<TContactTableRow> = ({
               />
             </button>
             <MoreActionDropDown
+              setSingleExportModalOpen={setSingleExportModalOpen}
+              singleExportModalOpen={singleExportModalOpen}
+              setSelectContact={setSelectContact}
               isMoreActionOpen={isMoreActionOpen}
               setIsMoreActionOpen={setIsMoreActionOpen}
               handleMoreActionsClick={handleMoreActionsClick}

@@ -1,14 +1,47 @@
 'use client';
 import Icon from '@/components/common/Icon';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { ChangeEvent, useRef, useState, type FC } from 'react';
+import { ChangeEvent, useEffect, useRef, useState, type FC } from 'react';
+import { ImportContacts } from '../services/contacts-service';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useImportSnackbarStore } from '@/stores/import-sncakbar-store';
+import { AxiosError } from 'axios';
 
 const ImportModal: FC = () => {
-  const { toggleImportModal } = useImportExportModalStore();
+  const {
+    setFileName,
+    setIsPending,
+    setOpenImportSnackbar,
+    setErrors,
+    setErrorMessage,
+  } = useImportSnackbarStore();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { toggleImportModal, setImportModalOpen } = useImportExportModalStore();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: FormData) => await ImportContacts(payload),
+    onSuccess: (data) => {
+      setIsPending(false);
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      router.push('/dashboard');
+      setImportModalOpen(false);
+    },
+    onError: (error) => {
+      setIsPending(false);
+      if (error instanceof AxiosError) {
+        const err = error.response?.data;
+        setErrorMessage(err?.message);
+        setErrors(err?.errors);
+      }
+      setErrorMessage('Unexpected Error Occurred, Try Again!');
+      setErrors([]);
+    },
+  });
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -24,6 +57,27 @@ const ImportModal: FC = () => {
   const openFileDialog = () => {
     fileInputRef.current?.click();
   };
+  const handleImportClick = () => {
+    setFileName('');
+    setIsPending(false);
+    setOpenImportSnackbar(false);
+    setErrors([]);
+    setErrorMessage('');
+    if (selectedFile) {
+      const payload: FormData = new FormData();
+      payload.append('docsFile', selectedFile);
+      mutate(payload);
+      setFileName(selectedFile.name);
+      setIsPending(true);
+      setOpenImportSnackbar(true);
+      setImportModalOpen(false);
+    }
+  };
+  useEffect(() => {
+    if (isPending) {
+      setIsPending(isPending);
+    }
+  }, [isPending]);
   return (
     <div
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
@@ -37,7 +91,12 @@ const ImportModal: FC = () => {
           <p className="my-5 text-[#444746] text-sm font-google-sans font-normal ">
             To get started, select a file. <br /> Use a CSV or vCard format or
             our{' '}
-            <Link className="text-[#0b57d0]" href={'#'}>
+            <Link
+              className="text-[#0b57d0]"
+              href={
+                'https://docs.google.com/spreadsheets/d/1-rexrA7Dt6D26IBAvbDzcwykV9cUcp2laOiqJ6tf6c4/edit?gid=703932592#gid=703932592'
+              }
+            >
               template
             </Link>
             .
@@ -100,8 +159,9 @@ const ImportModal: FC = () => {
               Cancel
             </button>
             <button
-              disabled={!selectedFile}
-              className={` px-4 py-2 rounded-[16px] font-google-sans text-sm font-medium text-center  ${selectedFile ? 'hover:bg-[rgba(11,87,208,0.08)] text-[#0b57d0] cursor-pointer' : 'text-[#1f1f1f] opacity-65'}`}
+              onClick={handleImportClick}
+              disabled={!selectedFile || isPending}
+              className={` px-4 py-2 rounded-[16px] font-google-sans text-sm font-medium text-center  ${selectedFile && !isPending ? 'hover:bg-[rgba(11,87,208,0.08)] text-[#0b57d0] cursor-pointer' : 'text-[#1f1f1f] opacity-65'}`}
             >
               Import
             </button>

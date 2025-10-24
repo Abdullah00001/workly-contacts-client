@@ -78,7 +78,8 @@ const EmptyTrash: FC<TEmptyTrash> = ({ trash }) => {
               Empty Trash?
             </DialogTitle>
             <DialogDescription>
-              Contacts in Trash will be deleted forever. This can{`'`}t be undone.
+              Contacts in Trash will be deleted forever. This can{`'`}t be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

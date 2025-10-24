@@ -24,7 +24,7 @@ const UpdateContactPhone: FC<TUpdateFieldComponentProps> = ({
     setPayload((prev) => ({
       ...prev,
       phone: {
-        countryCode: prev.phone?.countryCode || '',
+        ...prev.phone,
         number: e.target.value,
       },
     }));
@@ -35,8 +35,9 @@ const UpdateContactPhone: FC<TUpdateFieldComponentProps> = ({
     setPayload((prev) => ({
       ...prev,
       phone: {
+        ...prev.phone,
         countryCode: value,
-        number: prev.phone?.number || '',
+        number: value,
       },
     }));
   };
@@ -46,6 +47,19 @@ const UpdateContactPhone: FC<TUpdateFieldComponentProps> = ({
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
   }, []);
+  useEffect(() => {
+    if (payload.phone?.countryCode && payload.phone?.number) {
+      if (
+        payload?.phone?.countryCode &&
+        payload.phone.countryCode.length > payload?.phone?.number.length
+      ) {
+        setPayload((prev) => ({
+          ...prev,
+          phone: { ...prev.phone, number: prev.phone?.countryCode },
+        }));
+      }
+    }
+  }, [payload]);
   if (
     !isPhoneFieldOpen &&
     !payload?.phone?.number &&
@@ -147,7 +161,7 @@ const UpdateContactPhone: FC<TUpdateFieldComponentProps> = ({
                 onChange={handlePhoneChange}
                 placeholder="Phone"
                 className={`!w-full h-10 placeholder:!text-[#747775] px-4 rounded-[4px] border  ${!isCodeSelect ? 'bg-[#f3f3f3] cursor-not-allowed text-[#9aa0a6] border-[#d0d4d9]' : 'bg-white border-[#747775] outline-0'}  appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield`}
-                type="number"
+                type="text"
                 name="phone"
                 id="phone"
                 value={payload?.phone?.number as string}
@@ -224,7 +238,7 @@ const UpdateContactPhone: FC<TUpdateFieldComponentProps> = ({
                 onChange={handlePhoneChange}
                 placeholder="Phone"
                 className={`w-full p-4 rounded-[4px] h-full border  placeholder:!text-[#747775] ${!isCodeSelect ? 'bg-[#f3f3f3] cursor-not-allowed text-[#9aa0a6] border-[#d0d4d9]' : 'border-[#747775] outline-0'}  appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-moz-appearance]:textfield`}
-                type="number"
+                type="text"
                 name="phone"
                 id="phone"
                 value={payload?.phone?.number as string}

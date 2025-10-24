@@ -22,3 +22,37 @@ export async function RetrieveFavorites() {
     throw new Error('Unknown error occurred,Please Try Again');
   }
 }
+
+export async function ImportContacts(payload: FormData) {
+  try {
+    const response = await axiosClient.post('/contacts/import', payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred,Please Try Again');
+  }
+}
+
+export async function ExportContacts(contactIds: string[]) {
+  try {
+    const response = await axiosClient.post('/contacts/export', { contactIds });
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred,Please Try Again');
+  }
+}
+
+export async function ExportSingleContacts(contactId: string) {
+  try {
+    const response = await axiosClient.get(`/contacts/export/${contactId}`);
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred,Please Try Again');
+  }
+}
