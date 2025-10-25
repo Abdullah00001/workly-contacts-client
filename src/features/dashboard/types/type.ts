@@ -72,3 +72,7 @@ export type TSearchResultItemProps = {
   setSearchQuery: Dispatch<SetStateAction<string>>;
   setShowResults: Dispatch<SetStateAction<boolean>>;
 };
+
+export type TFeedbackPayload={
+  message:string;
+}
