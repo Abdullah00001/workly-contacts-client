@@ -1,4 +1,4 @@
-import { Contact } from '../types/type';
+import { Contact, TSearchUser } from '../types/type';
 
 // Export utility functions
 export const downloadFile = (
@@ -161,4 +161,47 @@ export const exportToVCard = (contacts: Contact[]) => {
 export const exportToJSON = (contacts: Contact[]) => {
   const jsonContent = JSON.stringify(contacts, null, 2);
   downloadFile(jsonContent, 'contacts.json', 'application/json');
+};
+
+export const DUMMY_USERS: TSearchUser[] = [
+  {
+    _id: '1',
+    avatar: { url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John' },
+    email: 'john.doe@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+  {
+    _id: '2',
+    email: 'jane.smith@example.com',
+    firstName: 'Jane',
+    lastName: 'Smith',
+  },
+  {
+    _id: '3',
+    avatar: { url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike' },
+    email: 'mike.johnson@example.com',
+    firstName: 'Mike',
+    lastName: 'Johnson',
+  },
+  {
+    _id: '4',
+    email: 'sarah.williams@example.com',
+    firstName: 'Sarah',
+    lastName: 'Williams',
+  },
+  {
+    _id: '5',
+    avatar: { url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David' },
+    email: 'david.brown@example.com',
+    firstName: 'David',
+    lastName: 'Brown',
+  },
+];
+
+export const getAvatarUrl = (user: TSearchUser) => {
+  if (user.avatar?.url) {
+    return user.avatar.url;
+  }
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${user.firstName}`;
 };
