@@ -54,3 +54,25 @@ export interface Contact {
     jobTitle?: string;
   };
 }
+
+export type TSearchUser = {
+  _id: string;
+  avatar?: {
+    url?: string;
+    publicId?: string;
+  };
+  email: string;
+  firstName: string;
+  lastName: string;
+};
+
+export type TSearchResultItemProps = {
+  user: TSearchUser;
+  getAvatarUrl: (user: TSearchUser) => string;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
+  setShowResults: Dispatch<SetStateAction<boolean>>;
+};
+
+export type TFeedbackPayload={
+  message:string;
+}

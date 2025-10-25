@@ -33,7 +33,7 @@ const ContactSummary: FC<TContactSummary> = ({
                 className="text-[#444746]"
               />
               {email ? (
-                <span className="text-[14px] text-[#1f1f1f] font-normal font-google-sans-text">
+                <span className="text-[14px] text-[#1f1f1f] font-normal font-google-sans-text break-all">
                   {email}
                 </span>
               ) : (
