@@ -1,0 +1,424 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Root (Light mode) */
+:root {
+  --background: oklch(1 0 0); /* White background */
+  --foreground: oklch(0.3 0.08 240); /* Indigo text */
+  --card: oklch(0.98 0.02 200); /* Light cyan card background */
+  --card-foreground: oklch(0.4 0.05 220); /* Dark slate text on cards */
+  --popover: oklch(1 0 0); /* White popover background */
+  --popover-foreground: oklch(0.3 0.08 240); /* Indigo text on popovers */
+  --primary: oklch(0.3 0.08 240); /* Indigo primary color */
+  --primary-foreground: oklch(1 0 0); /* White text on primary */
+  --secondary: oklch(0.25 0.12 250); /* Dark blue secondary */
+  --secondary-foreground: oklch(1 0 0); /* White text on secondary */
+  --muted: oklch(0.96 0.01 180); /* Light muted background */
+  --muted-foreground: oklch(0.45 0.02 220); /* Muted text color */
+  --accent: oklch(0.25 0.12 250); /* Dark blue accent */
+  --accent-foreground: oklch(1 0 0); /* White text on accent */
+  --destructive: oklch(0.55 0.22 25); /* Red for errors */
+  --destructive-foreground: oklch(1 0 0); /* White text on destructive */
+  --border: oklch(0.9 0.01 220); /* Light border color */
+  --input: oklch(0.96 0.01 180); /* Light input background */
+  --ring: oklch(0.3 0.08 240 / 0.5); /* Indigo focus ring */
+  --chart-1: oklch(0.7 0.15 220); /* Light blue chart color */
+  --chart-2: oklch(0.6 0.18 240); /* Medium blue chart color */
+  --chart-3: oklch(0.5 0.2 250); /* Darker blue chart color */
+  --chart-4: oklch(0.4 0.15 260); /* Deep blue chart color */
+  --chart-5: oklch(0.35 0.1 270); /* Darkest blue chart color */
+  --radius: 0.625rem;
+  --sidebar: oklch(0.98 0.02 200); /* Light cyan sidebar */
+  --sidebar-foreground: oklch(0.3 0.08 240); /* Indigo sidebar text */
+  --sidebar-primary: oklch(0.25 0.12 250); /* Dark blue sidebar primary */
+  --sidebar-primary-foreground: oklch(1 0 0); /* White sidebar primary text */
+  --sidebar-accent: oklch(0.25 0.12 250); /* Dark blue sidebar accent */
+  --sidebar-accent-foreground: oklch(1 0 0); /* White sidebar accent text */
+  --sidebar-border: oklch(0.9 0.01 220); /* Light sidebar border */
+  --sidebar-ring: oklch(0.25 0.12 250 / 0.5); /* Dark blue sidebar ring */
+  --font-dm-sans: 'DM Sans', sans-serif;
+  --toast-bg: #303030;
+  --toast-text: #ffffff;
+}
+
+/* Dark mode overrides */
+.dark {
+  --background: oklch(0.1 0.02 240); /* Dark indigo background */
+  --foreground: oklch(0.95 0.01 200); /* Light text */
+  --card: oklch(0.15 0.03 240); /* Dark card background */
+  --card-foreground: oklch(0.9 0.02 200); /* Light text on cards */
+  --popover: oklch(0.15 0.03 240); /* Dark popover background */
+  --popover-foreground: oklch(0.95 0.01 200); /* Light text on popovers */
+  --primary: oklch(0.7 0.15 220); /* Light blue primary in dark mode */
+  --primary-foreground: oklch(0.1 0.02 240); /* Dark text on primary */
+  --secondary: oklch(0.2 0.05 240); /* Dark secondary */
+  --secondary-foreground: oklch(0.95 0.01 200); /* Light text on secondary */
+  --muted: oklch(0.2 0.03 240); /* Dark muted background */
+  --muted-foreground: oklch(0.7 0.02 220); /* Muted text in dark mode */
+  --accent: oklch(0.6 0.18 240); /* Medium blue accent in dark mode */
+  --accent-foreground: oklch(0.95 0.01 200); /* Light text on accent */
+  --destructive: oklch(0.6 0.2 25); /* Lighter red in dark mode */
+  --destructive-foreground: oklch(
+    0.95 0.01 200
+  ); /* Light text on destructive */
+  --border: oklch(0.25 0.03 240); /* Dark border */
+  --input: oklch(0.2 0.03 240); /* Dark input background */
+  --ring: oklch(0.7 0.15 220 / 0.5); /* Light blue focus ring in dark mode */
+  --chart-1: oklch(0.6 0.18 240);
+  --chart-2: oklch(0.65 0.16 220);
+  --chart-3: oklch(0.7 0.15 200);
+  --chart-4: oklch(0.75 0.12 180);
+  --chart-5: oklch(0.8 0.1 160);
+  --sidebar: oklch(0.12 0.02 240); /* Dark sidebar */
+  --sidebar-foreground: oklch(0.95 0.01 200); /* Light sidebar text */
+  --sidebar-primary: oklch(0.7 0.15 220); /* Light blue sidebar primary */
+  --sidebar-primary-foreground: oklch(
+    0.1 0.02 240
+  ); /* Dark sidebar primary text */
+  --sidebar-accent: oklch(0.6 0.18 240); /* Medium blue sidebar accent */
+  --sidebar-accent-foreground: oklch(
+    0.95 0.01 200
+  ); /* Light sidebar accent text */
+  --sidebar-border: oklch(0.25 0.03 240); /* Dark sidebar border */
+  --sidebar-ring: oklch(0.7 0.15 220 / 0.5); /* Light blue sidebar ring */
+}
+
+/* Theme mapping for Tailwind */
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --font-google-sans:
+    var(--font-google-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-google-sans-text:
+    var(--font-google-sans-text), ui-sans-serif, system-ui, sans-serif;
+  --font-product-sans:
+    var(--font-product-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* Base styling */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .phone-field-md {
+    display: block;
+  }
+}
+
+@media (min-width: 1150px) {
+  .phone-field-lg {
+    display: block;
+  }
+}
+
+@media (min-width: 1350px) {
+  .job-field-lg {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .address-field-lg {
+    display: block;
+  }
+}
+
+/* Custom scrollbar utilities */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-track-transparent {
+  scrollbar-color: transparent transparent;
+}
+
+.scrollbar-thumb-transparent {
+  scrollbar-color: transparent transparent;
+}
+
+.scrollbar-thumb-gray-300:hover {
+  scrollbar-color: rgb(209 213 219) transparent;
+}
+
+.scrollbar-thumb-rounded-full {
+  scrollbar-width: thin;
+}
+
+/* Webkit scrollbar styles for better browser support */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thumb-transparent::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.scrollbar-thumb-transparent:hover::-webkit-scrollbar-thumb {
+  background: rgb(209 213 219);
+}
+
+/* Added styles for draggable 404 numbers - Android 10 style interaction */
+.draggable-number {
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.draggable-number:hover {
+  transform: scale(1.05);
+  text-shadow: 0 0 20px currentColor;
+}
+
+.draggable-number:active {
+  transform: scale(0.95);
+  filter: brightness(1.2);
+}
+
+/* Enhanced Go Back button hover animations with smooth transitions */
+.enhanced-back-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enhanced-back-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--color-primary), 0.1),
+    transparent
+  );
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enhanced-back-button:hover::before {
+  left: 100%;
+}
+
+.enhanced-back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: rgba(var(--color-primary), 0.3);
+}
+
+.enhanced-back-button:active {
+  transform: translateY(0);
+  transition-duration: 0.1s;
+}
+
+/* Added subtle glow effect for dragged numbers */
+.draggable-number.gsap-dragging {
+  z-index: 1000;
+  filter: drop-shadow(0 0 15px currentColor);
+  transform: scale(1.1) !important;
+}
+
+/* Loading page specific animations */
+@keyframes grid-fade {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(var(--color-primary), 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(var(--color-primary), 0.6);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(var(--color-border), 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--color-border), 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-fade 4s ease-in-out infinite;
+}
+
+.loading-spinner {
+  animation: spin-slow 2s linear infinite;
+}
+
+.loading-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.loading-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.loading-dots span {
+  animation: float 1.5s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+@media (min-width: 769px) {
+  .create-contact-header-padding-for-large-screen {
+    padding-left: 40px;
+  }
+  .create-contact-header-width-for-large-screen {
+    width: 680px;
+  }
+  .create-contact-header-avatar-container-for-large-screen {
+    padding-left: 2.5rem;
+  }
+  .create-contact-header-avatar-positioning-for-large-screen {
+    justify-content: left;
+  }
+  .create-contact-header-avatar-width-for-large-screen {
+    width: 162px;
+    height: 162px;
+  }
+  .create-contact-header-avatar-plus-outer-for-large-screen {
+    top: 7rem;
+    right: 0rem;
+    width: 47px;
+    height: 47px;
+  }
+  .create-contact-header-avatar-plus-inner-for-large-screen {
+    width: 40px;
+    height: 40px;
+  }
+  /* .create-contact-name-input-width {
+    width: 64rem;
+  } */
+
+  .contact-details-avatar-container {
+    flex-direction: row;
+    justify-content: start;
+    padding-left: 48px;
+  }
+  .contact-details-avatar-width-height {
+    width: 162px;
+    height: 162px;
+  }
+  .avatar-details-name-container {
+    justify-content: start;
+    align-items: start;
+  }
+  .contact-summary-container {
+    flex-direction: row;
+    padding: 0 0 0 32px;
+  }
+  .contact-details-info {
+    max-width: 520px;
+    flex: 1;
+  }
+  .avatar-plus-outer {
+    height: 48px !important;
+    width: 48px !important;
+    right: 0 !important;
+    top: 110px !important;
+  }
+  .avatar-plus-inner {
+    height: 40px !important;
+    width: 40px !important;
+  }
+  .contact-details-header-padding {
+    padding-top: 24px;
+  }
+}

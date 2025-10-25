@@ -1,6 +1,6 @@
-# 📇 Workly Contacts – Client
+# 📇 Amar Contact – Client
 
-**Workly Contacts** is a feature-rich, user-friendly contact management web application built to help users securely store, manage, and interact with their personal or professional contact lists. This is the **client-side (frontend)** codebase built with modern web technologies and connected to a scalable backend.
+**Amar Contact** is a feature-rich, user-friendly contact management web application built to help users securely store, manage, and interact with their personal or professional contact lists. This is the **client-side (frontend)** codebase built with modern web technologies and connected to a scalable backend.
 
 ---
 
