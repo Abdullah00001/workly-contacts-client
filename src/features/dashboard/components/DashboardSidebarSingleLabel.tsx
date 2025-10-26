@@ -10,15 +10,20 @@ import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { DeleteLabel } from '../services/label-services';
 import LabelDeleteModal from './LabelDeleteModal';
+import { usePathname, useRouter } from 'next/navigation';
 
 const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
   data,
   isActive,
 }) => {
+  const pathname = usePathname();
+  const isCurrentPath = pathname === `/label/${data?._id}`;
+  const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [isChildHover, setIsChildHover] = useState<boolean>(false);
   const [hoveredLabelId, setHoveredLabelId] = useState<string | null>(null);
+  const { labelName } = data;
   const handleMouseEnter = () => {
     if (!open) {
       setHoveredLabelId(data?._id);
@@ -35,11 +40,12 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
     mutationFn: async (payload: { _id: string; withContacts?: boolean }) =>
       await DeleteLabel(payload),
     onSuccess: (data) => {
-      toast(`Label deleted`, {
+      toast(`Label ${labelName} deleted`, {
         closeButton: false,
         position: 'bottom-center',
       });
       queryClient.invalidateQueries({ queryKey: ['labels'] });
+      if (isCurrentPath) router.push('/dashboard');
     },
     onError: (error) => {
       if (error instanceof AxiosError)
@@ -65,7 +71,7 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
       onMouseLeave={handleMouseLeave}
       className={`flex-1 w-full cursor-pointer group flex items-center font-bold font-google-sans-text justify-between px-4 lg:px-4  rounded-full text-sm ${
         isActive
-          ? 'bg-[#c2e7ff] text-[#001D35]'
+          ? `bg-[#c2e7ff] text-[#001D35] ${isChildHover ? '' : 'hover:bg-[#c2e7ff]'}`
           : `text-[#444746] ${isChildHover ? '' : 'hover:bg-gray-100'}`
       }`}
     >
@@ -99,7 +105,7 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
               setOpen(true);
               setHoveredLabelId(null);
             }}
-            className="w-[44px] h-[44px] cursor-pointer hover:!bg-gray-200 flex items-center justify-center hover:!rounded-full"
+            className={`w-[44px] h-[44px] cursor-pointer flex items-center justify-center ${isActive ? `hover:bg-blue-200` : `hover:!bg-gray-200 `} hover:rounded-full`}
           >
             <Icon
               name="edit"
@@ -122,7 +128,7 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
               }
               mutate({ _id: data?._id, withContacts: false });
             }}
-            className="w-[44px] h-[44px] cursor-pointer flex items-center justify-center hover:!bg-gray-200 hover:rounded-full"
+            className={`w-[44px] h-[44px] cursor-pointer flex items-center justify-center ${isActive ? `hover:bg-blue-200` : `hover:!bg-gray-200 `} hover:rounded-full`}
           >
             <Icon
               name="delete"
