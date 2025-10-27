@@ -9,6 +9,7 @@ import Icon from '@/components/common/Icon';
 import DashboardSidebarLabel from './DashboardSidebarLabel';
 import { useHamburgerStore } from '@/stores/hamburger-store';
 import { useImportExportModalStore } from '@/stores/import-export-modal-store';
+import { Badge } from '@/components/ui/badge';
 
 const Hamburger: FC = () => {
   const { isHamburgerOpen, setHamburgerOpen } = useHamburgerStore();
@@ -86,25 +87,57 @@ const Hamburger: FC = () => {
                       const { name, className, size, type, variant } =
                         item.icon;
                       return item.path ? (
-                        <li key={item.path}>
-                          <Link
-                            href={item.path}
-                            className={`flex items-center gap-2 px-4 py-3 rounded-full font-bold font-google-sans-text  ${
-                              isActive
-                                ? 'bg-[#c2e7ff] rounded-[8px] text-[#001D35]'
-                                : 'text-[#444746]'
-                            }`}
-                          >
-                            <Icon
-                              name={name}
-                              className={isActive ? '#001d35' : className}
-                              size={size}
-                              type={type}
-                              variant={variant}
-                            />
-                            {item.pathName}
-                          </Link>
-                        </li>
+                        item.path === '/suggestion' ? (
+                          <li key={item.path} className="relative">
+                            <Link
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                              href={item.path}
+                              className={`flex items-center gap-2 px-4 py-3 rounded-full font-bold font-google-sans-text  ${
+                                isActive
+                                  ? 'bg-[#c2e7ff] rounded-[8px] text-[#001D35]'
+                                  : 'text-[#444746]'
+                              }`}
+                            >
+                              <Icon
+                                name={name}
+                                className={isActive ? '#001d35' : className}
+                                size={size}
+                                type={type}
+                                variant={variant}
+                              />
+                              {item.pathName}
+                            </Link>
+                            <Badge
+                              variant="secondary"
+                              className="absolute top-0 right-2 bg-gradient-to-r from-[#4a3ff7] to-[#6a5ff8] text-white font-semibold shadow-md hover:shadow-lg transition-shadow"
+                            >
+                              Coming Soon
+                            </Badge>
+                          </li>
+                        ) : (
+                          <li key={item.path}>
+                            <Link
+                              href={item.path}
+                              className={`flex items-center gap-2 px-4 py-3 rounded-full font-bold font-google-sans-text  ${
+                                isActive
+                                  ? 'bg-[#c2e7ff] rounded-[8px] text-[#001D35]'
+                                  : 'text-[#444746]'
+                              }`}
+                            >
+                              <Icon
+                                name={name}
+                                className={isActive ? '#001d35' : className}
+                                size={size}
+                                type={type}
+                                variant={variant}
+                              />
+                              {item.pathName}
+                            </Link>
+                          </li>
+                        )
                       ) : (
                         <li
                           onClick={() => {

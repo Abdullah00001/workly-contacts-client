@@ -121,7 +121,10 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
             </div>
           </div>
           <div className={`flex items-center justify-end`}>
-            <Label setSelectContact={setSelectContact} selectedContactIds={selectedContacts} />
+            <Label
+              setSelectContact={setSelectContact}
+              selectedContactIds={selectedContacts}
+            />
             <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
               <DropdownMenuTrigger
                 className={`w-[45px] h-[45px] flex items-center justify-center  cursor-pointer rounded-full hover:bg-[#0b57d030]`}
