@@ -66,6 +66,7 @@ const MultiExportModal: FC<TMultiExportModal> = ({
         setMultiExportModalOpen(false);
         setSelectContact([]);
       } catch (error) {
+        console.log(error)
         toast.error('Failed to export contacts', {
           closeButton: false,
           position: 'bottom-center',

@@ -44,6 +44,7 @@ const TrashTable: FC<TTrashTable> = ({ trash }) => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['trash'] });
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['labels'] });
       setSelectContact([]);
       toast('1 contact recovered', {
         closeButton: false,

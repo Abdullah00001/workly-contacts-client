@@ -1,4 +1,5 @@
 import { TContacts } from '@/components/common/ContactTable';
+import { UseMutateFunction } from '@tanstack/react-query';
 import { Dispatch, MouseEvent, SetStateAction } from 'react';
 
 export type TMoreActionDropDown = {
@@ -73,6 +74,41 @@ export type TSearchResultItemProps = {
   setShowResults: Dispatch<SetStateAction<boolean>>;
 };
 
-export type TFeedbackPayload={
-  message:string;
-}
+export type TFeedbackPayload = {
+  message: string;
+};
+
+export type TLabel = {
+  _id: string;
+  labelName: string;
+  contactCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TDashboardSidebarSingleLabel = {
+  data: TLabel;
+  isActive: boolean;
+};
+
+export type TLabelUpdateModal = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  _id: string;
+  currentLabelName: string;
+};
+
+export type TLabelDeleteModal = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  _id: string;
+  mutate: UseMutateFunction<
+    any,
+    Error,
+    {
+      _id: string;
+      withContacts?: boolean;
+    },
+    unknown
+  >;
+};
