@@ -66,3 +66,26 @@ export async function SearchContact(payload: string) {
     throw new Error('Unknown error occurred,Please Try Again');
   }
 }
+
+export async function LabelUpdate(payload: {
+  contactIds: string[];
+  labelIds: string[];
+}) {
+  try {
+    await axiosClient.patch(`/contacts/label`, payload);
+    return;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred,Please Try Again');
+  }
+}
+
+export async function FindContactsByLabel(payload: string) {
+  try {
+    const response= await axiosClient.get(`/contacts/label/${payload}`);
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred,Please Try Again');
+  }
+}

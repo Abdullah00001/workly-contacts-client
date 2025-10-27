@@ -11,6 +11,7 @@ import {
 import TrashModal from '@/features/dashboard/components/TrashModal';
 import PrintModal from '@/features/dashboard/components/PrintModal';
 import MultiExportModal from '@/features/dashboard/components/MultiExportModal';
+import Label from './Label';
 
 export type TContacts = {
   _id: string;
@@ -34,6 +35,7 @@ export type TContacts = {
     companyName: string | null;
     jobTitle: string | null;
   };
+  labels: string[] | [];
 };
 
 type TContactTableProps = {
@@ -119,53 +121,7 @@ const ContactTable: FC<TContactTableProps> = ({ contacts }) => {
             </div>
           </div>
           <div className={`flex items-center justify-end`}>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                className={`flex items-center justify-center w-[45px] h-[45px] cursor-pointer rounded-full hover:bg-[#0b57d030]`}
-              >
-                <Icon
-                  name="label"
-                  className={`text-[#0b57d0]`}
-                  size={20}
-                  type="icons"
-                  variant="outlined"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className={`w-[200px]  overflow-y-auto mr-[30px] lg:mr-[110px] bg-white border border-gray-200  shadow-lg  px-0 rounded-none py-2`}
-              >
-                <h5 className="px-4 w-full text-[#1f1f1f] text-sm font-google-sans-text">
-                  Manage Labels
-                </h5>
-                <div className="mt-1 max-h-[220px] w-full overflow-y-auto">
-                  {[
-                    'hello',
-                    'hi',
-                    'bye',
-                    'go',
-                    'next',
-                    'nest',
-                    'django',
-                    'node',
-                    'express',
-                  ].map((item) => (
-                    <DropdownMenuItem
-                      key={item}
-                      className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 !rounded-none flex items-center gap-4 cursor-pointer"
-                    >
-                      <Icon
-                        name="label"
-                        variant="outlined"
-                        className=" text-[#444746]"
-                        size={22}
-                        type="symbols"
-                      />
-                      {item}
-                    </DropdownMenuItem>
-                  ))}
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Label setSelectContact={setSelectContact} selectedContactIds={selectedContacts} />
             <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
               <DropdownMenuTrigger
                 className={`w-[45px] h-[45px] flex items-center justify-center  cursor-pointer rounded-full hover:bg-[#0b57d030]`}

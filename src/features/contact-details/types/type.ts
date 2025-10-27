@@ -5,6 +5,14 @@ export type TContactDetailsPageProps = {
   searchParams: Promise<{ edit?: string }>;
 };
 
+export type TContactsLabelPageProps = {
+  params: Promise<{ labelId: string }>;
+};
+
+export type TLabels={
+  labelId:string
+}
+
 export type TContactDetailsProps = {
   objectId: string;
   isEditMode?: boolean;

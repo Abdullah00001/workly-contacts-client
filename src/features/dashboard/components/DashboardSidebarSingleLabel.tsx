@@ -65,7 +65,8 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
     }
   }, [isPending]);
   return (
-    <div
+    <Link
+      href={`/label/${data?._id}`}
       key={data?._id}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -75,10 +76,7 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
           : `text-[#444746] ${isChildHover ? '' : 'hover:bg-gray-100'}`
       }`}
     >
-      <Link
-        href={`/label/${data?._id}`}
-        className="flex justify-start items-center cursor-pointer gap-2"
-      >
+      <div className="flex justify-start items-center cursor-pointer gap-2">
         <Icon
           name="label"
           className="text-[#444746]"
@@ -87,7 +85,7 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
           variant="filled"
         />
         <span className="overflow-hidden w-full">{data?.labelName}</span>
-      </Link>
+      </div>
       {hoveredLabelId !== data?._id ? (
         <div className="h-[44px] w-[44px] flex justify-center items-center">
           <span className="text-[12px] text-[#444746] text-center">
@@ -152,7 +150,7 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
         open={openDelete}
         setOpen={setOpenDelete}
       />
-    </div>
+    </Link>
   );
 };
 
