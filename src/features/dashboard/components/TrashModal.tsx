@@ -38,6 +38,7 @@ const TrashModal: FC<TTrashModal> = ({
       queryClient.invalidateQueries({ queryKey: ['contacts', singleId] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       queryClient.invalidateQueries({ queryKey: ['trash'] });
+      queryClient.invalidateQueries({ queryKey: ['labels'] });
       toast(`1 contact moved to trash`, {
         closeButton: false,
         position: 'bottom-center',
@@ -63,6 +64,7 @@ const TrashModal: FC<TTrashModal> = ({
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       queryClient.invalidateQueries({ queryKey: ['trash'] });
+      queryClient.invalidateQueries({ queryKey: ['labels'] });
       if (setSelectContact) setSelectContact([]);
       toast(`${bulkId?.length} contact moved to trash`, {
         closeButton: false,

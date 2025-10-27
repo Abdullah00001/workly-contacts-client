@@ -45,6 +45,8 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
         position: 'bottom-center',
       });
       queryClient.invalidateQueries({ queryKey: ['labels'] });
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
       if (isCurrentPath) router.push('/dashboard');
     },
     onError: (error) => {
@@ -65,79 +67,81 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
     }
   }, [isPending]);
   return (
-    <Link
-      href={`/label/${data?._id}`}
-      key={data?._id}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className={`flex-1 w-full cursor-pointer group flex items-center font-bold font-google-sans-text justify-between px-4 lg:px-4  rounded-full text-sm ${
-        isActive
-          ? `bg-[#c2e7ff] text-[#001D35] ${isChildHover ? '' : 'hover:bg-[#c2e7ff]'}`
-          : `text-[#444746] ${isChildHover ? '' : 'hover:bg-gray-100'}`
-      }`}
-    >
-      <div className="flex justify-start items-center cursor-pointer gap-2">
-        <Icon
-          name="label"
-          className="text-[#444746]"
-          size={24}
-          type="icons"
-          variant="filled"
-        />
-        <span className="overflow-hidden w-full">{data?.labelName}</span>
-      </div>
-      {hoveredLabelId !== data?._id ? (
-        <div className="h-[44px] w-[44px] flex justify-center items-center">
-          <span className="text-[12px] text-[#444746] text-center">
-            {data?.contactCount}
-          </span>
+    <>
+      <Link
+        href={`/label/${data?._id}`}
+        key={data?._id}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className={`flex-1 w-full cursor-pointer group flex items-center font-bold font-google-sans-text justify-between px-4 lg:px-4  rounded-full text-sm ${
+          isActive
+            ? `bg-[#c2e7ff] text-[#001D35] ${isChildHover ? '' : 'hover:bg-[#c2e7ff]'}`
+            : `text-[#444746] ${isChildHover ? '' : 'hover:bg-gray-100'}`
+        }`}
+      >
+        <div className="flex justify-start items-center cursor-pointer gap-2">
+          <Icon
+            name="label"
+            className="text-[#444746]"
+            size={24}
+            type="icons"
+            variant="filled"
+          />
+          <span className="overflow-hidden w-full">{data?.labelName}</span>
         </div>
-      ) : (
-        <div className="flex items-center justify-end">
-          <button
-            onMouseEnter={() => setIsChildHover(true)}
-            onMouseLeave={() => setIsChildHover(false)}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setOpen(true);
-              setHoveredLabelId(null);
-            }}
-            className={`w-[44px] h-[44px] cursor-pointer flex items-center justify-center ${isActive ? `hover:bg-blue-200` : `hover:!bg-gray-200 `} hover:rounded-full`}
-          >
-            <Icon
-              name="edit"
-              variant="outlined"
-              className=" text-[#444746]"
-              type="icons"
-              size={24}
-            />
-          </button>
-          <button
-            onMouseEnter={() => setIsChildHover(true)}
-            onMouseLeave={() => setIsChildHover(false)}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (data?.contactCount > 0) {
-                setOpenDelete(true);
+        {hoveredLabelId !== data?._id ? (
+          <div className="h-[44px] w-[44px] flex justify-center items-center">
+            <span className="text-[12px] text-[#444746] text-center">
+              {data?.contactCount}
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center justify-end">
+            <button
+              onMouseEnter={() => setIsChildHover(true)}
+              onMouseLeave={() => setIsChildHover(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setOpen(true);
                 setHoveredLabelId(null);
-                return;
-              }
-              mutate({ _id: data?._id, withContacts: false });
-            }}
-            className={`w-[44px] h-[44px] cursor-pointer flex items-center justify-center ${isActive ? `hover:bg-blue-200` : `hover:!bg-gray-200 `} hover:rounded-full`}
-          >
-            <Icon
-              name="delete"
-              variant="outlined"
-              className=" text-[#444746]"
-              type="symbols"
-              size={24}
-            />
-          </button>
-        </div>
-      )}
+              }}
+              className={`w-[44px] h-[44px] cursor-pointer flex items-center justify-center ${isActive ? `hover:bg-blue-200` : `hover:!bg-gray-200 `} hover:rounded-full`}
+            >
+              <Icon
+                name="edit"
+                variant="outlined"
+                className=" text-[#444746]"
+                type="icons"
+                size={24}
+              />
+            </button>
+            <button
+              onMouseEnter={() => setIsChildHover(true)}
+              onMouseLeave={() => setIsChildHover(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (data?.contactCount > 0) {
+                  setOpenDelete(true);
+                  setHoveredLabelId(null);
+                  return;
+                }
+                mutate({ _id: data?._id, withContacts: false });
+              }}
+              className={`w-[44px] h-[44px] cursor-pointer flex items-center justify-center ${isActive ? `hover:bg-blue-200` : `hover:!bg-gray-200 `} hover:rounded-full`}
+            >
+              <Icon
+                name="delete"
+                variant="outlined"
+                className=" text-[#444746]"
+                type="symbols"
+                size={24}
+              />
+            </button>
+          </div>
+        )}
+      </Link>
       <LabelUpdateModal
         currentLabelName={data?.labelName}
         _id={data?._id}
@@ -150,7 +154,7 @@ const DashboardSidebarSingleLabel: FC<TDashboardSidebarSingleLabel> = ({
         open={openDelete}
         setOpen={setOpenDelete}
       />
-    </Link>
+    </>
   );
 };
 
