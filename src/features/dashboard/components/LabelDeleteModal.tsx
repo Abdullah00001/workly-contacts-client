@@ -23,7 +23,7 @@ const LabelDeleteModal: FC<TLabelDeleteModal> = ({
   };
   return (
     <Dialog open={open} onOpenChange={setOpen} modal={true}>
-      <DialogContent className='bg-[#e9eef6] rounded-3xl'>
+      <DialogContent className="bg-[#e9eef6] rounded-3xl">
         <DialogHeader>
           <DialogTitle className="font-google-sans font-normal text-[24px] text-[#1f1f1f]">
             Delete this label

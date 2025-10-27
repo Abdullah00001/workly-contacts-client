@@ -1,7 +1,13 @@
 'use client';
 import { TLabel } from '@/features/dashboard/types/type';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
-import type { ChangeEvent, Dispatch, FC, MouseEvent, SetStateAction } from 'react';
+import type {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  MouseEvent,
+  SetStateAction,
+} from 'react';
 import Icon from './Icon';
 
 export type TLabelItem = {
@@ -10,15 +16,11 @@ export type TLabelItem = {
   setSelectLabel: Dispatch<SetStateAction<string[]>>;
 };
 
-const LabelItem: FC<TLabelItem> = ({
-  label,
-  selectLabel,
-  setSelectLabel,
-}) => {
+const LabelItem: FC<TLabelItem> = ({ label, selectLabel, setSelectLabel }) => {
   const { _id, labelName } = label;
   const isSelected = selectLabel.includes(_id);
-  const handleSelect = (e:MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
+  const handleSelect = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     setSelectLabel((prev) =>
       isSelected ? prev.filter((labelId) => labelId !== _id) : [...prev, _id]
     );

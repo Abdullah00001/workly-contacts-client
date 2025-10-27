@@ -173,7 +173,7 @@ const Label: FC<TLabelsProps> = ({ selectedContactIds, setSelectContact }) => {
         const currentLabels = (contact as TContacts).labels || [];
 
         // Remove labels that were unchecked
-        let updatedLabels = currentLabels.filter(
+        const updatedLabels = currentLabels.filter(
           (labelId: string) => !toRemove.includes(labelId)
         );
 
