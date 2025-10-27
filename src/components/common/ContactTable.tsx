@@ -35,7 +35,7 @@ export type TContacts = {
     companyName: string | null;
     jobTitle: string | null;
   };
-  labels: string[] | [];
+  labels: string[];
 };
 
 type TContactTableProps = {

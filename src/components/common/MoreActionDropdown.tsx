@@ -15,6 +15,7 @@ import { ExportSingleContacts } from '@/features/dashboard/services/contacts-ser
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import SingleExportModal from '@/features/dashboard/components/SingleExportModal';
+import MoreActionLabelChange from './MoreActionLabelChange';
 
 const MoreActionDropDown: FC<TMoreActionDropDown> = ({
   contact,
@@ -306,7 +307,7 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
               onClick={() => {
                 mutate(_id);
               }}
-              className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer"
+              className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer hover:rounded-none"
             >
               <Icon
                 name="print"
@@ -323,7 +324,7 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
                 setSingleExportModalOpen(true);
                 setIsMoreActionOpen(false);
               }}
-              className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer"
+              className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer hover:rounded-none"
             >
               <Icon
                 name="file_upload"
@@ -340,7 +341,7 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
                 setOpen(true);
                 setIsMoreActionOpen(false);
               }}
-              className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer"
+              className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer hover:rounded-none"
             >
               <Icon
                 name="delete"
@@ -352,38 +353,7 @@ const MoreActionDropDown: FC<TMoreActionDropDown> = ({
               Delete
             </DropdownMenuItem>
           </div>
-          <div className="pt-2 w-full">
-            <h5 className="px-4 w-full text-[#747776] text-xs font-google-sans-text">
-              Change Labels
-            </h5>
-            <div className="mt-1 max-h-[220px] w-full overflow-auto">
-              {[
-                'hello',
-                'hi',
-                'bye',
-                'go',
-                'next',
-                'nest',
-                'django',
-                'node',
-                'express',
-              ].map((item) => (
-                <DropdownMenuItem
-                  key={item}
-                  className="w-full text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 flex items-center gap-4 cursor-pointer"
-                >
-                  <Icon
-                    name="label"
-                    variant="outlined"
-                    className=" text-[#444746]"
-                    size={22}
-                    type="symbols"
-                  />
-                  {item}
-                </DropdownMenuItem>
-              ))}
-            </div>
-          </div>
+          <MoreActionLabelChange contact={contact} />
         </DropdownMenuContent>
       </DropdownMenu>
       <SingleExportModal

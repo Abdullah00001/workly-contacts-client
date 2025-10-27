@@ -41,36 +41,90 @@ const Label: FC<TLabelsProps> = ({ selectedContactIds, setSelectContact }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [selectLabels, setSelectLabels] = useState<string[]>([]);
   const [labelChange, setLabelChange] = useState(false);
+
   const { data: label } = useQuery({
     queryKey: ['labels'],
     queryFn: RetrieveLabels,
   });
+
   const { data: contacts } = useQuery({
     queryKey: ['contacts'],
     queryFn: RetrieveContacts,
   });
+
   const { mutate, isPending } = useMutation({
-    mutationFn: async (payload: { contactIds: string[]; labelIds: string[] }) =>
-      LabelUpdate(payload),
+    mutationFn: async (payload: {
+      labelUpdateTree: {
+        contactId: string;
+        labelIds: string[];
+      }[];
+    }) => LabelUpdate(payload),
+    onMutate: async (variables) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['contacts'] });
+
+      // Snapshot the previous value
+      const previousContacts = queryClient.getQueryData(['contacts']);
+
+      // Optimistically update contacts
+      queryClient.setQueryData(['contacts'], (old: TContacts[] | undefined) => {
+        if (!old) return old;
+
+        return old.map((contact) => {
+          const updateItem = variables.labelUpdateTree.find(
+            (item) => item.contactId === contact._id
+          );
+
+          if (updateItem) {
+            return {
+              ...contact,
+              labels: updateItem.labelIds,
+            };
+          }
+          return contact;
+        });
+      });
+
+      return { previousContacts };
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
       queryClient.invalidateQueries({ queryKey: ['labels'] });
-      toast(`${selectedContacts.length} contacts labeled`, {
-        closeButton: false,
-        position: 'bottom-center',
-      });
+      toast(
+        `${selectedContactIds.length} contact${selectedContactIds.length > 1 ? 's' : ''} labeled`,
+        {
+          closeButton: false,
+          position: 'bottom-center',
+        }
+      );
       setSelectContact([]);
+      setOpen(false);
     },
-    onError: (error) => {
-      if (error instanceof AxiosError)
-        toast.error(error.response?.data?.message, {
+    onError: (error, variables, context) => {
+      // Rollback to previous state on error
+      if (context?.previousContacts) {
+        queryClient.setQueryData(['contacts'], context.previousContacts);
+      }
+
+      if (error instanceof AxiosError) {
+        toast.error(
+          error.response?.data?.message ||
+            'Unwanted error occurred, Try Again!',
+          {
+            closeButton: false,
+            position: 'bottom-center',
+          }
+        );
+      } else {
+        toast.error('Unwanted error occurred, Try Again!', {
           closeButton: false,
           position: 'bottom-center',
         });
-      toast.error('Unwanted error occurred,Try Again!');
+      }
     },
   });
+
   const selectedContacts = useMemo(() => {
     if (!contacts || !selectedContactIds?.length) return [];
     return (contacts as TContacts[]).filter((contact) =>
@@ -96,17 +150,58 @@ const Label: FC<TLabelsProps> = ({ selectedContactIds, setSelectContact }) => {
       )
     );
   }, [selectedContacts]);
+
+  // Calculate which labels to add and which to remove
+  const labelChanges = useMemo(() => {
+    const toAdd = selectLabels.filter(
+      (labelId) => !commonLabels.includes(labelId)
+    );
+    const toRemove = commonLabels.filter(
+      (labelId) => !selectLabels.includes(labelId)
+    );
+    return { toAdd, toRemove };
+  }, [selectLabels, commonLabels]);
+
   const handleApply = () => {
-    if (selectLabels.length > 0) {
-      mutate({ contactIds: selectedContactIds, labelIds: selectLabels });
-    }
+    if (!selectedContactIds.length || !contacts) return;
+
+    const { toAdd, toRemove } = labelChanges;
+
+    // Prepare the payload - merge existing labels with changes for EACH contact
+    const payload = {
+      labelUpdateTree: selectedContacts.map((contact) => {
+        const currentLabels = (contact as TContacts).labels || [];
+
+        // Remove labels that were unchecked
+        let updatedLabels = currentLabels.filter(
+          (labelId: string) => !toRemove.includes(labelId)
+        );
+
+        // Add new labels that were checked
+        toAdd.forEach((labelId) => {
+          if (!updatedLabels.includes(labelId)) {
+            updatedLabels.push(labelId);
+          }
+        });
+
+        return {
+          contactId: (contact as TContacts)._id,
+          labelIds: updatedLabels,
+        };
+      }),
+    };
+
+    // Call the mutation
+    mutate(payload);
   };
+
   // Initialize selectLabels with common labels when dropdown opens or selected contacts change
   useEffect(() => {
     if (open) {
       setSelectLabels(commonLabels);
     }
   }, [open, commonLabels]);
+
   useEffect(() => {
     if (isPending) {
       toast(`Working...`, {
@@ -115,6 +210,7 @@ const Label: FC<TLabelsProps> = ({ selectedContactIds, setSelectContact }) => {
       });
     }
   }, [isPending]);
+
   useEffect(() => {
     const hasChanged =
       JSON.stringify([...selectLabels].sort()) !==
@@ -122,6 +218,7 @@ const Label: FC<TLabelsProps> = ({ selectedContactIds, setSelectContact }) => {
 
     setLabelChange(hasChanged);
   }, [selectLabels, commonLabels]);
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
@@ -136,13 +233,13 @@ const Label: FC<TLabelsProps> = ({ selectedContactIds, setSelectContact }) => {
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className={`w-[256px]  overflow-y-auto mr-[30px] lg:mr-[90px] bg-white border border-gray-200  shadow-lg  px-0 rounded-none py-2`}
+        className={`w-[256px] overflow-y-auto mr-[30px] lg:mr-[90px] bg-white border border-gray-200 shadow-lg px-0 rounded-none py-2`}
       >
         <h5 className="px-4 w-full text-[#1f1f1f] text-sm font-google-sans-text">
           Manage Labels
         </h5>
         <div className="mt-1 max-h-[220px] w-full overflow-y-auto mb-2">
-          {(label as TLabel[]).map((label) => (
+          {(label as TLabel[])?.map((label) => (
             <LabelItem
               key={label?._id}
               label={label}
@@ -155,16 +252,17 @@ const Label: FC<TLabelsProps> = ({ selectedContactIds, setSelectContact }) => {
         {labelChange ? (
           <DropdownMenuItem
             onClick={handleApply}
+            disabled={isPending}
             className="w-full mt-2 text-left px-4 py-2 text-sm !text-[#1F1F1F] hover:!bg-gray-200 !rounded-none flex items-center gap-4 cursor-pointer"
           >
             <Icon
-              name=""
+              name="check"
               variant="outlined"
               className=" text-[#444746]"
               size={22}
               type="symbols"
             />
-            <span>Apply</span>
+            <span>{isPending ? 'Applying...' : 'Apply'}</span>
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem

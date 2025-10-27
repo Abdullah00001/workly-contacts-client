@@ -68,8 +68,10 @@ export async function SearchContact(payload: string) {
 }
 
 export async function LabelUpdate(payload: {
-  contactIds: string[];
-  labelIds: string[];
+  labelUpdateTree: {
+    contactId: string;
+    labelIds: string[];
+  }[];
 }) {
   try {
     await axiosClient.patch(`/contacts/label`, payload);
@@ -82,7 +84,7 @@ export async function LabelUpdate(payload: {
 
 export async function FindContactsByLabel(payload: string) {
   try {
-    const response= await axiosClient.get(`/contacts/label/${payload}`);
+    const response = await axiosClient.get(`/contacts/label/${payload}`);
     return response.data?.data;
   } catch (error) {
     if (error instanceof AxiosError) throw error;
