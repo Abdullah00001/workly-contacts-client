@@ -1,4 +1,5 @@
 import { SignupSchema } from '@/lib/validation/auth-validation';
+import { Dispatch, SetStateAction } from 'react';
 import { z } from 'zod';
 
 export type TSignupPayload = z.infer<typeof SignupSchema>;
@@ -80,3 +81,8 @@ export enum AuthErrorType {
   TOKEN_INVALID = 'TOKEN_INVALID',
   TOKEN_BLACKLISTED = 'TOKEN_BLACKLISTED',
 }
+
+export type TAccountDeleteModal = {
+  open: boolean;
+  setOpenChange: Dispatch<SetStateAction<boolean>>;
+};

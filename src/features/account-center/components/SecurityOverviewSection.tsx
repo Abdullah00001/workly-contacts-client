@@ -4,6 +4,7 @@ import { ChevronRight } from 'lucide-react';
 import { SecurityOverviewData } from '../types/personal-info-types';
 import { formatISODateForDisplay } from '@/lib/date-utils';
 import ChangePasswordModal from './ChangePasswordModal';
+import AccountDeleteModal from '@/features/auth/components/AccountDeleteModal';
 
 const SecurityOverview: FC<SecurityOverviewData> = ({
   accountCreatedAt,
@@ -15,6 +16,7 @@ const SecurityOverview: FC<SecurityOverviewData> = ({
 }) => {
   const [isOpenChangePasswordModal, setOpenChangePasswordModal] =
     useState<boolean>(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   return (
     <>
       <div className="w-full mt-4 border border-gray-500 lg:px-4 lg:pt-6 lg:pb-4 p-4 rounded-[8px]">
@@ -115,7 +117,12 @@ const SecurityOverview: FC<SecurityOverviewData> = ({
             </div>
           </div>
           <hr className="lg:hidden mt-3 mb-3 text-gray-400" />
-          <div className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 items-center justify-between w-full">
+          <div
+            onClick={() => {
+              setDeleteModalOpen(true);
+            }}
+            className="flex transition-all duration-300 lg:cursor-pointer lg:hover:bg-gray-50/5 lg:p-2 items-center justify-between w-full"
+          >
             <div className="flex flex-col min-[620px]:w-[60%] min-[620px]:flex-row min-[620px]:justify-between min-[620px]:items-center">
               <h6 className="text-xs font-medium min-[620px]:w-[50%]">
                 Close Account
@@ -136,6 +143,10 @@ const SecurityOverview: FC<SecurityOverviewData> = ({
       <ChangePasswordModal
         isOpenChangePasswordModal={isOpenChangePasswordModal}
         setOpenChangePasswordModal={setOpenChangePasswordModal}
+      />
+      <AccountDeleteModal
+        open={deleteModalOpen}
+        setOpenChange={setDeleteModalOpen}
       />
     </>
   );
