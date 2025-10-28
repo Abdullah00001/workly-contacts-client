@@ -24,6 +24,11 @@ export type TResetPasswordPayload = {
   confirmPassword?: string;
 };
 
+export type TUnlockAccountByChangePasswordPayload = {
+  payload: { password: string };
+  uuid: string;
+};
+
 export type TPasswordStrength = {
   score: number;
   strength: 'weak' | 'medium' | 'strong';

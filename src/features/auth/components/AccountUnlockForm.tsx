@@ -17,14 +17,10 @@ import Link from 'next/link';
 import { getPasswordStrength } from '@/lib/validation/auth-validation';
 
 interface AccountUnlockFormProps {
-  onSubmit: (data: {
-    newPassword: string;
-    confirmPassword: string;
-  }) => Promise<void>;
+  onSubmit: (data: { newPassword: string; confirmPassword: string }) => void;
   isLoading: boolean;
   successMessage: string;
   errorMessage: string;
-  uuid: string;
 }
 
 export default function AccountUnlockForm({
@@ -32,7 +28,6 @@ export default function AccountUnlockForm({
   isLoading,
   successMessage,
   errorMessage,
-  uuid,
 }: AccountUnlockFormProps) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -59,7 +54,7 @@ export default function AccountUnlockForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canProceed) return;
-    await onSubmit(formData);
+    onSubmit(formData);
   };
 
   return (

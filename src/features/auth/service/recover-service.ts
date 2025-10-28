@@ -2,6 +2,7 @@
 import {
   TFindUserPayload,
   TResetPasswordPayload,
+  TUnlockAccountByChangePasswordPayload,
   TVerifyRecoverOtpPayload,
 } from '@/features/auth/types/recover-type';
 import { AuthMessages } from '../types/auth-types';
@@ -343,6 +344,47 @@ export const ResetPassword = async (payload: TResetPasswordPayload) => {
           'Content-Type': 'application/json',
         },
         method: 'PATCH',
+        body: JSON.stringify(payload),
+      }
+    );
+    if (response.ok) return await response.json();
+    const status = response.status;
+    switch (status) {
+      case 401:
+        throw new Error('Session Has Been Expired,Please Signup Again.');
+      case 500:
+        throw new Error(
+          'Something went wrong on our end. Please try again in a few minutes.'
+        );
+      default:
+        throw new Error(
+          'An unexpected error occurred. Please try again later.'
+        );
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(
+        error.message || 'Network error. Please check your connection.'
+      );
+    }
+    throw new Error('Unknown error occurred.');
+  }
+};
+
+export const UnlockAccountByChangePassword = async ({
+  payload,
+  uuid,
+}: TUnlockAccountByChangePasswordPayload) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/active/change/${uuid}`,
+      {
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
         body: JSON.stringify(payload),
       }
     );
