@@ -4,7 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect, type FC, type FormEvent } from 'react';
 import { TContact, TFieldComponentProps } from '../types/type';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CreateContact } from '../services/create-contact-service';
+import {
+  CreateContact,
+  RemoveContactAvatar,
+} from '../services/create-contact-service';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import { isPayloadChanged } from '../helpers/create-contact-helper';
@@ -15,7 +18,7 @@ const CreateContactHeader: FC<TFieldComponentProps> = ({
   setPayload,
 }) => {
   const queryClient = useQueryClient();
-  const { setUnsavedChanges, setNextRoute, setModalOpen } =
+  const { setUnsavedChanges, setNextRoute, setModalOpen, setCleanupFunction } =
     navigationGuardStore();
   const disabled = payload.firstName === '' && payload.lastName === '';
   const changed = isPayloadChanged(payload);
@@ -95,6 +98,23 @@ const CreateContactHeader: FC<TFieldComponentProps> = ({
       });
     }
   }, [isPending]);
+  useEffect(() => {
+    const cleanup = async () => {
+      if (payload.avatar?.publicId) {
+        try {
+          await RemoveContactAvatar(payload.avatar.publicId);
+        } catch (error) {
+          console.error('Failed to cleanup avatar:', error);
+        }
+      }
+    };
+
+    setCleanupFunction(cleanup);
+
+    return () => {
+      setCleanupFunction(null);
+    };
+  }, [payload.avatar?.publicId, setCleanupFunction]);
   return (
     <div className="pt-6 create-contact-header-padding-for-large-screen px-2">
       <div className="flex justify-between items-center w-full">
