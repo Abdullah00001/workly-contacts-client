@@ -19,6 +19,8 @@ export default async function middleware(request: NextRequest) {
   const r_stp1 = request.cookies.get('r_stp1')?.value;
   const r_stp2 = request.cookies.get('r_stp2')?.value;
   const r_stp3 = request.cookies.get('r_stp3')?.value;
+  const isActiveChangePassPageCookie =
+    request.cookies.get('__actvwithcngpass')?.value;
   const url = request.nextUrl.clone();
   const isAuthPages = pathname.includes('/auth');
   const isProtectedRoute = protectedRoutes.some((route) => {
@@ -27,6 +29,12 @@ export default async function middleware(request: NextRequest) {
     }
     return pathname === route;
   });
+  if (
+    !isActiveChangePassPageCookie &&
+    pathname.startsWith('/auth/unlock/change')
+  ) {
+    return NextResponse.redirect(new URL('/auth/login', request.url));
+  }
   if ((accessToken || refreshToken) && pathname === '/') {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
