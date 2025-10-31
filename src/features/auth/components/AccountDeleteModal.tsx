@@ -9,13 +9,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { TAccountDeleteModal } from '../types/auth-types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useMutation } from '@tanstack/react-query';
+import { DeleteAccountService } from '../service/auth-service';
+import { useRouter } from 'next/navigation';
 
 const AccountDeleteModal: FC<TAccountDeleteModal> = ({
   open,
@@ -24,23 +27,79 @@ const AccountDeleteModal: FC<TAccountDeleteModal> = ({
   const [confirmText, setConfirmText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const navigate = useRouter();
 
   const isConfirmValid = confirmText === 'CONFIRM';
-
-  const handleDelete = async () => {
+  const { isPending, mutate } = useMutation({
+    mutationFn: DeleteAccountService,
+    onSuccess: (data) => {
+      setIsDeleting(false);
+      setShowSuccess(true);
+      setShowError(false);
+      setTimeout(() => {
+        navigate.push('/');
+      }, 1000);
+    },
+    onError: (error) => {
+      setIsDeleting(false);
+      setShowError(true);
+      setShowSuccess(false);
+    },
+  });
+  const handleRetry = () => {
+    setShowError(false);
+    setConfirmText('');
+  };
+  const handleDelete = () => {
     setIsDeleting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsDeleting(false);
-    setShowSuccess(true);
+    mutate();
   };
 
   const handleClose = () => {
     setConfirmText('');
     setShowSuccess(false);
     setOpenChange(false);
+    setShowError(false);
   };
+  useEffect(() => {
+    if (isPending) {
+      setIsDeleting(true);
+    }
+  }, [isPending]);
+  if (showError) {
+    return (
+      <Dialog modal={true} open={open} onOpenChange={handleClose}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+              <XCircle className="w-6 h-6 text-red-600" />
+            </div>
+            <DialogTitle className="text-center">Deletion Failed</DialogTitle>
+            <DialogDescription className="text-center pt-2">
+              We couldn't delete your account at this time. Please try again
+              later.
+            </DialogDescription>
+          </DialogHeader>
 
+          <Alert variant="destructive" className="bg-red-50 border-red-200">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="text-sm">
+              An error occurred while processing your request. If this problem
+              persists, please contact support.
+            </AlertDescription>
+          </Alert>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={handleClose}>
+              Close
+            </Button>
+            <Button onClick={handleRetry}>Try Again</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
   if (showSuccess) {
     return (
       <Dialog modal={true} open={open} onOpenChange={handleClose}>
@@ -110,13 +169,18 @@ const AccountDeleteModal: FC<TAccountDeleteModal> = ({
           />
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" disabled={isDeleting}>
+            <Button
+              className="cursor-pointer"
+              variant="outline"
+              disabled={isDeleting}
+            >
               Cancel
             </Button>
           </DialogClose>
           <Button
+            className="cursor-pointer"
             variant="destructive"
             onClick={handleDelete}
             disabled={!isConfirmValid || isDeleting}

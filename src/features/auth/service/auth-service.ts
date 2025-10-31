@@ -332,6 +332,17 @@ export const LogoutService = async () => {
   }
 };
 
+export const DeleteAccountService = async () => {
+  try {
+    await axiosClient.delete('/me');
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error('Check your internet connection or try again later.');
+  }
+};
+
 export const ClearSessionService = async (
   payload: TClearSessionServicePayload
 ) => {

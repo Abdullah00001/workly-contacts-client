@@ -71,7 +71,7 @@ const UpdateProfileAvatarModal: FC<TUpdateProfileAvatarModalProps> = ({
     },
   });
   const isLoading = isChanging || isRemoving;
-  const hasAvatar = Boolean(avatar?.url);
+  const hasAvatar = Boolean(avatar?.url && avatar?.publicId);
   const avatarUrl =
     avatar?.url || `https://api.dicebear.com/7.x/initials/svg?seed=${name}`;
 
@@ -123,8 +123,8 @@ const UpdateProfileAvatarModal: FC<TUpdateProfileAvatarModalProps> = ({
           <div className="flex w-full gap-3">
             <Button
               onClick={handleEditClick}
-              disabled={isLoading || !hasAvatar}
-              className="flex-1"
+              disabled={isLoading }
+              className={`flex-1 ${isLoading  ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
               variant="default"
             >
               <Edit className="size-4" />
@@ -135,7 +135,7 @@ const UpdateProfileAvatarModal: FC<TUpdateProfileAvatarModalProps> = ({
               onClick={handleRemoveClick}
               disabled={isLoading || !hasAvatar}
               variant="destructive"
-              className="flex-1"
+              className={`flex-1 ${isLoading || !hasAvatar ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
             >
               <Trash2 className="size-4" />
               Remove
