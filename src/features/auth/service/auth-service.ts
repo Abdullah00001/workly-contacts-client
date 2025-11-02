@@ -90,6 +90,16 @@ export const AccountVerify = async (payload: TAccountVerifyPayload) => {
   }
 };
 
+export const CreatePassword = async (payload: { password: string }) => {
+  try {
+    const response = await axiosClient.post('/auth/create-password', payload);
+    return response?.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred in Create Password Service');
+  }
+};
+
 export const ResendOtp = async () => {
   try {
     const response = await fetch(
