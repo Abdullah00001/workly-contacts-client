@@ -28,6 +28,9 @@ export default async function middleware(request: NextRequest) {
     }
     return pathname === route;
   });
+  if (pathname === '/auth/create-password' && !createPasswordPageToken) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
   if (
     createPasswordPageToken &&
     accessToken &&
