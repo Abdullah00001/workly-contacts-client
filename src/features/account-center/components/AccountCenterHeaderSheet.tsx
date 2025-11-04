@@ -36,6 +36,7 @@ const AccountCenterHeaderSheet: FC<TAccountCenterHeaderSheetProps> = ({
             const Icon = icon;
             return (
               <AccountCenterHeaderNavButton
+                key={href}
                 href={href}
                 icon={Icon}
                 label={label}

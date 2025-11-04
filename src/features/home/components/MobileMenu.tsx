@@ -1,68 +1,63 @@
 'use client';
-import { FC, useState } from 'react';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
-import Link from 'next/link';
 
-const MobileMenu: FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+import { useState } from 'react';
+import Link from 'next/link';
+import { Menu, X } from 'lucide-react';
+
+export default function MobileMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-      <SheetTrigger asChild className="md:hidden">
-        <Button variant="ghost" size="icon">
-          <Menu className="w-10 h-10" />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-        <VisuallyHidden>
-          <SheetTitle>Navigation Menu</SheetTitle>
-        </VisuallyHidden>
-        <VisuallyHidden>
-          <SheetDescription>
-            Mobile navigation menu with login and signup options
-          </SheetDescription>
-        </VisuallyHidden>
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
-        </div>
-        <nav className="flex flex-col p-4 space-y-4">
-          <Button
-            variant="outline"
-            className="w-full justify-center h-12 text-base font-medium border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition-colors bg-transparent"
-            onClick={() => setMobileMenuOpen(false)}
-          >
+    <div className="md:hidden">
+      <button
+        onClick={toggleMenu}
+        className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        aria-label="Toggle menu"
+        aria-expanded={isOpen}
+      >
+        {isOpen ? (
+          <X className="w-6 h-6 text-gray-900" />
+        ) : (
+          <Menu className="w-6 h-6 text-gray-900" />
+        )}
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-16 right-4 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-48 animate-in fade-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col p-2 space-y-1">
             <Link
-              href={'/auth/login'}
-              className="w-full h-full flex items-center justify-center"
+              href="/auth/login"
+              onClick={closeMenu}
+              className="px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors text-sm font-medium block"
             >
               Login
             </Link>
-          </Button>
-
-          <Button
-            className="w-full justify-center h-12 text-base font-medium bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transition-all"
-            onClick={() => setMobileMenuOpen(false)}
-          >
             <Link
-              href={'/auth/signup'}
-              className="w-full h-full flex items-center justify-center"
+              href="/auth/signup"
+              onClick={closeMenu}
+              className="px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md hover:from-blue-700 hover:to-indigo-700 transition-colors text-sm font-medium block"
             >
               Sign Up
             </Link>
-          </Button>
-        </nav>
-      </SheetContent>
-    </Sheet>
-  );
-};
+          </nav>
+        </div>
+      )}
 
-export default MobileMenu;
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+      )}
+    </div>
+  );
+}
