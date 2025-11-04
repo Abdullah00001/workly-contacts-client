@@ -27,14 +27,16 @@ const DashboardHeader: FC = () => {
     <header>
       {/* Mobile */}
       <div className="block md:hidden lg:hidden w-full p-1">
-        <div className="flex items-center justify-between relative">
-          <motion.div
-            animate={{ opacity: isSearchExpanded ? 0 : 1 }}
-            transition={{ duration: 0.2 }}
-            className="flex-shrink-0"
-          >
-            <Hamburger />
-          </motion.div>
+        <div className="flex items-center justify-between relative min-h-[40px]">
+          <AnimatePresence>
+            <motion.div
+              animate={{ opacity: isSearchExpanded ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+              className="flex-shrink-0"
+            >
+              <Hamburger />
+            </motion.div>
+          </AnimatePresence>
           <AnimatePresence>
             {isSearchExpanded && (
               <motion.div
@@ -61,29 +63,33 @@ const DashboardHeader: FC = () => {
               </motion.div>
             )}
           </AnimatePresence>
-          <motion.div
-            animate={{ opacity: isSearchExpanded ? 0 : 1 }}
-            transition={{ duration: 0.2 }}
-            className="flex justify-end items-center gap-3 flex-shrink-0"
-          >
-            <motion.div
-              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer"
-              onClick={handleSearchToggle}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.1 }}
-            >
-              <Search className="text-[#5f6368]" />
-            </motion.div>
-            <div
-              onClick={() => {
-                handleNavigation('/help');
-              }}
-              className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer"
-            >
-              <CircleQuestionMark className="text-[#5f6368]" />
-            </div>
-            <NavUser />
-          </motion.div>
+          <AnimatePresence>
+            {!isSearchExpanded && (
+              <motion.div
+                animate={{ opacity: isSearchExpanded ? 0 : 1 }}
+                transition={{ duration: 0.2 }}
+                className="flex justify-end items-center gap-3 flex-shrink-0"
+              >
+                <motion.div
+                  className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer"
+                  onClick={handleSearchToggle}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.1 }}
+                >
+                  <Search className="text-[#5f6368]" />
+                </motion.div>
+                <div
+                  onClick={() => {
+                    handleNavigation('/help');
+                  }}
+                  className="w-[32px] h-[32px] flex items-center justify-center cursor-pointer"
+                >
+                  <CircleQuestionMark className="text-[#5f6368]" />
+                </div>
+                <NavUser />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
       {/* Tablet */}
