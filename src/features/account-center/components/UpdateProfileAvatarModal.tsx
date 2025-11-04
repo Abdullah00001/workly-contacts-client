@@ -123,8 +123,8 @@ const UpdateProfileAvatarModal: FC<TUpdateProfileAvatarModalProps> = ({
           <div className="flex w-full gap-3">
             <Button
               onClick={handleEditClick}
-              disabled={isLoading }
-              className={`flex-1 ${isLoading  ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+              disabled={isLoading}
+              className={`flex-1 ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
               variant="default"
             >
               <Edit className="size-4" />

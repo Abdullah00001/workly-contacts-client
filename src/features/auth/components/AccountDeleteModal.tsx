@@ -77,7 +77,7 @@ const AccountDeleteModal: FC<TAccountDeleteModal> = ({
             </div>
             <DialogTitle className="text-center">Deletion Failed</DialogTitle>
             <DialogDescription className="text-center pt-2">
-              We couldn't delete your account at this time. Please try again
+              We couldn{`'`}t delete your account at this time. Please try again
               later.
             </DialogDescription>
           </DialogHeader>
