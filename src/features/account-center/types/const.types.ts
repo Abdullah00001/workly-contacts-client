@@ -29,7 +29,7 @@ export type TAccountCenterHeaderSheetProps = {
 export const AccountCenterHeaderNavItems = [
   {
     icon: Home,
-    label: 'Home',
+    label: 'Dashboard',
     href: '/',
   },
   {
