@@ -34,7 +34,7 @@ const ContactInfoSection: FC<TContactInfoProps> = ({ email, phone }) => {
                 <h6 className="text-xs font-medium min-[620px]:w-[50%]">
                   Email
                 </h6>
-                <h5 className="text-[16px] font-normal mt-1 min-[620px]:w-[50%]">
+                <h5 className="text-[16px] break-all text-wrap font-normal mt-1 min-[620px]:w-[50%]">
                   {email}
                 </h5>
               </div>

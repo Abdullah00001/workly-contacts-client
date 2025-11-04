@@ -15,6 +15,7 @@ export default async function middleware(request: NextRequest) {
   const actvToken = request.cookies.get('actv_token')?.value;
   const accessToken = request.cookies.get('accesstoken')?.value;
   const refreshToken = request.cookies.get('refreshtoken')?.value;
+  const createPasswordPageToken = request.cookies.get('pass_rqrd')?.value;
   const clearSessionToken = request.cookies.get('__clear_device')?.value;
   const r_stp1 = request.cookies.get('r_stp1')?.value;
   const r_stp2 = request.cookies.get('r_stp2')?.value;
@@ -29,16 +30,26 @@ export default async function middleware(request: NextRequest) {
     }
     return pathname === route;
   });
+  if (pathname === '/auth/create-password' && !createPasswordPageToken) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
   if (
-    !isActiveChangePassPageCookie &&
-    pathname.startsWith('/auth/unlock/change')
+    createPasswordPageToken &&
+    accessToken &&
+    refreshToken &&
+    pathname !== '/auth/create-password'
   ) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return NextResponse.redirect(new URL('/auth/create-password', request.url));
   }
   if ((accessToken || refreshToken) && pathname === '/') {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
-  if (isAuthPages && (accessToken || refreshToken)) {
+
+  if (
+    isAuthPages &&
+    (accessToken || refreshToken) &&
+    pathname !== '/auth/create-password'
+  ) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   if (actvToken && pathname !== '/auth/verify') {

@@ -90,6 +90,16 @@ export const AccountVerify = async (payload: TAccountVerifyPayload) => {
   }
 };
 
+export const CreatePassword = async (payload: { password: string }) => {
+  try {
+    const response = await axiosClient.post('/auth/create-password', payload);
+    return response?.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) throw error;
+    throw new Error('Unknown error occurred in Create Password Service');
+  }
+};
+
 export const ResendOtp = async () => {
   try {
     const response = await fetch(
@@ -324,6 +334,17 @@ export const LoginService = async (payload: TLoginPayload) => {
 export const LogoutService = async () => {
   try {
     await axiosClient.post('/auth/logout');
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new Error('Check your internet connection or try again later.');
+  }
+};
+
+export const DeleteAccountService = async () => {
+  try {
+    await axiosClient.delete('/me');
   } catch (error) {
     if (error instanceof AxiosError) {
       throw error;
