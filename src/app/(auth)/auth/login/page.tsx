@@ -84,15 +84,15 @@ export default function Login() {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
-        <div className="w-full max-w-md space-y-8">
-          <div className="lg:hidden text-center mb-8">
-            <div className="flex items-center justify-center space-x-3 cursor-pointer group transition-all duration-300 hover:scale-105">
+      <div className="w-full lg:w-1/2 flex flex-col bg-white">
+        <div className="lg:hidden px-6 py-4 border-b border-gray-100">
+          <Link href={'/'}>
+            <div className="flex items-center space-x-3 cursor-pointer group">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
                 <Users className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   Workly Contacts
                 </h1>
                 <p className="text-xs text-gray-600 -mt-1">
@@ -100,26 +100,29 @@ export default function Login() {
                 </p>
               </div>
             </div>
-          </div>
+          </Link>
+        </div>
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="w-full max-w-md space-y-8">
+            <div className="space-y-6">
+              <div className="space-y-2 text-center">
+                <h2 className="text-3xl text-foreground">Welcome Back</h2>
+                <p className="text-muted-foreground">
+                  Enter your email and password to access your account.
+                </p>
+              </div>
 
-          <div className="space-y-6">
-            <div className="space-y-2 text-center">
-              <h2 className="text-3xl text-foreground">Welcome Back</h2>
-              <p className="text-muted-foreground">
-                Enter your email and password to access your account.
-              </p>
-            </div>
-
-            <LoginForm />
-            <div className="text-center text-sm text-muted-foreground">
-              Don{`'`}t Have An Account?{' '}
-              <Link
-                href="/auth/signup"
-                className="text-sm hover:text-opacity-80 font-medium cursor-pointer underline-offset-4 hover:underline"
-                style={{ color: '#3F3FF3' }}
-              >
-                Register Now.
-              </Link>
+              <LoginForm />
+              <div className="text-center text-sm text-muted-foreground">
+                Don{`'`}t Have An Account?{' '}
+                <Link
+                  href="/auth/signup"
+                  className="text-sm hover:text-opacity-80 font-medium cursor-pointer underline-offset-4 hover:underline"
+                  style={{ color: '#3F3FF3' }}
+                >
+                  Register Now.
+                </Link>
+              </div>
             </div>
           </div>
         </div>

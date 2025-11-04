@@ -21,7 +21,7 @@ export default function NavigationGuardProvider({
     setModalOpen,
     setUnsavedChanges,
     reset,
-    cleanupFunction
+    cleanupFunction,
   } = navigationGuardStore();
 
   // --- ✅ Handle link clicks
@@ -109,7 +109,7 @@ export default function NavigationGuardProvider({
   }, [hasUnsavedChanges]);
 
   // --- ✅ Modal Handlers
-  const handleDiscard = async() => {
+  const handleDiscard = async () => {
     if (cleanupFunction) {
       try {
         await cleanupFunction();

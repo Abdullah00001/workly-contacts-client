@@ -12,6 +12,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { useRouter } from 'next/navigation';
+import AccountCenterHeaderNavButton from './AccountCenterHeaderNavButton';
 
 const AccountCenterHeaderSheet: FC<TAccountCenterHeaderSheetProps> = ({
   isSheetOpen,
@@ -31,17 +32,15 @@ const AccountCenterHeaderSheet: FC<TAccountCenterHeaderSheetProps> = ({
           </SheetDescription>
         </SheetHeader>
         <div className="mt-4 space-y-2">
-          {AccountCenterHeaderNavItems.map((item) => {
-            const Icon = item.icon;
+          {AccountCenterHeaderNavItems.map(({ href, icon, label }) => {
+            const Icon = icon;
             return (
-              <button
-                key={item.href}
-                onClick={() => router.push(item.href)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left"
-              >
-                <Icon className="w-5 h-5 !text-white" />
-                <span className="!text-white font-medium">{item.label}</span>
-              </button>
+              <AccountCenterHeaderNavButton
+                key={href}
+                href={href}
+                icon={Icon}
+                label={label}
+              />
             );
           })}
         </div>

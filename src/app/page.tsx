@@ -13,12 +13,16 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen w-full bg-white overflow-x-hidden">
       <Header />
-      <main id="main-content" className="focus:outline-none" tabIndex={-1}>
+      <main
+        id="main-content"
+        className="focus:outline-none w-full"
+        tabIndex={-1}
+      >
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 sm:py-16 lg:py-20">
-          <div className="max-w-6xl mx-auto px-4 text-center">
+        <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 sm:py-16 lg:py-20 w-full">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full text-center">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight text-balance">
                 Your Contacts,
@@ -27,15 +31,15 @@ export default function Home() {
                   Organized
                 </span>
               </h2>
-              <p className="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed text-pretty">
+              <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 leading-relaxed text-pretty px-4 sm:px-0">
                 The most intuitive contact management platform. Create,
                 organize, and manage your contacts with powerful features like
                 smart search, duplicate detection, and seamless import/export.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-lg px-8 py-4 h-auto"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 h-auto"
                 >
                   <Link href={'/auth/signup'}>
                     <div className="flex items-center justify-center">
@@ -47,7 +51,7 @@ export default function Home() {
 
                 <DemoButton />
               </div>
-              <p className="text-sm text-gray-500 mt-4">
+              <p className="text-xs sm:text-sm text-gray-500 mt-4 px-4 sm:px-0">
                 ✨ Free forever • No credit card required • 2-minute setup
               </p>
             </div>

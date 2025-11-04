@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Button } from '@/components/ui/button';
 
 import { Users } from 'lucide-react';
 import Link from 'next/link';
-import MobileMenu from '@/features/home/components/MobileMenu';
+import MobileMenu from './MobileMenu';
 
 const Header: FC = () => {
   return (

@@ -1,6 +1,6 @@
 import { Sparkles, Tag, User, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 const HowItsWork: FC = () => {
   const steps = [
@@ -40,28 +40,28 @@ const HowItsWork: FC = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 text-balance">
             How It Works
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto text-pretty">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto text-pretty px-2">
             Get started with Workly Contacts in just a few simple steps and
             transform how you manage your contacts.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {steps.map((step, index) => (
             <Card
               key={index}
               className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-4 sm:p-6 text-center">
                 <div className="relative mb-6">
                   <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <step.icon className="w-8 h-8 text-white" />
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   {step.description}
                 </p>
               </CardContent>
