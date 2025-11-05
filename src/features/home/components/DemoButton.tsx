@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const DemoButton = () => {
   const [showDemoModal, setShowDemoModal] = useState(false);
@@ -30,15 +30,18 @@ const DemoButton = () => {
               </Button>
             </div>
 
-            <div className="p-0">
-              <iframe
-                src="https://drive.google.com/file/d/1qrP96OMzZSkrD-fjp2VO_JQffxrd48cE/preview"
-                width="100%"
-                height="500"
-                allow="autoplay"
-                className="w-full"
-                title="Workly Contacts Demo Video"
-              />
+            <div className="p-0 w-full">
+              <div
+                className="relative w-full"
+                style={{ paddingBottom: '56.25%' }}
+              >
+                <iframe
+                  src="https://drive.google.com/file/d/1qrP96OMzZSkrD-fjp2VO_JQffxrd48cE/preview"
+                  className="absolute inset-0 w-full h-full"
+                  allow="autoplay"
+                  title="Workly Contacts Demo Video"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { googleSans, googleSansText, productSans } from './fonts';
 import './globals.css';
+import ReactQueryProvider from '@/providers/ReactQueryProvider';
+import { Toaster } from '@/components/ui/sonner';
+import NavigationGuardProvider from '@/providers/NavigationGuardProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -104,10 +108,45 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Material Symbols */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"
+          rel="stylesheet"
+        />
+        {/* Material Icons */}
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Icons+Round"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${googleSans.variable} ${googleSansText.variable} ${productSans.variable} antialiased`}
       >
-        {children}
+        <NavigationGuardProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </NavigationGuardProvider>
+        <Toaster closeButton position="top-center" />
       </body>
     </html>
   );

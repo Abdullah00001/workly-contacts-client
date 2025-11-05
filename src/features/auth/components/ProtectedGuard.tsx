@@ -1,0 +1,35 @@
+'use client';
+import TLayout from '@/types/layout.types';
+import { FC, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { checkAccessAndRefresh } from '@/features/auth/service/auth-service';
+import { AuthMessages } from '@/features/auth/types/auth-types';
+import ServerErrorUi from '@/components/common/ServerErrorUi';
+
+const ProtectedGuard: FC<TLayout> = ({ children }) => {
+  const router = useRouter();
+  const [status, setStatus] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    let redirected = false;
+    (async () => {
+      const result = await checkAccessAndRefresh();
+      if (result === AuthMessages.SESSION_EXPIRED && !redirected) {
+        redirected = true;
+        window.location.href = '/';
+      }
+      if (result === AuthMessages.UNAUTHENTICATED && !redirected) {
+        redirected = true;
+        window.location.href = '/';
+      } else {
+        setStatus(result);
+      }
+      setLoading(false);
+    })();
+  }, [router]);
+  if (!loading && status === AuthMessages.SERVER_ERROR)
+    return <ServerErrorUi />;
+  return <>{children}</>;
+};
+
+export default ProtectedGuard;

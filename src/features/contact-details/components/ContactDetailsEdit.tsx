@@ -1,0 +1,91 @@
+'use client';
+
+import { Suspense, lazy, useEffect, useState, type FC } from 'react';
+import { TContactDetailsEditProps } from '../types/type';
+import { TUpdateContactDetails } from '@/features/update-contact/types/type';
+import UpdateContactHeader from '@/features/update-contact/components/UpdateContactHeader';
+import UpdateContactFormSkeleton from '@/features/update-contact/components/UpdateContactFormSkeleton';
+const UpdateContactForm = lazy(
+  () => import('@/features/update-contact/components/UpdateContactForm')
+);
+
+const ContactDetailsEdit: FC<TContactDetailsEditProps> = ({ details }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [payload, setPayload] = useState<TUpdateContactDetails>({
+    avatar: { publicId: null, url: null },
+    birthday: {
+      day: null,
+      month: '',
+      year: null,
+    },
+    email: '',
+    firstName: '',
+    lastName: '',
+    location: {
+      city: null,
+      country: null,
+      postCode: null,
+      streetAddress: null,
+    },
+    phone: {
+      countryCode: null,
+      number: null,
+    },
+    worksAt: {
+      companyName: null,
+      jobTitle: null,
+    },
+  });
+  const [newImage, setNewImage] = useState<File | null>(null);
+  useEffect(() => {
+    setIsLoading(true);
+    const {
+      avatar,
+      birthday,
+      email,
+      firstName,
+      lastName,
+      location,
+      phone,
+      worksAt,
+    } = details;
+    setPayload({
+      avatar,
+      birthday,
+      email,
+      firstName,
+      lastName,
+      location,
+      phone,
+      worksAt,
+    });
+    setTimeout(() => setIsLoading(false), 100);
+  }, [details]);
+  return (
+    <div className="h-full w-full">
+      <div className="create-contact-header-width-for-large-screen w-full h-full">
+        <UpdateContactHeader
+          setNewImage={setNewImage}
+          setPayload={setPayload}
+          newImage={newImage}
+          details={details}
+          payload={payload}
+        />
+        <Suspense fallback={<UpdateContactFormSkeleton />}>
+          {isLoading ? (
+            <UpdateContactFormSkeleton />
+          ) : (
+            <UpdateContactForm
+              newImage={newImage}
+              setNewImage={setNewImage}
+              payload={payload}
+              setPayload={setPayload}
+            />
+          )}
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
+export default ContactDetailsEdit;

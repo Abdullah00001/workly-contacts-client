@@ -1,14 +1,45 @@
+import Contacts from '@/features/dashboard/components/Contacts';
+import { type Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+  description:
+    'Overview of your Workly Contacts account. Access recent activity, favorite contacts, and manage your contacts efficiently from one place.',
+  keywords: [
+    'Workly Contacts dashboard',
+    'contacts overview',
+    'manage contacts',
+    'recent activity',
+    'favorite contacts',
+    'contact management',
+    'Workly Contacts',
+  ],
+  openGraph: {
+    title: 'Dashboard | Workly Contacts',
+    description:
+      'Access your recent activity, favorite contacts, and manage all your contacts from the dashboard.',
+    url: 'https://contacts.workly.ink/dashboard',
+    siteName: 'Workly Contacts',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Dashboard | Workly Contacts',
+    description:
+      'Get a complete overview of your contacts and recent activity with Workly Contacts dashboard.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
 export default function page() {
   return (
-    <div>
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        {Array.from({ length: 24 }).map((_, index) => (
-          <div
-            key={index}
-            className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
-          />
-        ))}
+    <section>
+      <div className="px-4 mt-4">
+        <Contacts />
       </div>
-    </div>
+    </section>
   );
 }

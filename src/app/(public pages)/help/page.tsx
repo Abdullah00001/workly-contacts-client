@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import {
-  ArrowLeft,
   HelpCircle,
   Users,
   Search,
@@ -14,7 +13,7 @@ import {
   Mail,
   ExternalLink,
 } from 'lucide-react';
-import Link from 'next/link';
+import Breadcrumb from '@/components/common/Breadcrumb';
 
 export const metadata: Metadata = {
   title: 'Help Center',
@@ -306,19 +305,7 @@ export default function Help() {
   return (
     <main>
       {/* Breadcrumb */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
-          <Link
-            href="/"
-            className="flex items-center space-x-1 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
-          </Link>
-          <span className="text-gray-400">/</span>
-          <span className="text-gray-800 font-medium">Help Center</span>
-        </div>
-      </div>
+      <Breadcrumb />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">

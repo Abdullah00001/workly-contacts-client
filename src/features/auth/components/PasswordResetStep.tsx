@@ -5,45 +5,42 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff } from 'lucide-react';
+import { getPasswordStrength } from '@/lib/validation/auth-validation';
+import type {
+  TPasswordResetStepProps,
+  TResetPasswordPayload,
+} from '@/features/auth/types/recover-type';
+import { useMutation } from '@tanstack/react-query';
+import { ResetPassword } from '../service/recover-service';
+import { toast } from 'sonner';
 
-interface PasswordResetStepProps {
-  onReset: () => void;
-}
-
-export default function PasswordResetStep({ onReset }: PasswordResetStepProps) {
+export default function PasswordResetStep({
+  onNavigate,
+}: TPasswordResetStepProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Password strength validation
-  const getPasswordStrength = (password: string) => {
-    let score = 0;
-    const checks = {
-      length: password.length >= 8,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /\d/.test(password),
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    };
-
-    Object.values(checks).forEach((check) => check && score++);
-
-    return {
-      score,
-      checks,
-      strength: score < 2 ? 'weak' : score < 4 ? 'medium' : 'strong',
-    };
-  };
-
   const passwordStrength = getPasswordStrength(password);
   const passwordsMatch = password === confirmPassword && confirmPassword !== '';
   const canProceed = password && passwordsMatch && passwordStrength.score >= 3;
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: TResetPasswordPayload) =>
+      await ResetPassword(payload),
+    onSuccess: (data) => {
+      toast('Password change successful!', { closeButton: false });
+      setTimeout(() => {
+        onNavigate('success');
+      }, 1500);
+    },
+    onError: (error) => {
+      toast(error.message, { closeButton: false });
+    },
+  });
   const handleResetPassword = () => {
-    if (canProceed) {
-      onReset();
-    }
+    if (!canProceed) return;
+    mutate({ password });
   };
 
   return (
@@ -89,7 +86,6 @@ export default function PasswordResetStep({ onReset }: PasswordResetStepProps) {
             </Button>
           </div>
 
-          {/* Password Strength Indicator */}
           {password && (
             <div className="space-y-2">
               <div className="flex space-x-1">
@@ -160,6 +156,7 @@ export default function PasswordResetStep({ onReset }: PasswordResetStepProps) {
               placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleResetPassword()}
               className={`h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#3F3FF3] ${
                 confirmPassword && !passwordsMatch ? 'border-red-500' : ''
               }`}
@@ -189,7 +186,7 @@ export default function PasswordResetStep({ onReset }: PasswordResetStepProps) {
           className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer disabled:opacity-50"
           style={{ backgroundColor: '#3F3FF3' }}
         >
-          Reset Password
+          {isPending ? 'Processing...' : 'Reset Password'}
         </Button>
       </div>
     </div>
