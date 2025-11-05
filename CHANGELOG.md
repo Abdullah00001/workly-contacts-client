@@ -4,12 +4,41 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.0] - 2025-11-05
+
+### 🚀 New Features
+
+- **OAuth Login:**
+  - Added Google account login for easier signup and sign-in.
+- **Account Center / Personal Info Page:**
+  - Users can view and update personal information in one place.
+- **Account Deletion:**
+  - Users can delete their account; backend updated for full compatibility with new features.
+
+### 🛠️ Fixes & Improvements
+
+- **Security & Password Features:**
+  - Tracked user activities like login success, suspicious activity, password changes, and account status updates.
+  - Account overview now shows password last changed, last login, account creation date, and status.
+
+- **Multi-Device Session Management:**
+  - Up to 3 active device sessions supported.
+  - Auto-cleanup of expired sessions to prevent conflicts.
+
+- **OAuth Signup Edge Cases:**
+  - Fixed cases where users closed tab/browser or cleared data before creating password.
+  - Users cannot bypass password creation within 7 days.
+
+- **UI/UX Updates:**
+  - Improved responsiveness and layout of account-related pages for better experience.
+
+---
+
 ## [v1.4.0] - 2025-07-16
 
 ### 🛠️ Fixes & Improvements
 
 - **Create Contact:**
-
   - Fixed image uploading UI glitches and discard modal behavior for smoother user experience.
   - Updated the edit image modal text for better clarity and removed unnecessary code.
 
@@ -47,7 +76,6 @@ This beta release introduces new features and enhancements that improve user exp
 ### ✨ Features
 
 - **[Feature 1 Title]**
-
   - Description of feature 1 with key highlights and backend/frontend impact
 
 - **[Feature 2 Title]**
