@@ -4,7 +4,8 @@
 ![TailwindCSS](https://img.shields.io/badge/UI-TailwindCSS-06B6D4?style=flat-square&logo=tailwindcss)
 ![shadcn/ui](https://img.shields.io/badge/UI-shadcn%2Fui-black?style=flat-square)
 ![Zod](https://img.shields.io/badge/Validation-Zod-3E67B1?style=flat-square)
-![Cloudinary](https://img.shields.io/badge/Media-Cloudinary-3448C5?style=flat-square&logo=cloudinary)
+![Zustand](https://img.shields.io/badge/State-Zustand-orange?style=flat-square)
+![Axios](https://img.shields.io/badge/HTTP-Axios-5A29E4?style=flat-square)
 ![Framer Motion](https://img.shields.io/badge/Animation-Framer_Motion-EF008F?style=flat-square&logo=framer)
 ![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)
@@ -134,8 +135,8 @@ The application seamlessly connects with a scalable Node.js backend to deliver a
 
 1. **Clone the repository**
     ```bash
-    git clone https://github.com/yourusername/workly-contact.git
-    cd workly-contact
+    git clone https://github.com/Abdullah00001/workly-contacts-client.git
+    cd workly-contacts-client
     ```
 
 2. **Install dependencies**
