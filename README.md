@@ -1,220 +1,369 @@
-# 📇 Amar Contact – Client
+![Node.js](https://img.shields.io/badge/Node.js-18.x-green?style=flat-square&logo=node.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)
+![Next.js](https://img.shields.io/badge/Frontend-Next.js-000000?style=flat-square&logo=nextdotjs)
+![TailwindCSS](https://img.shields.io/badge/UI-TailwindCSS-06B6D4?style=flat-square&logo=tailwindcss)
+![shadcn/ui](https://img.shields.io/badge/UI-shadcn%2Fui-black?style=flat-square)
+![Zod](https://img.shields.io/badge/Validation-Zod-3E67B1?style=flat-square)
+![Cloudinary](https://img.shields.io/badge/Media-Cloudinary-3448C5?style=flat-square&logo=cloudinary)
+![Framer Motion](https://img.shields.io/badge/Animation-Framer_Motion-EF008F?style=flat-square&logo=framer)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)
 
-**Amar Contact** is a feature-rich, user-friendly contact management web application built to help users securely store, manage, and interact with their personal or professional contact lists. This is the **client-side (frontend)** codebase built with modern web technologies and connected to a scalable backend.
+
+# Workly Contacts
+
+🔗 **Live Demo:** [https://contacts.workly.ink](https://contacts.workly.ink)
+
+
+A modern, production-grade contact management platform — inspired by Google Contacts — built with Next.js 15 and TypeScript.
+Designed for reliability, security, and exceptional user experience, Workly Contacts demonstrates enterprise-ready frontend development practices with a focus on performance and accessibility.
+
+## Description
+
+Workly Contacts is a full-featured frontend application for a modern contact management platform.
+It provides an intuitive interface for secure authentication, comprehensive profile and session management, real-time activity tracking, and complete contact lifecycle operations.
+Built with Next.js 15, TypeScript, and modern React patterns, it follows component-driven architecture principles, implements state management with Zustand, and integrates advanced UI features including smooth animations, responsive design, and robust form validation.
+The application seamlessly connects with a scalable Node.js backend to deliver a fast, secure, and user-friendly contact management experience.RetryClaude can make mistakes. Please double-check responses.
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔐 **Authentication & Authorization** – Signup, Login, Logout
-- 👤 **Contact CRUD** – Create, view, update, delete contacts
-- 🗃️ **Bulk Operations** – Trash, recover, and permanently delete multiple contacts
-- 📌 **Favorites** – Mark important contacts
-- 🔍 **Search** – By name or email
-- 📅 **Birthday & Profile Details**
-- 🗑️ **Trash Management** – Recover or delete contacts forever
-- 💬 **Feedback Form** – User feedback submission
-- 🛡️ **Static Legal Pages** – Privacy Policy, Terms of Service
-- 🎯 **Landing Page** – Shown to unauthenticated users
-- 📱 **Fully Responsive** – Mobile & tablet-friendly
+### Authentication & Authorization
+- **Local Authentication**: Secure login and signup with email and password
+- **OAuth Integration**: Sign in seamlessly using Google OAuth
+- **Password Management**: Reset password via secure forgot password flow with email verification
+- **Multi-Device Sessions**: Support for up to 3 concurrent device logins
+- **Hybrid Authentication System**: Combination of session-based and token-based authentication with token rotation
+- **Access & Refresh Tokens**: Automatic token rotation for enhanced security
+- **Session Management**: Token revocation and session blacklisting capabilities
 
----
+### Account Security
+- **Robust Account Center**: Centralized hub for managing all account settings and security features
+- **Security Dashboard**: Comprehensive overview of account security status including:
+  - Last password change date
+  - Last login timestamp and location
+  - Last login device information
+  - Account creation date
+  - Active sessions monitoring
+  - Recent security activity log
+- **Advanced Threat Protection**: Multi-layer security system to prevent bot attacks and unauthorized access:
+  - Email notifications after 3 failed login attempts
+  - reCAPTCHA challenge activated after 3 failed attempts
+  - Account lockout after 9 failed login attempts
+  - Secure account unlock via password reset
+  - Automatic account removal if unlock is not completed
+- **Activity Monitoring**: Track and review suspicious activities with detailed activity logs
+- **Session Management**: View and manage active sessions across all logged-in devices with remote logout capability
+- **Password Security**: Change password using old password verification
+- **Account Deletion**: Schedule account deletion with 7-day grace period before permanent removal
+
+### Personal Information Management
+- **Profile Management**: View and edit personal information including:
+  - Basic information (name, bio, etc.)
+  - Profile avatar
+  - Contact information
+  - Multiple addresses
+- **Password & Security Page**: Dedicated section for managing security settings and monitoring account safety
+
+### Contact Management
+- **CRUD Operations**: Create, read, update, and delete contacts with ease
+- **Trash Management**: Soft delete contacts with 28-day retention and recovery options
+- **Permanent Deletion**: Permanently remove contacts from trash
+- **Favorites**: Mark important contacts as favorites for quick access
+- **Labels & Organization**: Create custom labels to organize contacts efficiently
+- **Label Management**: Create, update, and delete labels; manage contacts within specific labels
+- **Bulk Operations**: Perform actions on multiple contacts simultaneously
+- **Advanced Search**: Search contacts by name, email, or phone number
+- **Unsaved Changes Protection**: Discard feature prevents data loss from accidental browser or tab closure
+
+### Import & Export
+- **Export Contacts**: Export single or multiple contacts in multiple formats:
+  - JSON
+  - CSV
+  - vCard
+- **Import Contacts**: Import contacts using CSV or vCard files with standardized templates
+- **Print Functionality**: Print contact information directly from the dashboard
+
+### Rate Limiting & Security Controls
+- **Forgot Password Rate Limiting**: Prevents abuse of password reset functionality
+- **OTP Resend with Exponential Backoff**: Smart retry mechanism for OTP verification in both signup and password reset flows
+- **Unverified Account Cleanup**: Automatic removal of unverified accounts after 24 hours
+- **Automatic Data Cleanup**: Trash and activity logs automatically deleted after 28 days
+- **OAuth Password Enforcement**: Users signing up via OAuth must set a password before accessing the system
+
+### User Experience
+- **Responsive Design**: Fully responsive UI that works seamlessly across all devices
+- **User Security-Centric**: Every feature designed with user security as the top priority
+- **Reliable & Secure**: Comprehensive security measures to protect user data and accounts
+- **Email Notifications**: Stay informed about account activities and security events
 
 ## 🛠️ Tech Stack
 
-- **React 19** with TypeScript
-- **React Router v7** – For navigation
-- **Tailwind CSS v4** – For styling
-- **Axios** – For API communication
-- **TanStack Query** – For server state management
-- **Framer Motion** – For animations
-- **Lucide React** & **React Icons** – For icons
-- **Zod** – For form validation
-- **React Toastify** – For notifications
-- **React Spinners** – For loading states
-- **Cloudinary** – For image management
-- **Crypto-JS** – For encryption
-- **JWT Decode** – For token handling
-- **JS Cookie** – For cookie management
+### Core Framework
+- **Next.js 15.5** - React framework for production with server-side rendering and static site generation
+- **TypeScript** - Type-safe JavaScript for enhanced developer experience and code reliability
 
-# 📦 Getting Started
+### UI & Styling
+- **Tailwind CSS** - Utility-first CSS framework for rapid UI development
+- **shadcn/ui** - Re-usable component library built with Radix UI and Tailwind CSS
+- **Framer Motion** - Production-ready animation library for React
+- **GSAP** - Professional-grade animation platform for complex animations
 
-## Prerequisites
+### Icons
+- **Lucide React** - Beautiful and consistent icon toolkit
+- **React Icons** - Popular icon library with multiple icon sets
+- **Google Material Icons** - Google's official material design icons
 
-- Node.js >= 18
-- npm or yarn
+### State Management & Validation
+- **Zustand** - Lightweight and flexible state management solution
+- **Zod** - TypeScript-first schema validation library
 
-## Installation
+### API & Security
+- **Axios** - Promise-based HTTP client for API requests
+- **reCAPTCHA** - Google's bot protection service for enhanced security
 
+## 📦 Installation
+
+### Prerequisites
+- Node.js 18.x or higher
+- npm or yarn package manager
+- Git
+
+### Steps
+
+1. **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/workly-contact.git
+    cd workly-contact
+    ```
+
+2. **Install dependencies**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+3. **Set up the backend server**
+   
+   Clone and set up the backend repository:
+    ```bash
+    git clone https://github.com/Abdullah00001/workly-contacts-server.git
+    cd workly-contacts-server
+    ```
+   
+   Follow the backend installation instructions in the [server repository](https://github.com/Abdullah00001/workly-contacts-server)
+
+4. **Set up environment variables**
+   
+   Create a `.env.local` file in the root directory and add the following variables:
+    ```env
+    NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
+    API_BASE_URL=http://localhost:5000/api/v1
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
+    ```
+
+5. **Start the development server**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+6. **Open your browser**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Build for Production
 ```bash
-git clone https://github.com/your-username/amar-contact-client.git
-cd amar-contact-client
-npm install
+npm run build
+npm run start
+# or
+yarn build
+yarn start
 ```
 
-## 🚀 Run Locally
+> **Note:** Make sure the backend server is running before starting the frontend application.
 
-```bash
-npm run dev
-```
+## 🎯 Scripts
 
-The app will be available at [http://localhost:5173/](http://localhost:5173/) (or the Vite port you use).
-
-## 🌐 Environment Variables
-
-Create a `.env` file in the root and define:
-
-```env
-# Base URL for the backend API (development)
-VITE_API_BASE_URL=http://localhost:5000/api/v1
-
-# Uncomment and set this to your production backend URL when deploying
-# VITE_API_BASE_URL=https://your-production-backend.com/api/v1
-
-# OTP length used in the app (e.g., 4, 6)
-VITE_OTP_LENGTH=6
-
-# Very useful encryption (VU_E) secret key for CryptoJS (must match backend)
-VITE_VU_E_SECRET=your-secret-key
-```
+| Script                | Description                      |
+| --------------------- | -------------------------------- |
+| `npm run dev`         | Start development server         |
+| `npm run build`       | Build for production             |
+| `npm run preview`     | Preview production build         |
+| `npm run lint`        | Run ESLint                       |
+| `npm run lint:fix`    | Fix ESLint issues                |
+| `npm run format`      | Format code with Prettier        |
+| `npm run type-check`  | Run TypeScript type checking     |
 
 ## 📂 Project Structure
 
-### `src/`
-
 ```
-src/
-├── apis/             # API service layer
-├── assets/           # Images and static files
-├── components/       # Reusable UI components
-├── configs/          # Configuration files
-├── constants/        # Application constants
-├── contexts/         # React context providers
-├── hooks/            # Custom React hooks
-├── interfaces/       # TypeScript interfaces
-├── layouts/          # Layout components
-├── pages/            # Page-level components
-├── providers/        # App providers
-├── routes/           # Route definitions
-├── schemas/          # Validation schemas
-├── services/         # Business logic services
-├── utils/            # Utility functions
-├── App.css           # Global styles
-├── App.tsx           # Main app entry point
-├── index.css         # Base styles
-└── main.tsx          # React app entry point
-```
-
-### `root/`
-
-```
-Root Files:
-├── .dockerignore
-├── .env              # Environment variables
-├── .eslintignore
-├── .gitignore
-├── .prettierrc
+.
+|
 ├── CHANGELOG.md
 ├── CODE_OF_CONDUCT.md
+├── components.json
 ├── CONTRIBUTING.md
-├── Dockerfile
+├── eslint.config.mjs
 ├── LICENSE
+├── next.config.ts
+├── next-env.d.ts
+├── package.json
+├── package-lock.json
+├── postcss.config.mjs
+├── public
 ├── README.md
 ├── SECURITY.md
-├── eslint.config.js
-├── index.html
-├── nginx.conf
-├── package-lock.json
-├── package.json
-├── tsconfig.app.json
+├── src
 ├── tsconfig.json
-├── tsconfig.node.json
-├── vercel.json
-└── vite.config.ts
+├── public/
+│   ├── fonts/
+│   └── videos/
+└── src/
+    ├── app/
+    │   ├── (account-center)/
+    │   │   └── accountscenter/
+    │   │       └── security/
+    │   ├── (activity)/
+    │   │   └── activity/
+    │   │       └── [objectId]/
+    │   ├── (auth)/
+    │   │   └── auth/
+    │   │       ├── clear-session/
+    │   │       ├── create-password/
+    │   │       ├── login/
+    │   │       ├── recover/
+    │   │       ├── signup/
+    │   │       ├── unlock/
+    │   │       │   └── change/
+    │   │       │       └── [uuid]/
+    │   │       └── verify/
+    │   ├── (dashboard)/
+    │   │   ├── dashboard
+    │   │   ├── favorite
+    │   │   ├── label/
+    │   │   │   └── [labelId]
+    │   │   ├── new/
+    │   │   ├── person/
+    │   │   │   └── [objectId]/
+    │   │   └── trash/
+    │   └── (public pages)/
+    │       ├── contact/
+    │       ├── help/
+    │       ├── privacy/
+    │       └── terms/
+    ├── components/
+    │   ├── common/
+    │   └── ui/
+    ├── consts/
+    ├── features/
+    │   ├── account-center/
+    │   │   ├── components/
+    │   │   ├── services/
+    │   │   └── types/
+    │   ├── activity/
+    │   │   ├── components/
+    │   │   ├── lib/
+    │   │   ├── services/
+    │   │   └── types/
+    │   ├── auth/
+    │   │   ├── components/
+    │   │   ├── hooks/
+    │   │   ├── lib/
+    │   │   ├── service/
+    │   │   └── types/
+    │   ├── contact-details/
+    │   │   ├── components/
+    │   │   ├── helpers/
+    │   │   ├── service/
+    │   │   └── types/
+    │   ├── contact-us/
+    │   │   ├── components/
+    │   │   └── services/
+    │   ├── create-contact/
+    │   │   ├── components/
+    │   │   ├── helpers/
+    │   │   ├── services/
+    │   │   └── types/
+    │   ├── dashboard/
+    │   │   ├── components/
+    │   │   ├── helper/
+    │   │   ├── services/
+    │   │   └── types/
+    │   ├── home/
+    │   │   └── components/
+    │   ├── trash/
+    │   │   ├── components/
+    │   │   ├── services/
+    │   │   └── types/
+    │   └── update-contact/
+    │       ├── components/
+    │       ├── services/
+    │       └── types/
+    ├── hooks/
+    ├── lib/
+    │   └── validation/
+    ├── providers/
+    ├── stores/
+    └── types/
 ```
 
-## 🎯 Available Scripts
+## Contributing
 
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
+This is a personal portfolio project created to showcase technical skills and coding abilities. While direct contributions are not accepted, feedback and suggestions are always welcome!
 
-# Code Quality
-npm run lint         # Run ESLint
-npm run lint:fix     # Fix ESLint issues
-npm run format       # Format code with Prettier
+## How You Can Help
 
-# Type Checking
-npm run type-check   # Run TypeScript type checking
-```
+### Feedback & Suggestions
 
-## 📋 Key Dependencies
+- Found a bug or issue? Please report it in the Issues section
+- Have suggestions for improvements? I'd love to hear your thoughts
+- Code review feedback is appreciated for learning purposes
 
-### 🧩 Core
+### Professional Inquiries
 
-- **React 19** – Latest React version with concurrent features
-- **TypeScript** – Type safety and better developer experience
-- **Vite** – Fast build tool and dev server
+- Interested in discussing the technical implementation? Feel free to reach out
+- Questions about design decisions or architecture choices are welcome
+- Open to networking and professional discussions about the project
 
-### 🔀 Routing & State
+### Educational Use
 
-- **React Router DOM v7** – Client-side routing
-- **TanStack Query** – Server state management and caching
+- Feel free to study the code structure and implementation patterns
+- Use this project as a learning reference for similar applications
+- Educational discussions about the codebase are encouraged
 
-### 🎨 Styling & UI
+## Contact for Discussion
 
-- **Tailwind CSS v4** – Utility-first CSS framework
-- **Framer Motion** – Animation library
-- **Lucide React** – Beautiful icons
-- **React Icons** – Icon library
+If you're interested in discussing this project, potential collaborations, or have professional inquiries:
 
-### 🧾 Forms & Validation
+- Open an issue for technical discussions
+- Contact directly for professional inquiries
+- Connect for networking and knowledge sharing
 
-- **Zod** – TypeScript-first schema validation
-- **React Toastify** – Toast notifications
+> **Note:** This project represents original work created entirely by the author for portfolio and learning purposes.
 
-### 🛠️ Utilities
+## License
 
-- **Axios** – HTTP client
-- **Crypto-JS** – Encryption utilities
-- **JWT Decode** – JWT token decoding
-- **JS Cookie** – Cookie management
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## ✅ Roadmap
+## Support
 
-- [x] Contact CRUD
-- [x] Favorites
-- [x] Trash & Recovery
-- [x] Search
-- [x] Landing Page
-- [x] Feedback Form
-- [ ] Import/Export CSV
-- [ ] Chat Feature (Socket.io)
-- [ ] Merge Duplicate Contacts
-- [ ] Label Support
-- [ ] Advanced Filtering & Sorting
-- [ ] Last Login Info
-- [ ] Password Change History
+If you encounter any problems or have questions, please:
 
-## 🚀 Deployment
+1. Check the [Issues](https://github.com/yourusername/workly-contacts/issues) page
+2. Create a new issue if your problem isn't already reported
+3. Contact the development team
 
-### 🔧 Vercel
+## Acknowledgments
 
-The project includes a `vercel.json` file for easy deployment to [Vercel](https://vercel.com/).
-
-## 🔒 Security
-
-Please review our **Security Policy** for reporting security vulnerabilities.
+- Inspired by Google Contacts
+- Built with modern web technologies
+- Community-driven development
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License** – see the [LICENSE](./LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-Built with ❤️ by **Abdullah Bin Omar Chowdhury**
+**Developed with ❤️ by Abdullah Bin Omar Chowdhury**  
+_Designed for scalability, security, and real-world backend excellence._
